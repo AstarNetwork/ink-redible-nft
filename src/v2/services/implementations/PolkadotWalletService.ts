@@ -1,4 +1,4 @@
-import { isMobileDevice } from '../../../hooks/helper/wallet';
+import { isMobileDevice } from 'src/modules/wallet';
 import { SubmittableExtrinsic } from '@polkadot/api/types';
 import { ISubmittableResult, Signer } from '@polkadot/types/types';
 import { InjectedExtension } from '@polkadot/extension-inject/types';

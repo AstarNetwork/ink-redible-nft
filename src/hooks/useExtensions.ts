@@ -4,7 +4,7 @@ import type { InjectedExtension } from '@polkadot/extension-inject/types';
 import { web3Accounts } from '@polkadot/extension-dapp';
 import { cryptoWaitReady } from '@polkadot/util-crypto';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
-import { getInjectedExtensions, isMobileDevice } from 'src/hooks/helper/wallet';
+import { getInjectedExtensions, isMobileDevice } from 'src/modules/wallet';
 import { keyring } from '@polkadot/ui-keyring';
 import { isTestChain } from '@polkadot/util';
 import { wait } from '@astar-network/astar-sdk-core';

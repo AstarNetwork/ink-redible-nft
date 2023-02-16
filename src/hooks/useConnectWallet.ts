@@ -8,7 +8,7 @@ import {
   WalletModalOption,
 } from 'src/config/wallets';
 import { useAccount } from 'src/hooks';
-import { castMobileSource, getSelectedAccount } from 'src/hooks/helper/wallet';
+import { castMobileSource, getSelectedAccount } from 'src/modules/wallet';
 import { useExtensions } from 'src/hooks/useExtensions';
 import { useMetaExtensions } from 'src/hooks/useMetaExtensions';
 import { useStore } from 'src/store';

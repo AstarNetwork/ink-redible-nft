@@ -1,5 +1,5 @@
 import { computed, ref } from 'vue';
-import { isMobileDevice } from '../helper/wallet';
+import { isMobileDevice } from 'src/modules/wallet';
 
 /**
  * Make the improved tooltips for smartphone, so the tooltips won't be removed once the user release the button

@@ -29,7 +29,7 @@
 </template>
 <script lang="ts">
 import { supportWalletObj, SupportWallet, Wallet, supportWallets } from 'src/config/wallets';
-import { isMobileDevice } from 'src/hooks/helper/wallet';
+import { isMobileDevice } from 'src/modules/wallet';
 import { computed, defineComponent, PropType, ref, watch, watchEffect } from 'vue';
 import SelectWalletOption from 'src/components/header/modals/SelectWalletOption.vue';
 

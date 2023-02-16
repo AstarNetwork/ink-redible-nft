@@ -1,10 +1,6 @@
 <template>
   <astar-modal-drawer :show="isModalConnectWallet" title="Select a Wallet" @close="setCloseModal">
     <div class="wrapper--modal--wallet">
-      <div v-if="!isDappStakingPage">
-        <div class="title--account-type">{{ $t('wallet.evmAccount') }}</div>
-      </div>
-      <div class="title--account-type tw-mt-4">{{ $t('wallet.nativeAccount') }}</div>
       <div
         v-for="(wallet, index) in nativeWallets"
         :key="index"
@@ -22,7 +18,7 @@
 </template>
 <script lang="ts">
 import { supportWallets, Wallet } from 'src/config/wallets';
-import { isMobileDevice } from 'src/hooks/helper/wallet';
+import { isMobileDevice } from 'src/modules/wallet';
 import { computed, defineComponent } from 'vue';
 import { useRoute } from 'vue-router';
 export default defineComponent({

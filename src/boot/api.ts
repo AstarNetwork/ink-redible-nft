@@ -7,7 +7,7 @@ import { connectApi } from 'src/config/api/polkadot/connectApi';
 import { endpointKey, providerEndpoints } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import { opengraphMeta } from 'src/config/metadata';
-import { isMobileDevice } from 'src/hooks/helper/wallet';
+import { isMobileDevice } from 'src/modules/wallet';
 import { useChainInfo } from 'src/hooks/useChainInfo';
 import { useExtensions } from 'src/hooks/useExtensions';
 import { useMetaExtensions } from 'src/hooks/useMetaExtensions';

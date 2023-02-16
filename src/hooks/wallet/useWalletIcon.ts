@@ -2,7 +2,7 @@ import { useAccount } from 'src/hooks';
 import { supportWalletObj } from 'src/config/wallets';
 import { useStore } from 'src/store';
 import { computed, ref, watch, watchEffect, onUnmounted } from 'vue';
-import { getSelectedAccount } from '../helper/wallet';
+import { getSelectedAccount } from 'src/modules/wallet';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 
 export function useWalletIcon() {
