@@ -138,7 +138,7 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
       let retryCount = 0;
       let extensions: InjectedExtension[] = [];
       do {
-        extensions = await web3Enable('Astar portal');
+        extensions = await web3Enable('AstarNetwork/ink!redibleNFT');
         await wait(100);
         retryCount++;
       } while (extensions.length === 0 && retryCount <= maxRetryCount);

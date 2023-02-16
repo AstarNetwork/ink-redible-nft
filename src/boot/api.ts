@@ -65,7 +65,7 @@ export default boot(async ({ store }) => {
   const networkName = capitalize(providerEndpoints[Number(networkIdx.value)].networkAlias);
   useMeta({
     title: '',
-    titleTemplate: (title) => `${title} | ${networkName} Portal - ${displayName}`,
+    // titleTemplate: (title) => `${title} | ${networkName} Portal - ${displayName}`,
     htmlAttr: { lang: 'en' },
     link: {
       material: {

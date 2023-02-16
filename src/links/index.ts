@@ -13,13 +13,3 @@ export const socialUrl = {
   forum: 'https://forum.astar.network/',
   youtube: 'https://www.youtube.com/c/AstarNetwork',
 };
-
-// export const deepLinkPath = {
-//   metamask: '#/assets/deeplink-metamask',
-// };
-
-// export const deepLink = {
-//   metamask: `https://metamask.app.link/dapp/${window.location.host}/${deepLinkPath.metamask}`,
-// };
-
-// export const stagingMainBranch = 'https://staging.portal.astar.network';

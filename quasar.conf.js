@@ -154,10 +154,9 @@ module.exports = configure(function (ctx) {
       },
 
       manifest: {
-        name: 'Astar Portal - Astar & Shiden Network',
-        short_name: 'Astar Portal',
-        description:
-          'Astar Portal is the hub of a multi-chain, one-stop platform for managing assets and dApp Staking - build2earn protocol.',
+        name: 'ink!redibleNFT',
+        short_name: 'ink!redibleNFT',
+        description: 'a NFT viewer dApp',
         display: 'standalone',
         orientation: 'portrait',
         background_color: '#ffffff',
@@ -210,7 +209,7 @@ module.exports = configure(function (ctx) {
       builder: {
         // https://www.electron.build/configuration/configuration
 
-        appId: 'astar-portal',
+        appId: 'astar-ink-redible-nft',
       },
 
       // "chain" is a webpack-chain object https://github.com/neutrinojs/webpack-chain
