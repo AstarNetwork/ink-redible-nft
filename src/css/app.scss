@@ -18,7 +18,11 @@ body {
 }
 
 main {
-  background: $body-bg-light;
+  background-image: url('src/assets/img/stars.svg');
+  // background-color: #081029;
+  background-color: #000000;
+  backdrop-filter: blur(50px);
+  -webkit-backdrop-filter: blur(50px);
 }
 
 .screen--phone {
@@ -75,10 +79,6 @@ main {
 }
 
 .body--dark {
-  main {
-    background: $body-bg-dark;
-  }
-
   .border--separator {
     border-top: 1px solid $border-separator-dark;
   }

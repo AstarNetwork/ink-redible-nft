@@ -31,10 +31,20 @@ export default defineComponent({
   background: rgba(247, 247, 248, 0.8);
   mix-blend-mode: normal;
   backdrop-filter: blur(200px);
-  border-bottom: 1px solid $object-light;
+  border-bottom: 1px solid;
+  border-image: linear-gradient(
+    90deg,
+    #e6007a -4%,
+    #e6007a -3.88%,
+    #703ac2 17.01%,
+    #0070eb 42.25%,
+    #0297fb 73.9%,
+    #0ae2ff 97.42%
+  );
+  border-image-slice: 1;
   @media (min-width: $lg) {
-    padding-left: 28px;
-    padding-right: 28px;
+    padding-left: 88px;
+    padding-right: 88px;
   }
 }
 
@@ -57,8 +67,8 @@ export default defineComponent({
 
 .body--dark {
   .header {
-    background: rgba(25, 29, 31, 0.8) !important;
-    border-bottom: 1px solid $gray-5;
+    background: #081029;
+    backdrop-filter: blur(50px);
   }
   .header-left {
     color: $gray-1;
@@ -71,8 +81,6 @@ export default defineComponent({
     padding-top: 36px;
     padding-left: 20px;
     padding-right: 16px;
-    background: $gray-1;
-    border-bottom: 0px !important;
   }
 
   .header-left {
@@ -81,12 +89,6 @@ export default defineComponent({
 
   .header-right {
     padding: 0rem;
-  }
-
-  .body--dark {
-    .header {
-      background: $gray-6 !important;
-    }
   }
 }
 </style>

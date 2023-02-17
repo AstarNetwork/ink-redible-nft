@@ -1,0 +1,83 @@
+@import 'src/css/quasar.variables.scss';
+
+.container--hero-connect-wallet {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 300px;
+  @media (min-width: $md) {
+    width: 400px;
+  }
+  @media (min-width: $lg) {
+    flex-direction: row;
+    column-gap: 24px;
+    width: 1000px;
+  }
+  @media (min-width: $xl) {
+    column-gap: 74px;
+    width: 1026px;
+    height: 560px;
+  }
+}
+
+.img--hero {
+  width: 300px;
+  height: 300px;
+  @media (min-width: $md) {
+    width: 400px;
+    height: 400px;
+  }
+  @media (min-width: $lg) {
+    width: 500px;
+    height: 500px;
+  }
+}
+
+.container--hero-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.box--texts {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  row-gap: -20px;
+}
+
+.box--connect {
+  margin-top: 32px;
+  height: 34px;
+  width: 320px;
+  @media (min-width: $lg) {
+    margin-top: 54px;
+  }
+}
+
+.text--button {
+  font-weight: 600;
+  font-size: 20px;
+  color: $gray-1;
+}
+
+.box--hero-texts {
+  display: flex;
+  flex-direction: column;
+  column-gap: 4px;
+}
+
+.text--italic {
+  font-weight: 300;
+  font-style: italic;
+}
+
+.text--hero {
+  font-size: 40px;
+  line-height: 50px;
+  letter-spacing: -0.03em;
+  @media (min-width: $lg) {
+    font-size: 64px;
+    line-height: 74px;
+  }
+}

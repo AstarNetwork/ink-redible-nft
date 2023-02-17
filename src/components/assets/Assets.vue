@@ -1,14 +1,14 @@
 <template>
   <div class="wrapper--assets">
-    <div class="container--assets">
-      <h1>Hello world</h1>
-    </div>
+    <hero-connect-wallet />
   </div>
 </template>
 <script lang="ts">
 import { defineComponent } from 'vue';
+import HeroConnectWallet from 'src/components/assets/HeroConnectWallet.vue';
 
 export default defineComponent({
+  components: { HeroConnectWallet },
   setup() {
     return {};
   },
