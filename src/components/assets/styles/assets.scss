@@ -25,8 +25,10 @@
 
 .wrapper--inventory {
   padding-top: 24px;
+  @media (min-width: $lg) {
+    padding-top: 42px;
+  }
 }
-
 
 // .container--assets {/
 // margin-bottom: 24px;

@@ -9,15 +9,17 @@
 
     <div v-if="dummyList.length > 0" class="container--item">
       <div v-for="(item, index) in dummyList" :key="index" class="card--item">
-        <img :src="item.img" :alt="item.name" />
+        <img :src="item.img" :alt="item.name" class="item--img" />
         <div class="row--name">
-          <span>
+          <span class="text--name">
             {{ item.name }}
           </span>
-          <div>V</div>
+          <div v-if="item.isValid">
+            <astar-icon-valid />
+          </div>
         </div>
         <div>
-          <span>{{ item.description }}</span>
+          <span class="text--description">{{ item.description }}</span>
         </div>
       </div>
     </div>
