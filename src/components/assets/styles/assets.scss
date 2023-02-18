@@ -1,16 +1,32 @@
 @import 'src/css/quasar.variables.scss';
 
 .wrapper--assets {
-  position: relative;
+  @media (min-width: $xxl) {
+    width: 100%;
+    max-width: $container-max-width;
+  }
+}
+
+.wrapper--hero {
   padding-top: 24px;
   display: flex;
   justify-content: center;
   align-items: center;
+
   @media (min-width: $sm) {
+    padding-top: 80px;
+  }
+
+  @media (min-height: 800px) {
     padding-top: 0px;
     height: calc(100vh - 96px);
   }
 }
+
+.wrapper--inventory {
+  padding-top: 24px;
+}
+
 
 // .container--assets {/
 // margin-bottom: 24px;

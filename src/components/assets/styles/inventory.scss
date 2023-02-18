@@ -1,0 +1,69 @@
+@import 'src/css/quasar.variables.scss';
+
+.box--address {
+  width: 100%;
+  background: hsl(225, 44%, 14%);
+  border-radius: 16px;
+  padding: 20px 16px;
+  display: flex;
+  flex-direction: column;
+  row-gap: 16px;
+  margin-bottom: 24px;
+
+  @media (min-width: $sm) {
+    width: 376px;
+  }
+
+  @media (min-width: $md) {
+    width: 452px;
+  }
+}
+
+.text--account {
+  font-size: 16px;
+  font-weight: 600;
+
+  @media (min-width: $md) {
+    font-size: 24px;
+  }
+}
+
+.text--address {
+  font-size: 12px;
+  font-weight: 600;
+
+  @media (min-width: $md) {
+    font-size: 14px;
+  }
+}
+
+.container--item {
+  row-gap: 16px;
+  column-gap: 8px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 166px);
+  justify-content: space-evenly;
+
+  @media (min-width: $md) {
+    column-gap: 16px;
+    grid-template-columns: repeat(auto-fill, 256px);
+  }
+}
+
+.card--item {
+  padding: 16px;
+  background: #141C34;
+  border-radius: 16px;
+  width: 166px;
+  height: 280px;
+
+  @media (min-width: $md) {
+    width: 256px;
+    height: 324px;
+  }
+}
+
+.row--name {
+  display: flex;
+  column-gap: 10px;
+}
