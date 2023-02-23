@@ -1,0 +1,45 @@
+@import 'src/css/quasar.variables.scss';
+
+.wrapper--parent {
+  padding: 0 8px;
+  padding-top: 32px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  @media (min-width: $lg) {
+    padding-top: 80px;
+  }
+}
+
+.img--nft-big {
+  margin: 0 8px;
+  height: auto;
+  width: 358px;
+  border-radius: 16px;
+  margin-bottom: 32px;
+}
+
+.buttons {
+  display: flex;
+  column-gap: 16px;
+  margin-bottom: 40px;
+  @media (min-width: $md) {
+    padding-top: 64px;
+  }
+}
+
+.wrapper-nft-introduction {
+  @media (min-width: $md) {
+    // display: flex;
+  }
+}
+
+.container--parent {
+  display: grid;
+  justify-items: center;
+  @media (min-width: $xxl) {
+    width: 100%;
+    max-width: $container-max-width;
+  }
+}

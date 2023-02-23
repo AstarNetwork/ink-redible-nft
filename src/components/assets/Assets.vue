@@ -16,6 +16,7 @@ import HeroConnectWallet from 'src/components/assets/HeroConnectWallet.vue';
 import { useAccount } from 'src/hooks';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import Inventory from 'src/components/assets/Inventory.vue';
+import { useRoute } from 'vue-router';
 
 export default defineComponent({
   components: { HeroConnectWallet, Inventory },
@@ -25,8 +26,10 @@ export default defineComponent({
     const isRequiredConnectWallet = computed<boolean>(
       () => selectedAddress === 'null' && currentAccount.value === ''
     );
+    const route = useRoute();
+    const id = computed<string>(() => route.query.id as string);
 
-    return { isRequiredConnectWallet };
+    return { isRequiredConnectWallet, id };
   },
 });
 </script>

@@ -14,6 +14,8 @@ export default {
   alert: 'Alert',
   max: 'Max',
   native: 'Native',
+  share: 'Share',
+  refresh: 'Refresh',
   toast: {
     transactionFailed: 'Transaction failed with error: {message}',
     completedHash: 'Completed at block hash #{hash}',

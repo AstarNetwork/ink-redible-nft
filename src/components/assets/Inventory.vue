@@ -44,6 +44,7 @@ export default defineComponent({
     });
 
     const dummyItem = {
+      id: 1,
       name: 'The Reborn Nebula',
       description: 'description',
       img: 'https://astar.network/_nuxt/reading-astar.87a786d8.svg',
