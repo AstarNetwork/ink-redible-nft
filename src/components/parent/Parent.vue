@@ -21,6 +21,14 @@
           :is-valid="dummyNft.isValid"
         />
       </div>
+      <div class="wrapper--nft-option">
+        <div>
+          <attributes ranking="1678" ranking-all="2222" rarity="34.19" />
+        </div>
+        <div>
+          <span>inventories</span>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -28,9 +36,10 @@
 import { computed, defineComponent } from 'vue';
 // import { useRoute } from 'vue-router';
 import NftIntroduction from 'src/components/common/NftIntroduction.vue';
+import Attributes from 'src/components/common/Attributes.vue';
 
 export default defineComponent({
-  components: { NftIntroduction },
+  components: { NftIntroduction, Attributes },
   setup() {
     // const route = useRoute();
     // const id = computed<string>(() => route.query.id as string);

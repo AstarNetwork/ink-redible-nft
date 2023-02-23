@@ -1,6 +1,6 @@
 @import 'src/css/quasar.variables.scss';
 
-.container--nft-introduction {
+.wrapper--nft-introduction {
   max-width: 800px;
   display: flex;
   flex-direction: column;
@@ -8,6 +8,7 @@
   padding: 36px 16px;
   margin-left: -16px;
   margin-right: -16px;
+  width: 100vw;
   @media (min-width: $md) {
     margin-left: 0px;
     margin-right: 0px;

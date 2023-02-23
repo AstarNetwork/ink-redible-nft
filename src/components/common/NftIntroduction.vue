@@ -1,12 +1,12 @@
 <template>
-  <div class="container--nft-introduction">
+  <div class="wrapper--nft-introduction">
     <div class="row--name">
       <span class="text--xl">{{ collection }}</span>
       <span class="text--xl">#{{ id }}</span>
     </div>
     <div class="box--title-description">
       <div class="row--title">
-        <img :src="img" :alt="name" class="img--nft" />
+        <img :src="img" :alt="id" class="img--nft" />
         <div class="column--nft-title">
           <div>
             <span class="text--label">Collection</span>

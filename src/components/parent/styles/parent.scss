@@ -30,8 +30,9 @@
 }
 
 .wrapper-nft-introduction {
+  margin-bottom: 24px;
   @media (min-width: $md) {
-    // display: flex;
+    margin-bottom: 40px;
   }
 }
 
@@ -41,5 +42,14 @@
   @media (min-width: $xxl) {
     width: 100%;
     max-width: $container-max-width;
+  }
+}
+
+.wrapper--nft-option {
+  @media (min-width: $md) {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 40px;
+    justify-self: start;
   }
 }

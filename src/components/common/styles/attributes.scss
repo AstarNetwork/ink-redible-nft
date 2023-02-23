@@ -1,0 +1,113 @@
+@import 'src/css/quasar.variables.scss';
+
+.wrapper--attributes {
+  display: flex;
+  flex-direction: column;
+  background: #131c34;
+  padding: 36px 16px;
+  margin-left: -16px;
+  margin-right: -16px;
+  width: 100vw;
+  @media (min-width: $md) {
+    max-width: 400px;
+    margin-left: 0px;
+    margin-right: 0px;
+    border-radius: 16px;
+    padding: 36px 32px;
+  }
+}
+
+.wrapper--mode-tabs {
+  margin-bottom: 34px;
+}
+
+.container--ranking {
+  padding: 18px 38px;
+  background: #081029;
+  border-radius: 16px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 24px;
+  text-align: center;
+}
+
+.column--ranking {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.container--item {
+  height: 68px;
+  padding: 18px;
+  background: #081029;
+  border-radius: 16px;
+  display: grid;
+  grid-template-columns: 60% auto 15%;
+  align-items: center;
+}
+
+.container--specifics {
+  height: 68px;
+  padding: 18px;
+  background: #081029;
+  border-radius: 16px;
+  display: grid;
+  grid-template-columns: 100px auto;
+  align-items: center;
+}
+
+.column--external-link {
+  display: flex;
+  column-gap: 32px;
+  align-items: center;
+  cursor: pointer;
+  justify-self: end;
+}
+
+.column--chain {
+  display: flex;
+  align-items: center;
+  justify-self: end;
+}
+
+.text--ranking {
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.text--ranking-value {
+  font-weight: 600;
+  font-size: 24px;
+}
+
+.text--attributes-value {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.row--ranking {
+  display: flex;
+  align-items: center;
+  column-gap: 8px;
+}
+
+.text--ranking-all {
+  font-weight: 400;
+  font-size: 14px;
+}
+
+.wrapper--items {
+  display: flex;
+  flex-direction: column;
+  row-gap: 8px;
+}
+
+.column--change-rate {
+  text-align: right;
+}
+
+.icon--external-link {
+  stroke: $astar-blue;
+  font-size: 20px;
+}

@@ -78,5 +78,9 @@ export default {
       experience: 'experience',
       inAstarWasm: 'in Astar WASM',
     },
+    attributes: {
+      ranking: 'Ranking',
+      rarity: 'Rarity',
+    },
   },
 };
