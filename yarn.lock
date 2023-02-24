@@ -15,10 +15,10 @@
     ethers "^5.6.9"
     web3 "^1.7.3"
 
-"@astar-network/astar-ui@^0.0.75":
-  version "0.0.75"
-  resolved "https://registry.yarnpkg.com/@astar-network/astar-ui/-/astar-ui-0.0.75.tgz#1090fac297a5a7f580555b3ed773d6e0ebc76f6b"
-  integrity sha512-CJtJ3LYuo5+KIUx+gIuRil27r/sV55FPjebjxmkDpNAlUem+LOHMGcO3lX8FW2PpCJ71MMAATgrj39pFDYld5Q==
+"@astar-network/astar-ui@^0.0.76":
+  version "0.0.76"
+  resolved "https://registry.yarnpkg.com/@astar-network/astar-ui/-/astar-ui-0.0.76.tgz#ec07eb292192446e2333ed5f3da4b15e79e74205"
+  integrity sha512-s2C27N5Um8/WzE4RSYofxoS/93LOrv7q9Ht8qxJa++Ybx2H8zKblyGRT7BEqxyKrU2EeSohOVx3AAQGTYpx91g==
   dependencies:
     vue "^3.2.23"
 
@@ -293,9 +293,9 @@
   integrity sha512-6V0qdPUaiVHH3RtZeLIsc+6pDhbYzHR8ogA8w+f+Wc77DuXto19g2QUwveINoS34Uw+W8/hQDGJCx+i4n7xcng==
 
 "@babel/parser@^7.16.4":
-  version "7.20.15"
-  resolved "https://registry.yarnpkg.com/@babel/parser/-/parser-7.20.15.tgz#eec9f36d8eaf0948bb88c87a46784b5ee9fd0c89"
-  integrity sha512-DI4a1oZuf8wC+oAJA9RW6ga3Zbe8RZFt7kD9i4qAspz3I/yHet1VvC3DiSy/fsUvv5pvJuNPh0LPOdCcqinDPg==
+  version "7.21.2"
+  resolved "https://registry.yarnpkg.com/@babel/parser/-/parser-7.21.2.tgz#dacafadfc6d7654c3051a66d6fe55b6cb2f2a0b3"
+  integrity sha512-URpaIJQwEkEC2T9Kn+Ai6Xe/02iNaVCuT/PtoRz3GPVJVDpPd7mLo+VddTbhCRU9TXqW5mSrQfXZyi8kDKOVpQ==
 
 "@babel/plugin-bugfix-safari-id-destructuring-collision-in-function-expression@^7.16.2":
   version "7.16.2"

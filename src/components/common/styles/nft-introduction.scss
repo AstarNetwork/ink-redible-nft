@@ -14,10 +14,12 @@
     margin-right: 0px;
     border-radius: 16px;
     padding: 36px 32px;
-    max-width: 900px;
+  }
+  @media (min-width: $lg) {
+    max-width: 940px;
   }
   @media (min-width: $xl) {
-    max-width: 1000px;
+    max-width: 1026px;
   }
 }
 
@@ -25,6 +27,8 @@
   border-bottom: 1px solid $gray-3;
   width: 100%;
   padding-bottom: 28px;
+  display: flex;
+  column-gap: 8px;
 }
 
 .row--title {

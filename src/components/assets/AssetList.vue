@@ -59,5 +59,5 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@use 'src/components/assets/styles/inventory.scss';
+@use 'src/components/assets/styles/asset-list.scss';
 </style>

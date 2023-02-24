@@ -5,10 +5,16 @@
 
       <div class="buttons">
         <astar-button :width="130" :height="48">
-          <span> {{ $t('share') }} </span>
+          <div class="row--button">
+            <astar-icon-share />
+            <span> {{ $t('share') }} </span>
+          </div>
         </astar-button>
-        <astar-button :width="130" :height="48">
-          <span> {{ $t('refresh') }} </span>
+        <astar-button :width="130" :height="48" @click="reload">
+          <div class="row--button">
+            <astar-icon-refresh />
+            <span> {{ $t('refresh') }} </span>
+          </div>
         </astar-button>
       </div>
 
@@ -22,12 +28,8 @@
         />
       </div>
       <div class="wrapper--nft-option">
-        <div>
-          <attributes ranking="1678" ranking-all="2222" rarity="34.19" />
-        </div>
-        <div>
-          <span>inventories</span>
-        </div>
+        <attributes ranking="1678" ranking-all="2222" rarity="34.19" />
+        <inventory />
       </div>
     </div>
   </div>
@@ -37,9 +39,10 @@ import { computed, defineComponent } from 'vue';
 // import { useRoute } from 'vue-router';
 import NftIntroduction from 'src/components/common/NftIntroduction.vue';
 import Attributes from 'src/components/common/Attributes.vue';
+import Inventory from 'src/components/common/Inventory.vue';
 
 export default defineComponent({
-  components: { NftIntroduction, Attributes },
+  components: { NftIntroduction, Attributes, Inventory },
   setup() {
     // const route = useRoute();
     // const id = computed<string>(() => route.query.id as string);
@@ -47,6 +50,10 @@ export default defineComponent({
     // watchEffect(() => {
     //   console.log('id', id);
     // });
+
+    const reload = (): void => {
+      window.location.reload();
+    };
 
     const dummyNft = computed(() => {
       return {
@@ -59,7 +66,7 @@ export default defineComponent({
       };
     });
 
-    return { dummyNft };
+    return { dummyNft, reload };
   },
 });
 </script>

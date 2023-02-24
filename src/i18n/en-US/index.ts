@@ -16,6 +16,7 @@ export default {
   native: 'Native',
   share: 'Share',
   refresh: 'Refresh',
+  collection: 'Collection',
   toast: {
     transactionFailed: 'Transaction failed with error: {message}',
     completedHash: 'Completed at block hash #{hash}',

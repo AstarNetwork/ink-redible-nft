@@ -1,12 +1,12 @@
 @import 'src/css/quasar.variables.scss';
 
 .wrapper--parent {
-  padding: 0 8px;
-  padding-top: 32px;
+  padding: 32px 8px;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
+
   @media (min-width: $lg) {
     padding-top: 80px;
   }
@@ -39,17 +39,31 @@
 .container--parent {
   display: grid;
   justify-items: center;
-  @media (min-width: $xxl) {
-    width: 100%;
-    max-width: $container-max-width;
-  }
 }
 
 .wrapper--nft-option {
+  display: grid;
+  row-gap: 24px;
   @media (min-width: $md) {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    width: 100%;
+    row-gap: 0px;
+    grid-template-columns: auto auto;
+    column-gap: 10px;
+    padding: 0px 8px;
+  }
+  @media (min-width: 820px) {
+    padding: 0;
+  }
+  @media (min-width: $lg) {
+    grid-template-columns: 380px auto;
     column-gap: 40px;
     justify-self: start;
   }
+}
+
+.row--button {
+  display: flex;
+  justify-content: center;
+  column-gap: 12px;
+  align-items: center;
 }

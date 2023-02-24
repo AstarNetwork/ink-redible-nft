@@ -9,7 +9,7 @@
         <img :src="img" :alt="id" class="img--nft" />
         <div class="column--nft-title">
           <div>
-            <span class="text--label">Collection</span>
+            <span class="text--label">{{ $t('collection') }}</span>
           </div>
           <div class="row--title-valid">
             <span class="text--lg">{{ collection }}</span>

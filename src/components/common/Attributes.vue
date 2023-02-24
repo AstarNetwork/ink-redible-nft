@@ -36,32 +36,40 @@
       <div v-else class="wrapper--items">
         <div class="container--specifics">
           <span class="text--attributes-value">Contract</span>
-          <div class="column--external-link">
+          <a
+            href="https://astar.subscan.io/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="column--external-link"
+          >
             <span class="text--attributes-value">
               {{ getShortenAddress(dummySpecifics.contract) }}
             </span>
             <div class="icon--external-link">
               <astar-icon-external-link />
             </div>
-          </div>
+          </a>
         </div>
         <div class="container--specifics">
           <span class="text--attributes-value">Token ID</span>
-          <div class="column--external-link">
+          <a
+            href="https://astar.subscan.io/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="column--external-link"
+          >
             <span class="text--attributes-value">
               {{ dummySpecifics.tokenId }}
             </span>
             <div class="icon--external-link">
               <astar-icon-external-link />
             </div>
-          </div>
+          </a>
         </div>
         <div class="container--specifics">
           <span class="text--attributes-value">Chain</span>
           <div class="column--chain">
-            <span class="text--attributes-value">
-              {{ dummySpecifics.chain }}
-            </span>
+            <img src="../../assets/img/astar.png" alt="astar" class="img--chain" />
           </div>
         </div>
       </div>

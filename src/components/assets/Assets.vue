@@ -5,7 +5,7 @@
     </div>
     <div v-else>
       <div class="wrapper--inventory">
-        <inventory />
+        <asset-list />
       </div>
     </div>
   </div>
@@ -15,11 +15,11 @@ import { defineComponent, computed } from 'vue';
 import HeroConnectWallet from 'src/components/assets/HeroConnectWallet.vue';
 import { useAccount } from 'src/hooks';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
-import Inventory from 'src/components/assets/Inventory.vue';
+import AssetList from 'src/components/assets/AssetList.vue';
 import { useRoute } from 'vue-router';
 
 export default defineComponent({
-  components: { HeroConnectWallet, Inventory },
+  components: { HeroConnectWallet, AssetList },
   setup() {
     const selectedAddress = String(localStorage.getItem(LOCAL_STORAGE.SELECTED_ADDRESS));
     const { currentAccount } = useAccount();

@@ -9,11 +9,12 @@
   margin-right: -16px;
   width: 100vw;
   @media (min-width: $md) {
-    max-width: 400px;
+    max-width: 380px;
     margin-left: 0px;
     margin-right: 0px;
     border-radius: 16px;
     padding: 36px 32px;
+    max-height: 462px;
   }
 }
 
@@ -43,7 +44,7 @@
   background: #081029;
   border-radius: 16px;
   display: grid;
-  grid-template-columns: 60% auto 15%;
+  grid-template-columns: 60% auto 20%;
   align-items: center;
 }
 
@@ -110,4 +111,8 @@
 .icon--external-link {
   stroke: $astar-blue;
   font-size: 20px;
+}
+
+.img--chain {
+  width: 100px;
 }
