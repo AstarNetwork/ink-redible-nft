@@ -1,10 +1,6 @@
 @import 'src/css/quasar.variables.scss';
 
 .wrapper--assets {
-  @media (min-width: $xxl) {
-    width: 100%;
-    max-width: $container-max-width;
-  }
 }
 
 .wrapper--hero {
@@ -12,6 +8,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  width: 100%;
 
   @media (min-width: $sm) {
     padding-top: 80px;
@@ -29,13 +26,3 @@
     padding-top: 42px;
   }
 }
-
-// .container--assets {/
-// margin-bottom: 24px;
-// display: grid;
-// row-gap: 32px;
-// @media (min-width: $xxl) {
-//   width: 100%;
-//   max-width: $container-max-width;
-// }
-// }
