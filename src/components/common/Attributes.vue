@@ -9,7 +9,7 @@
       />
     </div>
     <div class="wrapper--items">
-      <div class="container--ranking">
+      <div v-if="ranking" class="container--ranking">
         <div class="column--ranking">
           <span class="text--ranking">{{ $t('assets.attributes.ranking') }}</span>
           <div class="row--ranking">
@@ -17,19 +17,21 @@
             <span class="text--ranking-all">/ {{ rankingAll }}</span>
           </div>
         </div>
-        <div class="column--ranking">
+        <div v-if="rarity" class="column--ranking">
           <span class="text--ranking">{{ $t('assets.attributes.rarity') }}</span>
           <span class="text--ranking-value">{{ rarity }}</span>
         </div>
       </div>
       <div v-if="selectedTab === AttributeTab.attributes" class="wrapper--items">
-        <div v-for="item in dummyItems" :key="item.description" class="container--item">
-          <span class="text--attributes-value">{{ item.description }}</span>
-          <span class="text--attributes-value">{{ item.value }}</span>
-          <div class="column--change-rate">
-            <span class="text--attributes-value">
-              {{ item.changeRate > 0 ? `+ ${item.changeRate}%` : `${item.changeRate}%` }}
-            </span>
+        <div v-if="dummyItems">
+          <div v-for="item in dummyItems" :key="item.description" class="container--item">
+            <span class="text--attributes-value">{{ item.description }}</span>
+            <span class="text--attributes-value">{{ item.value }}</span>
+            <div class="column--change-rate">
+              <span class="text--attributes-value">
+                {{ item.changeRate > 0 ? `+ ${item.changeRate}%` : `${item.changeRate}%` }}
+              </span>
+            </div>
           </div>
         </div>
       </div>
@@ -69,7 +71,25 @@
         <div class="container--specifics">
           <span class="text--attributes-value">Chain</span>
           <div class="column--chain">
-            <img src="../../assets/img/astar.png" alt="astar" class="img--chain" />
+            <!-- Todo: check the network information from metadata -->
+            <img
+              v-if="currentNetworkName === astarChain.ASTAR"
+              src="../../assets/img/astar.png"
+              alt="chain-image"
+              class="img--chain"
+            />
+            <img
+              v-else-if="currentNetworkName === astarChain.SHIDEN"
+              src="../../assets/img/shiden_logo.png"
+              alt="chain-image"
+              class="img--chain"
+            />
+            <img
+              v-else
+              src="../../assets/img/shibuya_logo.png"
+              alt="chain-image"
+              class="img--chain"
+            />
           </div>
         </div>
       </div>
@@ -77,9 +97,11 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, PropType } from 'vue';
 import ModeTabs from 'src/components/common/ModeTabs.vue';
 import { getShortenAddress } from '@astar-network/astar-sdk-core';
+import { useNetworkInfo } from 'src/hooks';
+import { astarChain } from 'src/config/chain';
 
 enum AttributeTab {
   attributes = 'Attributes',
@@ -91,44 +113,45 @@ export default defineComponent({
   props: {
     ranking: {
       type: String,
-      required: true,
+      required: false,
+      default: '',
     },
     rankingAll: {
       type: String,
-      required: true,
+      required: false,
+      default: '',
     },
     rarity: {
       type: String,
       required: false,
       default: '',
     },
+    dummyItems: {
+      type: Object as PropType<any[]>,
+      required: true,
+    },
+    dummySpecifics: {
+      type: Object,
+      required: true,
+    },
   },
   setup(props) {
     const selectedTab = ref<AttributeTab>(AttributeTab.attributes);
+    const { currentNetworkName } = useNetworkInfo();
+
     const setSelectedTab = (isAttribute: boolean): void => {
       if (isAttribute) {
         selectedTab.value = AttributeTab.attributes;
       } else {
         selectedTab.value = AttributeTab.specifics;
       }
-      console.log('selectedTab.value', selectedTab.value);
     };
-    const dummyItems = [
-      { description: 'Background', value: 'AAA', changeRate: 20 },
-      { description: 'Eyes', value: 'BBB', changeRate: 0 },
-      { description: 'Signature', value: 'YES', changeRate: 30 },
-    ];
 
-    const dummySpecifics = {
-      contract: 'Axjio5fSDjfdsliZxNxNGhGhsdaZsifdslAbcCb02',
-      tokenId: '555',
-      chain: 'ASTAR',
-    };
     return {
       selectedTab,
       AttributeTab,
-      dummyItems,
-      dummySpecifics,
+      currentNetworkName,
+      astarChain,
       setSelectedTab,
       getShortenAddress,
     };

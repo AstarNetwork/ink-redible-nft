@@ -52,9 +52,10 @@
 }
 
 .img--nft {
-  height: 66px;
+  max-height: 66px;
   width: 66px;
   border-radius: 16px;
+  background: $img-background;
 }
 
 .column--nft-title {
@@ -66,6 +67,7 @@
 }
 
 .box--description {
+  overflow: scroll;
 }
 
 .icon--valid {

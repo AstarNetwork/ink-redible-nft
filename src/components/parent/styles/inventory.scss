@@ -8,6 +8,7 @@
   margin-left: -16px;
   margin-right: -16px;
   width: 100vw;
+  overflow: scroll;
   @media (min-width: $md) {
     width: 100%;
     margin-left: 0px;
@@ -38,6 +39,7 @@
   flex-direction: column;
   row-gap: 8px;
   width: 120px;
+  cursor: pointer;
 }
 
 .box--nft-img {
@@ -47,10 +49,20 @@
 .img--item {
   max-height: 100px;
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.05);
+  background: $img-background;
 }
 
 .text--name {
   font-weight: 600;
   font-size: 14px;
+}
+
+.box--nft-add {
+  background: linear-gradient(180deg, rgba(0, 133, 255, 0.2) 0%, rgba(8, 16, 41, 0.2) 68.23%);
+  border-radius: 8px;
+  height: 120px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }

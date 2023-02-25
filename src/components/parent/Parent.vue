@@ -28,7 +28,13 @@
         />
       </div>
       <div class="wrapper--nft-option">
-        <attributes ranking="1678" ranking-all="2222" rarity="34.19" />
+        <attributes
+          ranking="1678"
+          ranking-all="2222"
+          rarity="34.19"
+          :dummy-items="dummyItems"
+          :dummy-specifics="dummySpecifics"
+        />
         <inventory />
       </div>
     </div>
@@ -39,7 +45,7 @@ import { computed, defineComponent } from 'vue';
 // import { useRoute } from 'vue-router';
 import NftIntroduction from 'src/components/common/NftIntroduction.vue';
 import Attributes from 'src/components/common/Attributes.vue';
-import Inventory from 'src/components/common/Inventory.vue';
+import Inventory from 'src/components/parent/Inventory.vue';
 
 export default defineComponent({
   components: { NftIntroduction, Attributes, Inventory },
@@ -66,7 +72,19 @@ export default defineComponent({
       };
     });
 
-    return { dummyNft, reload };
+    const dummyItems = [
+      { description: 'Background', value: 'AAA', changeRate: 20 },
+      { description: 'Eyes', value: 'BBB', changeRate: 0 },
+      { description: 'Signature', value: 'YES', changeRate: 30 },
+    ];
+
+    const dummySpecifics = {
+      contract: 'Axjio5fSDjfdsliZxNxNGhGhsdaZsifdslAbcCb02',
+      tokenId: '555',
+      chain: 'ASTAR',
+    };
+
+    return { dummyNft, reload, dummyItems, dummySpecifics };
   },
 });
 </script>

@@ -16,6 +16,12 @@
         </div>
         <span class="text--name">{{ item.name }}</span>
       </div>
+      <div class="card--item">
+        <div class="box--nft-add">
+          <span class="text--lg">+</span>
+          <span class="text--name">{{ $t('add') }}</span>
+        </div>
+      </div>
     </div>
     <div v-else class="wrapper--items">
       <div v-for="(item, index) in dummyEquippedList" :key="index" class="card--item">
@@ -82,5 +88,5 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@use 'src/components/common/styles/inventory.scss';
+@use 'src/components/parent/styles/inventory.scss';
 </style>

@@ -1,12 +1,77 @@
 @import 'src/css/quasar.variables.scss';
 
 .wrapper--child {
-  padding-top: 24px;
+  padding: 32px 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+
   @media (min-width: $lg) {
-    padding-top: 42px;
+    padding-top: 100px;
   }
-  @media (min-width: $xxl) {
+}
+
+.img--nft-big {
+  margin: 0 8px;
+  height: auto;
+  max-height: 520px;
+  width: 358px;
+  border-radius: 16px;
+  margin-bottom: 32px;
+  background: $img-background;
+}
+
+.buttons {
+  display: flex;
+  column-gap: 16px;
+  margin-bottom: 40px;
+  @media (min-width: $md) {
+    padding-top: 64px;
+  }
+}
+
+.wrapper-nft-introduction {
+  margin-bottom: 24px;
+  @media (min-width: $md) {
+    margin-bottom: 40px;
+  }
+}
+
+.container--child {
+  display: grid;
+  justify-items: center;
+}
+
+.wrapper--nft-option {
+  display: grid;
+  row-gap: 24px;
+  @media (min-width: $md) {
     width: 100%;
-    max-width: $container-max-width;
+    row-gap: 0px;
+    grid-template-columns: auto auto;
+    column-gap: 10px;
+    padding: 0px 8px;
   }
+  @media (min-width: 820px) {
+    padding: 0;
+  }
+  @media (min-width: $lg) {
+    grid-template-columns: 380px auto;
+    column-gap: 40px;
+    justify-self: start;
+  }
+}
+
+.row--button {
+  display: flex;
+  justify-content: center;
+  column-gap: 12px;
+  align-items: center;
+}
+
+.column--nft-right {
+}
+
+.row--nft-title {
 }

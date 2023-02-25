@@ -1,0 +1,32 @@
+@import 'src/css/quasar.variables.scss';
+
+.row--buttons {
+  display: flex;
+  justify-content: space-between;
+  @media (min-width: 400px) {
+    justify-content: space-evenly;
+  }
+  @media (min-width: $lg) {
+    justify-content: space-between;
+  }
+}
+
+.icon--button {
+  stroke: white;
+  font-size: 10px;
+}
+
+.button-action {
+  display: flex;
+  column-gap: 4px;
+  align-items: center;
+  justify-content: center;
+  @media (min-width: $xl) {
+    column-gap: 10px;
+  }
+}
+
+.text--button {
+  font-weight: 600;
+  font-size: 14px;
+}

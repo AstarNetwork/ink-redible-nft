@@ -17,6 +17,11 @@ export default {
   share: 'Share',
   refresh: 'Refresh',
   collection: 'Collection',
+  add: 'Add',
+  unequip: 'Unequip',
+  remove: 'Remove',
+  detail: 'Detail',
+  parent: 'Parent',
   toast: {
     transactionFailed: 'Transaction failed with error: {message}',
     completedHash: 'Completed at block hash #{hash}',
@@ -83,5 +88,9 @@ export default {
       ranking: 'Ranking',
       rarity: 'Rarity',
     },
+  },
+  child: {
+    equippedInventory: 'This NFT is currently equipped and in inventory',
+    parentNft: 'Parent NFT #{id}',
   },
 };
