@@ -8,7 +8,7 @@ const networkIdxStore = localStorage.getItem(LOCAL_STORAGE.NETWORK_IDX);
 
 export const networkParam =
   '/' +
-  getNetworkName(networkIdxStore ? (Number(networkIdxStore) as endpointKey) : endpointKey.ASTAR);
+  getNetworkName(networkIdxStore ? (Number(networkIdxStore) as endpointKey) : endpointKey.SHIBUYA);
 
 export enum Path {
   Assets = '/assets',

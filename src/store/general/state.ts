@@ -68,24 +68,10 @@ function state(): GeneralStateInterface {
     extensionCount: 0,
     substrateAccounts: [],
     currentNetworkStatus: 'connecting',
-    currentNetworkIdx: endpointKey.ASTAR,
-    // isEthWallet: false,
-    // isH160Formatted: false,
-    // currentEcdsaAccount: {
-    //   ethereum: '',
-    //   ss58: '',
-    //   h160: '',
-    // },
+    currentNetworkIdx: endpointKey.SHIBUYA,
     currentAddress: '',
     currentCustomEndpoint: '',
-
-    // currentTheme:
-    //   //this queries the media setting
-    //   window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
-    //     ? 'DARK'
-    //     : 'LIGHT',
     headerName: '',
-
     currentWallet: '',
     gas: undefined,
     currentBlock: 0,
