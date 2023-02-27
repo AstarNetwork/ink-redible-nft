@@ -28,7 +28,7 @@
     </div>
 
     <!-- Memo: temporary example -->
-    <div class="container--example">
+    <div v-if="isShibuya" class="container--example">
       <div>
         <p class="text--xl">Fetching NFTs example</p>
         <p class="text--lg">Chunky Address: {{ chunkyAddress }}</p>
@@ -72,10 +72,18 @@
   </div>
 </template>
 <script lang="ts">
-import { useAccount, useBreakpoints, useNft, chunkyAddress, partsAddress } from 'src/hooks';
+import {
+  useAccount,
+  useBreakpoints,
+  useNft,
+  chunkyAddress,
+  partsAddress,
+  useNetworkInfo,
+} from 'src/hooks';
 import { defineComponent, computed, watchEffect } from 'vue';
 import { getShortenAddress } from '@astar-network/astar-sdk-core';
 import { IBasePart } from 'src/modules/nft';
+import { endpointKey } from 'src/config/chainEndpoints';
 
 export default defineComponent({
   components: {},
@@ -86,6 +94,8 @@ export default defineComponent({
       const place = width.value > screenSize.md ? 0 : 15;
       return getShortenAddress(currentAccount.value, place);
     });
+    const { currentNetworkIdx } = useNetworkInfo();
+    const isShibuya = computed(() => currentNetworkIdx.value === endpointKey.SHIBUYA);
 
     // Todo: get from url
     const tokenId = 1;
@@ -122,6 +132,7 @@ export default defineComponent({
       isSlotEquipped,
       isSlot,
       unequip,
+      isShibuya,
     };
   },
 });
