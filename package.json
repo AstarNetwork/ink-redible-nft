@@ -10,8 +10,8 @@
     "build": "yarn run build:spa",
     "build:ssr": "quasar build -m ssr",
     "build:spa": "quasar build -m spa",
-    "format": "prettier --write **/*.{ts,vue}",
-    "check-format": "prettier --check **/*.{ts,vue}",
+    "format": "prettier --write /*.{ts,vue}",
+    "check-format": "prettier --check /*.{ts,vue}",
     "lint": "yarn format && yarn check-format && eslint --fix --ext .ts,.vue ./",
     "lint:check": "yarn check-format && eslint --ext .ts,.vue ./",
     "test": "quasar test --unit jest",
@@ -19,6 +19,8 @@
     "start": "node server.js"
   },
   "dependencies": {
+    "@727-ventures/typechain-polkadot": "^0.6.10",
+    "@727-ventures/typechain-types": "^0.0.22",
     "@astar-network/astar-sdk-core": "^0.1.16",
     "@astar-network/astar-ui": "^0.0.76",
     "@ethersproject/bignumber": "^5.5.0",
@@ -47,6 +49,7 @@
     "ethers": "^5.5.4",
     "express": "^4.17.1",
     "inversify": "^6.0.1",
+    "is-ipfs": "^8.0.1",
     "luxon": "^2.1.1",
     "path": "^0.12.7",
     "quasar": "^2.3.3",

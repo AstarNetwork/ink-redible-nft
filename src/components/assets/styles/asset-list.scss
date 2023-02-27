@@ -43,6 +43,13 @@
   }
 }
 
+.container--example {
+  margin-top: 100px;
+  display: flex;
+  flex-direction: column;
+  row-gap: 32px;
+}
+
 .container--item {
   row-gap: 16px;
   column-gap: 8px;
@@ -97,4 +104,17 @@
   @media (min-width: $md) {
     height: 200px;
   }
+}
+
+.image-container {
+  position: relative;
+  margin-bottom: 400px;
+}
+
+.image {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: 400px;
+  z-index: -1;
 }
