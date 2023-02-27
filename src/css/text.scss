@@ -14,7 +14,7 @@ span {
 
 .text--xl {
   font-weight: 600;
-  font-size: 22px;
+  font-size: 24px;
   color: $gray-5;
 }
 
@@ -40,8 +40,8 @@ span {
 }
 
 .text--lg {
-  font-weight: 400;
-  font-size: 16px;
+  font-weight: 600;
+  font-size: 20px;
   color: $gray-5;
 }
 
@@ -58,7 +58,7 @@ span {
 }
 
 .text--label {
-  font-weight: 400;
+  font-weight: 600;
   font-size: 14px;
   color: $gray-3;
 }
@@ -98,6 +98,21 @@ input[type='number'] {
 
 input::placeholder {
   color: $gray-3 !important;
+}
+
+.text--astar-gradient {
+  font-weight: 800;
+  background: $astar-blue;
+  background: -webkit-linear-gradient(
+    122deg,
+    #e6007a -10%,
+    #703ac2 20%,
+    #0070eb 50%,
+    #0297fb 70%,
+    #0ae2ff 95%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .body--dark {

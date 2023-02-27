@@ -1,0 +1,86 @@
+@import 'src/css/quasar.variables.scss';
+
+.wrapper--parent-info {
+  display: flex;
+  flex-direction: column;
+  background: #131c34;
+  padding: 36px 16px;
+  margin-left: -16px;
+  margin-right: -16px;
+  width: 100vw;
+  overflow: scroll;
+  @media (min-width: $md) {
+    width: 100%;
+    margin-left: 0px;
+    margin-right: 0px;
+    border-radius: 16px;
+    padding: 36px 32px;
+    max-height: 462px;
+  }
+}
+
+.box--nft-img {
+  width: 74px;
+  border-radius: 16px;
+  background: $img-background;
+  @media (min-width: $lg) {
+    width: 120px;
+  }
+}
+
+.row--nft-img-buttons {
+  display: grid;
+  grid-template-columns: 74px auto;
+  column-gap: 14px;
+  @media (min-width: $lg) {
+    grid-template-columns: 120px auto;
+  }
+}
+
+.box--title {
+  margin-bottom: 34px;
+  display: flex;
+  justify-content: center;
+  height: 38px;
+  border-bottom: 3px solid $blue;
+}
+
+.text--parent {
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.box-nft--info {
+  display: flex;
+  flex-direction: column;
+  row-gap: 32px;
+}
+
+.row--nft-title {
+  display: flex;
+  align-items: center;
+  column-gap: 10px;
+  margin-bottom: 4px;
+}
+
+.icon--valid {
+}
+
+.row--parent-nft-id {
+  margin-bottom: 28px;
+}
+
+.buttons--lg-screen {
+  display: none;
+  @media (min-width: $lg) {
+    display: block;
+  }
+}
+
+.buttons--phone-screen {
+  margin-top: 24px;
+  @media (min-width: $lg) {
+    margin-top: 0px;
+    display: none;
+  }
+}

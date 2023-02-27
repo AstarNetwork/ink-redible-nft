@@ -50,19 +50,13 @@ export const useConnectWallet = () => {
     return;
   };
 
-  // Memo: triggered after users (who haven't connected to wallet) have clicked 'Connect Wallet' button on dApp staking page
   const handleOpenSelectModal = (): void => {
     window.addEventListener(WalletModalOption.SelectWallet, openSelectModal);
   };
 
   const initializeWalletAccount = () => {
-    const account = localStorage.getItem(SELECTED_ADDRESS);
-    if (!account) {
-      openSelectModal();
-    } else {
-      if (selectedWalletSource.value) {
-        selectedWallet.value = selectedWalletSource.value;
-      }
+    if (selectedWalletSource.value) {
+      selectedWallet.value = selectedWalletSource.value;
     }
   };
 

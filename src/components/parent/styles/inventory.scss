@@ -1,0 +1,68 @@
+@import 'src/css/quasar.variables.scss';
+
+.wrapper--inventory {
+  display: flex;
+  flex-direction: column;
+  background: #131c34;
+  padding: 36px 16px;
+  margin-left: -16px;
+  margin-right: -16px;
+  width: 100vw;
+  overflow: scroll;
+  @media (min-width: $md) {
+    width: 100%;
+    margin-left: 0px;
+    margin-right: 0px;
+    border-radius: 16px;
+    padding: 36px 32px;
+    max-height: 462px;
+  }
+}
+
+.wrapper--mode-tabs {
+  margin-bottom: 34px;
+}
+
+.wrapper--items {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 120px);
+  column-gap: 16px;
+  row-gap: 34px;
+  justify-content: space-evenly;
+  @media (min-width: $xl) {
+    column-gap: 20px;
+  }
+}
+
+.card--item {
+  display: flex;
+  flex-direction: column;
+  row-gap: 8px;
+  width: 120px;
+  cursor: pointer;
+}
+
+.box--nft-img {
+  height: 100px;
+}
+
+.img--item {
+  max-height: 100px;
+  border-radius: 8px;
+  background: $img-background;
+}
+
+.text--name {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.box--nft-add {
+  background: linear-gradient(180deg, rgba(0, 133, 255, 0.2) 0%, rgba(8, 16, 41, 0.2) 68.23%);
+  border-radius: 8px;
+  height: 120px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}

@@ -2,7 +2,9 @@
   <div class="wrapper">
     <header-comp>
       <template #left>
-        <div class="icon"><logo /></div>
+        <div class="app-logo">
+          <img src="../../assets/img/app-logo.svg" alt="app-logo" class="app-logo" />
+        </div>
       </template>
       <template v-if="!currentAccount">
         <connect-button @click="openSelectModal">
@@ -22,7 +24,7 @@
       :network-idx="currentNetworkIdx"
     />
     <modal-connect-wallet
-      :is-modal-connect-wallet="modalName === WalletModalOption.SelectWallet && !currentAccount"
+      :is-modal-connect-wallet="modalName === WalletModalOption.SelectWallet"
       :set-wallet-modal="setWalletModal"
       :set-close-modal="setCloseModal"
     />
@@ -51,7 +53,6 @@
 </template>
 
 <script lang="ts">
-import Logo from 'src/components/common/Logo.vue';
 import AccountButton from 'src/components/header/AccountButton.vue';
 import ConnectButton from 'src/components/header/ConnectButton.vue';
 import ModalAccount from 'src/components/header/modals/ModalAccount.vue';
@@ -64,7 +65,6 @@ import { WalletModalOption } from 'src/config/wallets';
 import { useBreakpoints, useConnectWallet } from 'src/hooks';
 import { useStore } from 'src/store';
 import { computed, defineComponent, reactive, toRefs } from 'vue';
-import { useRoute } from 'vue-router';
 import HeaderComp from './HeaderComp.vue';
 
 interface Modal {
@@ -80,7 +80,6 @@ export default defineComponent({
     ModalConnectWallet,
     ModalInstallWallet,
     ModalNetwork,
-    Logo,
     ModalUpdateWallet,
     HeaderComp,
   },
@@ -107,7 +106,6 @@ export default defineComponent({
 
     const store = useStore();
     const currentNetworkIdx = computed(() => store.getters['general/networkIdx']);
-    const route = useRoute();
 
     return {
       ...toRefs(stateModal),
@@ -145,5 +143,28 @@ export default defineComponent({
 .icon {
   width: 127px;
   margin-left: -15px;
+}
+
+.text--logo-gradient {
+  color: white;
+  background: -webkit-linear-gradient(
+    100.62deg,
+    #e6007a -13.87%,
+    #703ac2 10.44%,
+    #0070eb 47.07%,
+    #0297fb 89.31%,
+    #0ae2ff 151.16%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.app-logo {
+  width: 144px;
+  height: 28px;
+  @media (min-width: $md) {
+    width: 204px;
+    height: 40px;
+  }
 }
 </style>

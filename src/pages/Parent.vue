@@ -1,15 +1,15 @@
 <template>
   <div>
-    <assets />
+    <parent />
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import Assets from 'src/components/assets/Assets.vue';
+import Parent from 'src/components/parent/Parent.vue';
 
 export default defineComponent({
-  components: { Assets },
+  components: { Parent },
   setup() {
     return {};
   },

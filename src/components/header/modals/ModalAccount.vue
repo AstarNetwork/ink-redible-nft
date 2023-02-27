@@ -1,10 +1,5 @@
 <template>
-  <astar-modal-drawer
-    :show="isOpen && !isSelected"
-    title="Wallet"
-    :is-closing="isClosing"
-    @close="closeModal"
-  >
+  <astar-modal-drawer :show="isOpen" title="Wallet" :is-closing="isClosing" @close="closeModal">
     <div class="wrapper--modal-account">
       <div class="wrapper--select-network">
         <div class="row--separator--account">
@@ -155,7 +150,6 @@ export default defineComponent({
   },
   emits: ['update:is-open'],
   setup(props, { emit }) {
-    const isSelected = ref<boolean>(false);
     const isClosing = ref<boolean>(false);
     const isShowBalance = ref<boolean>(false);
     const isLoadingBalance = ref<boolean>(false);
@@ -211,7 +205,6 @@ export default defineComponent({
         const wallet = substrateAccounts.value.find((it) => it.address === substrateAccount);
         wallet && localStorage.setItem(LOCAL_STORAGE.SELECTED_WALLET, wallet.source);
       }
-      isSelected.value = true;
       isClosing.value = false;
       emit('update:is-open', false);
       window.dispatchEvent(new CustomEvent(LOCAL_STORAGE.SELECTED_WALLET));
@@ -311,7 +304,6 @@ export default defineComponent({
       endpointKey,
       isMathWallet,
       windowHeight,
-      isSelected,
       isClosing,
       isShowBalance,
       displayBalance,

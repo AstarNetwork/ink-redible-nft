@@ -1,15 +1,15 @@
 <template>
   <div>
-    <assets />
+    <child />
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import Assets from 'src/components/assets/Assets.vue';
+import Child from 'src/components/child/Child.vue';
 
 export default defineComponent({
-  components: { Assets },
+  components: { Child },
   setup() {
     return {};
   },

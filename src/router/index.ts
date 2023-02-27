@@ -29,7 +29,6 @@ export default route<StateInterface>(function (/* { store, ssrContext } */) {
   const Router = createRouter({
     // Memo: scrollBehavior is not working
     scrollBehavior: () => ({ left: 0, top: 0 }),
-    // @ts-ignore
     routes,
 
     // Leave this as is and make changes in quasar.conf.js instead!

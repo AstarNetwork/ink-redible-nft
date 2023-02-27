@@ -14,6 +14,14 @@ export default {
   alert: 'Alert',
   max: 'Max',
   native: 'Native',
+  share: 'Share',
+  refresh: 'Refresh',
+  collection: 'Collection',
+  add: 'Add',
+  unequip: 'Unequip',
+  remove: 'Remove',
+  detail: 'Detail',
+  parent: 'Parent',
   toast: {
     transactionFailed: 'Transaction failed with error: {message}',
     completedHash: 'Completed at block hash #{hash}',
@@ -69,5 +77,20 @@ export default {
     updateWallet:
       "You'll need to update {value} to continue. Once you have it updated to the latest version, go ahead and refresh this page",
     updateExtension: 'Update {value} extension',
+  },
+  assets: {
+    hero: {
+      rmkable: 'RMRKable',
+      experience: 'experience',
+      inAstarWasm: 'in Astar WASM',
+    },
+    attributes: {
+      ranking: 'Ranking',
+      rarity: 'Rarity',
+    },
+  },
+  child: {
+    equippedInventory: 'This NFT is currently equipped and in inventory',
+    parentNft: 'Parent NFT #{id}',
   },
 };
