@@ -37,7 +37,7 @@ export const providerEndpoints: ChainProvider[] = [
     displayName: 'Astar Network',
     info: 'Smart contract platform for decentralized applications (dapps) on the Polkadot network',
     endpoints: [
-      { name: 'Astar', endpoint: 'wss://wss.astar.network' },
+      { name: 'Astar', endpoint: 'wss://rpc.astar.network' },
       { name: 'Dwellir', endpoint: 'wss://astar-rpc.dwellir.com' },
       { name: 'Pinknode', endpoint: 'wss://public-rpc.pinknode.io/astar' },
       { name: 'OnFinality', endpoint: 'wss://astar.api.onfinality.io/public-ws' },

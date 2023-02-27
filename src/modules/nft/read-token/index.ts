@@ -1,5 +1,5 @@
 import { ApiPromise } from '@polkadot/api';
-import { Id, IdBuilder } from 'src/modules/nft/rmrk-contract';
+import { IdBuilder } from 'src/modules/nft/rmrk-contract';
 import { cryptoWaitReady } from '@polkadot/util-crypto';
 import { sanitizeIpfsUrl } from 'src/modules/nft/ipfs';
 import { getContract, getGasLimit } from 'src/modules/nft/common-api';
@@ -8,7 +8,7 @@ import { rmrkAbi } from 'src/modules/nft/abi/rmrk';
 import type { WeightV2 } from '@polkadot/types/interfaces';
 import type { SubmittableExtrinsic } from '@polkadot/api/types';
 import { ISubmittableResult } from '@polkadot/types/types';
-import { ExtendedAsset, IBasePart } from 'src/modules/nft';
+import { ExtendedAsset, IBasePart, Id } from 'src/modules/nft';
 
 const PROOF_SIZE = 531_072;
 const REF_TIME = 9_480_453_976;
@@ -17,6 +17,26 @@ interface EquippableData {
   equippableGroupId: string;
   assetUri: string;
   partIds: string[];
+}
+
+interface EquipSlot {
+  parentContractAddress: string;
+  tokenId: Id;
+  assetId: string;
+  slot: number;
+  childContractAddress: string;
+  childTokenId: Id;
+  childAssetId: string;
+  api: ApiPromise;
+  senderAddress: string;
+}
+
+interface UnequipSlot {
+  contractAddress: string;
+  tokenId: number;
+  slotId: string;
+  api: ApiPromise;
+  senderAddress: string;
 }
 
 export const hex2ascii = (hex: string): string => {
@@ -176,13 +196,13 @@ export const readNft = async (
   return [];
 };
 
-export const unequipSlot = async (
-  contractAddress: string,
-  tokenId: number,
-  slotId: string,
-  api: ApiPromise,
-  senderAddress: string
-): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> => {
+export const unequipSlot = async ({
+  contractAddress,
+  tokenId,
+  slotId,
+  api,
+  senderAddress,
+}: UnequipSlot): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> => {
   const { initialGasLimit, contract } = getRmrkContract({ api, address: contractAddress });
 
   const { gasRequired } = await contract.query.unequip(
@@ -194,9 +214,8 @@ export const unequipSlot = async (
 
   const gasLimit = api.registry.createType('WeightV2', gasRequired) as WeightV2;
 
-  const tx = contract.tx.equip({ gasLimit }, { u64: tokenId }, slotId);
-  // Todo: use signAndSend to send the transaction
-  return tx;
+  const transaction = contract.tx.equip({ gasLimit }, { u64: tokenId }, slotId);
+  return transaction;
 };
 
 // Todo
@@ -255,17 +274,17 @@ const getRmrkContract = ({ api, address }: { api: ApiPromise; address: string })
   return { contract, initialGasLimit };
 };
 
-export const equipSlot = async (
-  parentContractAddress: string,
-  tokenId: Id,
-  assetId: string,
-  slot: number,
-  childContractAddress: string,
-  childTokenId: Id,
-  childAssetId: string,
-  api: ApiPromise,
-  senderAddress: string
-): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> => {
+export const equipSlot = async ({
+  parentContractAddress,
+  tokenId,
+  assetId,
+  slot,
+  childContractAddress,
+  childTokenId,
+  childAssetId,
+  api,
+  senderAddress,
+}: EquipSlot): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> => {
   // const contract = await getTypedContract(parentContractAddress, signer);
 
   const { initialGasLimit, contract } = getRmrkContract({ api, address: parentContractAddress });
@@ -281,7 +300,7 @@ export const equipSlot = async (
 
   const gasLimit = api.registry.createType('WeightV2', gasRequired) as WeightV2;
 
-  const tx = contract.tx.equip(
+  const transaction = contract.tx.equip(
     { gasLimit },
     IdBuilder.U64(tokenId.u64 ?? 0),
     assetId,
@@ -289,6 +308,5 @@ export const equipSlot = async (
     [childContractAddress, IdBuilder.U64(childTokenId.u64 ?? 0)],
     childAssetId
   );
-  // Todo: use signAndSend to send the transaction
-  return tx;
+  return transaction;
 };

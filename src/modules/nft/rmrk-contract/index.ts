@@ -1,20 +1,5 @@
-// import type { ReturnNumber } from '@727-ventures/typechain-types';
 import type BN from 'bn.js';
-
-export type Asset = {
-  equippableGroupId: number;
-  assetUri: Array<number>;
-  partIds: Array<number>;
-};
-
-export interface Id {
-  u8?: number | string | BN;
-  u16?: number | string | BN;
-  u32?: number | string | BN;
-  u64?: number | string | BN;
-  u128?: number | string | BN;
-  bytes?: Array<any>;
-}
+import { Id } from 'src/modules/nft';
 
 export class IdBuilder {
   static U8(value: number | string | BN): Id {

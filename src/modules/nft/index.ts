@@ -1,4 +1,4 @@
-import { Asset } from './rmrk-contract';
+import type BN from 'bn.js';
 
 export { unequipSlot, getEquippableChildren, equipSlot, readNft } from 'src/modules/nft/read-token';
 
@@ -14,4 +14,19 @@ export interface IBasePart {
   metadataUri?: string;
   isEquippableByAll?: boolean;
   z?: number;
+}
+
+export type Asset = {
+  equippableGroupId: number;
+  assetUri: Array<number>;
+  partIds: Array<number>;
+};
+
+export interface Id {
+  u8?: number | string | BN;
+  u16?: number | string | BN;
+  u32?: number | string | BN;
+  u64?: number | string | BN;
+  u128?: number | string | BN;
+  bytes?: Array<any>;
 }
