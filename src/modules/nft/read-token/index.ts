@@ -204,8 +204,7 @@ export const unequipSlot = async ({
   senderAddress,
 }: UnequipSlot): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> => {
   const { initialGasLimit, contract } = getRmrkContract({ api, address: contractAddress });
-
-  const { gasRequired } = await contract.query.unequip(
+  const { gasRequired } = await contract.query['equippable::unequip'](
     senderAddress,
     { gasLimit: initialGasLimit },
     { u64: tokenId },
@@ -213,8 +212,7 @@ export const unequipSlot = async ({
   );
 
   const gasLimit = api.registry.createType('WeightV2', gasRequired) as WeightV2;
-
-  const transaction = contract.tx.equip({ gasLimit }, { u64: tokenId }, slotId);
+  const transaction = contract.tx['equippable::unequip']({ gasLimit }, { u64: tokenId }, slotId);
   return transaction;
 };
 
@@ -288,7 +286,7 @@ export const equipSlot = async ({
   // const contract = await getTypedContract(parentContractAddress, signer);
 
   const { initialGasLimit, contract } = getRmrkContract({ api, address: parentContractAddress });
-  const { gasRequired } = await contract.query.equip(
+  const { gasRequired } = await contract.query['equippable::equip'](
     senderAddress,
     { gasLimit: initialGasLimit },
     IdBuilder.U64(tokenId.u64 ?? 0),
@@ -300,7 +298,7 @@ export const equipSlot = async ({
 
   const gasLimit = api.registry.createType('WeightV2', gasRequired) as WeightV2;
 
-  const transaction = contract.tx.equip(
+  const transaction = contract.tx['equippable::equip'](
     { gasLimit },
     IdBuilder.U64(tokenId.u64 ?? 0),
     assetId,

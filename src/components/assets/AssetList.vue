@@ -56,7 +56,16 @@
               {{ item.id }}
             </span>
           </div>
-          <div></div>
+          <div>
+            <astar-button
+              :width="80"
+              :height="30"
+              v-if="isSlot(item) && isSlotEquipped(item)"
+              @click="unequip(item.id)"
+            >
+              Unequip
+            </astar-button>
+          </div>
         </div>
       </div>
     </div>
@@ -66,6 +75,7 @@
 import { useAccount, useBreakpoints, useNft, chunkyAddress, partsAddress } from 'src/hooks';
 import { defineComponent, computed, watchEffect } from 'vue';
 import { getShortenAddress } from '@astar-network/astar-sdk-core';
+import { IBasePart } from 'src/modules/nft';
 
 export default defineComponent({
   components: {},
@@ -79,7 +89,12 @@ export default defineComponent({
 
     // Todo: get from url
     const tokenId = 1;
-    const { parts } = useNft(tokenId);
+    const { parts, unequip } = useNft(tokenId);
+
+    const isSlotEquipped = (part: IBasePart): boolean =>
+      !!part.metadataUri && !!part.equippable && part.equippable.length > 0;
+
+    const isSlot = (part: IBasePart): boolean => part.partType === 'Slot';
 
     watchEffect(() => {
       console.log('parts', parts.value);
@@ -104,6 +119,9 @@ export default defineComponent({
       chunkyAddress,
       partsAddress,
       tokenId,
+      isSlotEquipped,
+      isSlot,
+      unequip,
     };
   },
 });
