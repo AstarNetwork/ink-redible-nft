@@ -42,9 +42,9 @@
         <div class="image-container">
           <img
             v-for="(part, index) in parts"
+            :key="`part-${index}`"
             class="image"
             :src="part.metadataUri"
-            :key="`part-${index}`"
           />
         </div>
       </div>
