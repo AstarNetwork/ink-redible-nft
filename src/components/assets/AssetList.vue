@@ -58,9 +58,9 @@
           </div>
           <div>
             <astar-button
+              v-if="isSlot(item) && isSlotEquipped(item)"
               :width="80"
               :height="30"
-              v-if="isSlot(item) && isSlotEquipped(item)"
               @click="unequip(item.id)"
             >
               Unequip
