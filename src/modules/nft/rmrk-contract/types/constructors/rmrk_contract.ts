@@ -53,7 +53,7 @@ export default class Constructors {
 
     const storageDepositLimit = __options?.storageDepositLimit;
     const tx = code.tx['new']!(
-      { gasLimit, storageDepositLimit, value: __options?.value },
+      { gasLimit, storageDepositLimit: storageDepositLimit as BN, value: __options?.value as BN },
       name,
       symbol,
       baseUri,

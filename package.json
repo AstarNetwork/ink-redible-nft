@@ -73,7 +73,7 @@
     "@quasar/quasar-app-extension-testing-unit-jest": "^3.0.0-alpha.6",
     "@tailwindcss/custom-forms": "^0.2.1",
     "@tailwindcss/postcss7-compat": "^2.0.3",
-    "@types/bn.js": "^5.1.0",
+    "@types/bn.js": "^5.1.1",
     "@types/create-hash": "^1.2.2",
     "@types/jest": "^28.1.1",
     "@types/luxon": "^2.0.7",
