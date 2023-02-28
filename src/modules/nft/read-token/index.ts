@@ -1,14 +1,14 @@
 import { ApiPromise } from '@polkadot/api';
-import { IdBuilder } from 'src/modules/nft/rmrk-contract';
-import { cryptoWaitReady } from '@polkadot/util-crypto';
-import { sanitizeIpfsUrl } from 'src/modules/nft/ipfs';
-import { getContract, getGasLimit } from 'src/modules/nft/common-api';
 import { Abi, ContractPromise } from '@polkadot/api-contract';
-import { rmrkAbi } from 'src/modules/nft/abi/rmrk';
-import type { WeightV2 } from '@polkadot/types/interfaces';
 import type { SubmittableExtrinsic } from '@polkadot/api/types';
+import type { WeightV2 } from '@polkadot/types/interfaces';
 import { ISubmittableResult } from '@polkadot/types/types';
+import { cryptoWaitReady } from '@polkadot/util-crypto';
 import { ExtendedAsset, IBasePart, Id } from 'src/modules/nft';
+import { rmrkAbi } from 'src/modules/nft/abi/rmrk';
+import { getContract, getGasLimit } from 'src/modules/nft/common-api';
+import { sanitizeIpfsUrl } from 'src/modules/nft/ipfs';
+import { IdBuilder } from 'src/modules/nft/rmrk-contract';
 
 const PROOF_SIZE = 531_072;
 const REF_TIME = 9_480_453_976;
@@ -220,17 +220,28 @@ export const unequipSlot = async ({
 export const getEquippableChildren = async (
   contractAddress: string,
   tokenId: number,
-  api: ApiPromise
+  api: ApiPromise,
+  senderAddress: string
 ): Promise<Map<Id, (ExtendedAsset | null)[]> | null> => {
   await cryptoWaitReady();
-  // const contract = await getTypedContract(contractAddress, signer);
+
   const abi = new Abi(rmrkAbi, api.registry.getChainProperties());
   const contract = new ContractPromise(api, abi, contractAddress);
   if (!contract || contract === null) new Error('There is no contract found');
 
-  const result = new Map<Id, (ExtendedAsset | null)[]>();
+  const initialGasLimit = contract.registry.createType('WeightV2', {
+    proofSize: PROOF_SIZE,
+    refTime: REF_TIME,
+  });
 
-  // const children = await contract.query.getAcceptedChildren(IdBuilder.U64(tokenId));
+  const children = await contract.query['nesting::getAcceptedChildren'](
+    senderAddress,
+    { gasLimit: initialGasLimit },
+    IdBuilder.U64(tokenId)
+  );
+  console.log('children', children);
+  console.log('tokenId', tokenId);
+  console.log('contract.query', contract.query);
 
   // if (children.value) {
   //   for (let child of children.value) {

@@ -20,10 +20,6 @@ export const useNft = (tokenId: number) => {
   const { currentAccount } = useAccount();
   const parts = ref<IBasePart[]>([]);
 
-  // Todo: fetch from url or global state
-  const chunkyAddress = 'aEa8Jx4noRvq1gs79yd5THenLuBiqbNFnvWXkNRPj7ADdqp';
-  const partsAddress = 'XxLjz535ZFcWDb2kn3gBYvNAyiTZvaBrJBmkP5hUnRPSAcE';
-
   const rmrkNftService = container.get<IRmrkNftService>(Symbols.RmrkNftService);
 
   const fetchNftParts = async (): Promise<void> => {
@@ -74,17 +70,24 @@ export const useNft = (tokenId: number) => {
   };
 
   //Todo
-  // const getChildrenToEquipPreview = async (
-  //   slotId: number
-  // ): Promise<Map<Id, (ExtendedAsset | null)[]>> => {
-  //   const children = await getEquippableChildren(chunkyAddress, tokenId);
-  //   console.log(children);
+  const getChildrenToEquipPreview = async (slotId: number) => {
+    // ): Promise<Map<Id, (ExtendedAsset | null)[]>> => {
+    const children = await getEquippableChildren(
+      chunkyAddress,
+      tokenId,
+      $api!,
+      currentAccount.value
+    );
+    console.log(children);
 
-  //   return children;
-  // };
+    // return children;
+  };
 
   watchEffect(() => {
     fetchNftParts();
+  });
+  watchEffect(async () => {
+    await getChildrenToEquipPreview(1);
   });
 
   return {
