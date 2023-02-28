@@ -16,7 +16,8 @@
     "lint:check": "yarn check-format && eslint --ext .ts,.vue ./",
     "test": "quasar test --unit jest",
     "deploy": "push-dir --dir=dist/spa --remote=gh-pages --branch=main",
-    "start": "node server.js"
+    "start": "node server.js",
+    "generate-contract-types": "npx @727-ventures/typechain-polkadot --in ./src/modules/nft/rmrk-contract --out ./src/modules/nft/rmrk-contract/types"
   },
   "dependencies": {
     "@727-ventures/typechain-polkadot": "^0.6.10",
@@ -72,7 +73,7 @@
     "@quasar/quasar-app-extension-testing-unit-jest": "^3.0.0-alpha.6",
     "@tailwindcss/custom-forms": "^0.2.1",
     "@tailwindcss/postcss7-compat": "^2.0.3",
-    "@types/bn.js": "^5.1.0",
+    "@types/bn.js": "^5.1.1",
     "@types/create-hash": "^1.2.2",
     "@types/jest": "^28.1.1",
     "@types/luxon": "^2.0.7",
