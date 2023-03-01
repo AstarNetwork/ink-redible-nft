@@ -234,33 +234,37 @@ export const getEquippableChildren = async (
   console.log('children', children);
   console.log('tokenId', tokenId);
   //console.log('contract.query', contract.query);
+  // let result;
+  const result = new Map<Id, (ExtendedAsset | null)[]>();
 
-  // if (children.value) {
-  //   for (let child of children.value) {
-  //     const partsContract = await getTypedContract(child[0].toString(), signer);
-  //     const childTokenId = IdBuilder.U64(child[1].u64 ?? 0);
-  //     const assetIds = await partsContract.query.getAcceptedTokenAssets(childTokenId);
+  if (children.value) {
+    for (let child of children.value) {
+      // const partsContract = await getTypedContract(child[0].toString(), signer);
+      const partsContract = new Contract(child[0].toString(), senderAddress, api);
+      const childTokenId = IdBuilder.U64(child[1].u64 ?? 0);
+      const assetIds = await partsContract.query.getAcceptedTokenAssets(childTokenId);
 
-  //     if (assetIds.value.ok) {
-  //       const assetsToAdd: ExtendedAsset[] = [];
-  //       for (let id of assetIds.value.unwrap()) {
-  //         const asset = await partsContract.query['multiAsset::getAsset'](id);
-  //         if (asset.value) {
-  //           assetsToAdd.push({
-  //             ...asset.value,
-  //             id,
-  //             gatewayUrl: sanitizeIpfsUrl(hex2ascii(asset.value.assetUri.toString())),
-  //           } as ExtendedAsset);
-  //         }
-  //       }
+      if (assetIds.value.ok) {
+        const assetsToAdd: ExtendedAsset[] = [];
+        for (let id of assetIds.value.unwrap()) {
+          const asset = await partsContract.query['multiAsset::getAsset'](id);
+          if (asset.value) {
+            assetsToAdd.push({
+              ...asset.value,
+              id,
+              gatewayUrl: sanitizeIpfsUrl(hex2ascii(asset.value.assetUri.toString())),
+            } as ExtendedAsset);
+          }
+        }
 
-  //       result.set(child[1], assetsToAdd);
-  //     }
-  //   }
-  // }
+        //@ts-ignore
+        result.set(child[1], assetsToAdd);
+      }
+    }
+  }
 
-  // return result;
-  return null;
+  return result;
+  // return null;
 };
 
 const getRmrkContract = ({ api, address }: { api: ApiPromise; address: string }) => {
