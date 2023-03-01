@@ -1,14 +1,16 @@
-import fs from 'fs';
+/* eslint-disable @typescript-eslint/no-var-requires */
 import type { ContractPromise } from '@polkadot/api-contract';
 import { handleEventReturn } from '@727-ventures/typechain-types';
 
 export function getTypeDescription(id: number | string, fileName: string): any {
-  const types = JSON.parse(fs.readFileSync(__dirname + `/../data/${fileName}.json`, 'utf8'));
+  // const types = JSON.parse(fs.readFileSync(__dirname + `/../data/${fileName}.json`, 'utf8'));
+  const types = require('../data/rmrk_contract.json');
   return types[id];
 }
 
 export function getEventTypeDescription(name: string, fileName: string): any {
-  const types = JSON.parse(fs.readFileSync(__dirname + `/../event-data/${fileName}.json`, 'utf8'));
+  // const types = JSON.parse(fs.readFileSync(__dirname + `/../event-data/${fileName}.json`, 'utf8'));
+  const types = require('../event-data/rmrk_contract.json');
   return types[name];
 }
 

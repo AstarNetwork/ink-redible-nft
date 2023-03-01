@@ -14,12 +14,12 @@ import EventsClass from '../events/rmrk_contract';
 export default class Contract {
   readonly query: QueryMethods;
   readonly buildExtrinsic: BuildExtrinsicMethods;
-  readonly tx: TxSignAndSendMethods;
-  readonly methods: MixedMethods;
-  readonly events: EventsClass;
+  // readonly tx: TxSignAndSendMethods;
+  // readonly methods: MixedMethods;
+  // readonly events: EventsClass;
 
   readonly address: string;
-  readonly signer: KeyringPair;
+  // readonly signer: KeyringPair;
 
   private nativeContract: ContractPromise;
   private nativeAPI: ApiPromise;
@@ -32,18 +32,18 @@ export default class Contract {
 	 * @param signer - The signer to use for signing transactions.
 	 * @param nativeAPI - The API instance to use for queries.
 	*/
-  constructor(address: string, signer: KeyringPair, nativeAPI: ApiPromise) {
+  constructor(address: string, signerAddress: string, nativeAPI: ApiPromise) {
     this.address = address;
     this.nativeContract = new ContractPromise(nativeAPI, ABI, address);
     this.nativeAPI = nativeAPI;
-    this.signer = signer;
+    // this.signer = signer;
     this.contractAbi = new Abi(ABI);
 
-    this.query = new QueryMethods(this.nativeContract, this.nativeAPI, signer.address);
+    this.query = new QueryMethods(this.nativeContract, this.nativeAPI, signerAddress);
     this.buildExtrinsic = new BuildExtrinsicMethods(this.nativeContract, this.nativeAPI);
-    this.tx = new TxSignAndSendMethods(nativeAPI, this.nativeContract, signer);
-    this.methods = new MixedMethods(nativeAPI, this.nativeContract, signer);
-    this.events = new EventsClass(this.nativeContract, nativeAPI);
+    // this.tx = new TxSignAndSendMethods(nativeAPI, this.nativeContract, signer);
+    // this.methods = new MixedMethods(nativeAPI, this.nativeContract, signer);
+    // this.events = new EventsClass(this.nativeContract, nativeAPI);
   }
 
   /**
@@ -76,9 +76,9 @@ export default class Contract {
    * await contract.withSigner(signerBob).transfer(signerAlice.address, 100);
    * ```
    */
-  withSigner(signer: KeyringPair): Contract {
-    return new Contract(this.address, signer, this.nativeAPI);
-  }
+  // withSigner(signer: KeyringPair): Contract {
+  //   return new Contract(this.address, signer, this.nativeAPI);
+  // }
 
   /**
    * withAddress
@@ -86,9 +86,9 @@ export default class Contract {
    * @param address - The address of the contract.
    * @returns New instance of the contract class to interact with new contract.
    */
-  withAddress(address: string): Contract {
-    return new Contract(address, this.signer, this.nativeAPI);
-  }
+  // withAddress(address: string): Contract {
+  //   return new Contract(address, this.signer, this.nativeAPI);
+  // }
 
   /**
    * withAPI
@@ -96,7 +96,7 @@ export default class Contract {
    * @param api - The API instance to use for queries.
    * @returns New instance of the contract class to interact with new API.
    */
-  withAPI(api: ApiPromise): Contract {
-    return new Contract(this.address, this.signer, api);
-  }
+  // withAPI(api: ApiPromise): Contract {
+  //   return new Contract(this.address, this.signer, api);
+  // }
 }

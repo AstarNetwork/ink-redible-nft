@@ -9,6 +9,7 @@ import { rmrkAbi } from 'src/modules/nft/abi/rmrk';
 import { getContract, getGasLimit } from 'src/modules/nft/common-api';
 import { sanitizeIpfsUrl } from 'src/modules/nft/ipfs';
 import { IdBuilder } from 'src/modules/nft/rmrk-contract';
+import Contract from '../rmrk-contract/types/contracts/rmrk_contract';
 
 const PROOF_SIZE = 531_072;
 const REF_TIME = 9_480_453_976;
@@ -226,22 +227,13 @@ export const getEquippableChildren = async (
   await cryptoWaitReady();
 
   const abi = new Abi(rmrkAbi, api.registry.getChainProperties());
-  const contract = new ContractPromise(api, abi, contractAddress);
+  const contract = new Contract(contractAddress, senderAddress, api);
   if (!contract || contract === null) new Error('There is no contract found');
 
-  const initialGasLimit = contract.registry.createType('WeightV2', {
-    proofSize: PROOF_SIZE,
-    refTime: REF_TIME,
-  });
-
-  const children = await contract.query['nesting::getAcceptedChildren'](
-    senderAddress,
-    { gasLimit: initialGasLimit },
-    IdBuilder.U64(tokenId)
-  );
+  const children = await contract.query.getAcceptedChildren(IdBuilder.U64(tokenId));
   console.log('children', children);
   console.log('tokenId', tokenId);
-  console.log('contract.query', contract.query);
+  //console.log('contract.query', contract.query);
 
   // if (children.value) {
   //   for (let child of children.value) {
