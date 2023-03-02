@@ -11,8 +11,14 @@ import { sanitizeIpfsUrl } from 'src/modules/nft/ipfs';
 import { IdBuilder } from 'src/modules/nft/rmrk-contract';
 import Contract from '../rmrk-contract/types/contracts/rmrk_contract';
 
-const PROOF_SIZE = 531_072;
-const REF_TIME = 9_480_453_976;
+// "refTime: 4900005895"
+// "proofSize: 42866"
+const REF_TIME = 9480453976;
+const PROOF_SIZE = 531072;
+// const REF_TIME = 4900005895;
+// const PROOF_SIZE = 42866;
+// const REF_TIME = 4690845427;
+// const PROOF_SIZE = 1208;
 
 interface EquippableData {
   equippableGroupId: string;
@@ -205,15 +211,26 @@ export const unequipSlot = async ({
   senderAddress,
 }: UnequipSlot): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> => {
   const { initialGasLimit, contract } = getRmrkContract({ api, address: contractAddress });
+  const apiBlockWeight = await api.query.system.blockWeight();
+  console.log('apiBlockWeight', apiBlockWeight.toString());
+  console.log('initialGasLimit', initialGasLimit.toString());
+
   const { gasRequired } = await contract.query['equippable::unequip'](
     senderAddress,
     { gasLimit: initialGasLimit },
     { u64: tokenId },
     slotId
   );
+  console.log('gasRequired', gasRequired.toString());
 
-  const gasLimit = api.registry.createType('WeightV2', gasRequired) as WeightV2;
-  const transaction = contract.tx['equippable::unequip']({ gasLimit }, { u64: tokenId }, slotId);
+  // const gasLimit = api.registry.createType('WeightV2', gasRequired) as WeightV2;
+  const gasLimit = api.registry.createType('WeightV2', initialGasLimit) as WeightV2;
+  console.log('gasLimit', gasLimit.toString());
+  const transaction = contract.tx['equippable::unequip'](
+    { gasLimit: gasLimit.refTime.toBn().muln(2) },
+    { u64: tokenId },
+    slotId
+  );
   return transaction;
 };
 
@@ -304,9 +321,9 @@ export const equipSlot = async ({
   );
 
   const gasLimit = api.registry.createType('WeightV2', gasRequired) as WeightV2;
-
+  console.log('gasLimit', gasLimit.toString());
   const transaction = contract.tx['equippable::equip'](
-    { gasLimit },
+    { gasLimit: gasLimit.refTime.toBn().muln(2) },
     IdBuilder.U64(tokenId.u64 ?? 0),
     assetId,
     slot,
