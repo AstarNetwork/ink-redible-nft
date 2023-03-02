@@ -18,6 +18,7 @@ export default {
   refresh: 'Refresh',
   collection: 'Collection',
   add: 'Add',
+  equip: 'Equip',
   unequip: 'Unequip',
   remove: 'Remove',
   detail: 'Detail',

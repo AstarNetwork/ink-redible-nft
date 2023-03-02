@@ -1,0 +1,21 @@
+@import 'src/css/quasar.variables.scss';
+
+.wrapper--accepted-equipment {
+  overflow: scroll;
+}
+
+img {
+  margin: 10px;
+  width: 50px;
+  border: 1px solid lightgray;
+  border-radius: 12px;
+}
+
+.container--equipment {
+  display: flex;
+  flex-wrap: wrap;
+  background-color: transparent;
+  overflow: scroll;
+  align-items: center;
+  column-gap: 12px;
+}

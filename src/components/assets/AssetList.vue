@@ -50,21 +50,32 @@
       </div>
       <div v-if="parts.length > 0" class="container--item">
         <div v-for="(item, index) in parts" :key="index" class="card--item">
-          <img :src="item.metadataUri" :alt="String(item.id)" class="item--img" />
-          <div class="row--name">
-            <span class="text--name">
-              {{ item.id }}
-            </span>
+          <div v-if="item.metadataUri">
+            <img :src="item.metadataUri" :alt="String(item.id)" class="item--img" />
+            <div class="row--name">
+              <span class="text--name">
+                {{ item.id }}
+              </span>
+            </div>
+            <div>
+              <astar-button
+                v-if="isSlot(item) && isSlotEquipped(item)"
+                :width="80"
+                :height="30"
+                @click="unequip(item.id)"
+              >
+                Unequip
+              </astar-button>
+            </div>
           </div>
-          <div>
-            <astar-button
-              v-if="isSlot(item) && isSlotEquipped(item)"
-              :width="80"
-              :height="30"
-              @click="unequip(item.id)"
-            >
-              Unequip
-            </astar-button>
+          <div v-else>
+            <accepted-equipment
+              v-if="isSlot(item) && !isSlotEquipped(item)"
+              :token-id="tokenId"
+              :slot-id="Number(item.id)"
+              :get-children="getChildrenToEquipPreview"
+              :equip="equip"
+            />
           </div>
         </div>
       </div>
@@ -84,9 +95,10 @@ import { defineComponent, computed, watchEffect } from 'vue';
 import { getShortenAddress } from '@astar-network/astar-sdk-core';
 import { IBasePart } from 'src/modules/nft';
 import { endpointKey } from 'src/config/chainEndpoints';
+import AcceptedEquipment from 'src/components/assets/AcceptedEquipment.vue';
 
 export default defineComponent({
-  components: {},
+  components: { AcceptedEquipment },
   setup() {
     const { width, screenSize } = useBreakpoints();
     const { currentAccount, currentAccountName } = useAccount();
@@ -99,7 +111,7 @@ export default defineComponent({
 
     // Todo: get from url
     const tokenId = 1;
-    const { parts, unequip } = useNft(tokenId);
+    const { parts, unequip, equip, getChildrenToEquipPreview } = useNft(tokenId);
 
     const isSlotEquipped = (part: IBasePart): boolean =>
       !!part.metadataUri && !!part.equippable && part.equippable.length > 0;
@@ -133,6 +145,8 @@ export default defineComponent({
       isSlot,
       unequip,
       isShibuya,
+      equip,
+      getChildrenToEquipPreview,
     };
   },
 });
