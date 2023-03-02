@@ -8,13 +8,6 @@
         :img-src="asset.proxiedAssetUri"
       />
     </q-carousel>
-    <!-- <img
-      v-for="(asset, index) in assets"
-      :key="index"
-      :src="asset.proxiedAssetUri"
-      alt="nft-logo"
-      class="img--nft-big"
-    /> -->
   </div>
   <img
     v-else
