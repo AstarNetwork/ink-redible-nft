@@ -19,11 +19,13 @@ export const partsAddress = 'XxLjz535ZFcWDb2kn3gBYvNAyiTZvaBrJBmkP5hUnRPSAcE';
 export const useNft = (tokenId: number) => {
   const { currentAccount } = useAccount();
   const parts = ref<IBasePart[]>([]);
+  const isLoading = ref<boolean>(true);
 
   const rmrkNftService = container.get<IRmrkNftService>(Symbols.RmrkNftService);
 
   const fetchNftParts = async (): Promise<void> => {
     parts.value = await readNft(chunkyAddress, partsAddress, tokenId, currentAccount.value, $api!);
+    isLoading.value = false;
   };
 
   const unequip = async (slot?: string | number): Promise<void> => {
@@ -86,10 +88,11 @@ export const useNft = (tokenId: number) => {
     fetchNftParts();
   });
   watchEffect(async () => {
-    await getChildrenToEquipPreview(1);
+    await getChildrenToEquipPreview(tokenId);
   });
 
   return {
+    isLoading,
     parts,
     equip,
     unequip,

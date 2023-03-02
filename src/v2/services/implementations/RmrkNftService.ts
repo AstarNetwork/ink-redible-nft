@@ -1,4 +1,5 @@
 import { inject, injectable } from 'inversify';
+import { ParentInventory, queryParentInventories } from 'src/modules/nft';
 import { Guard } from 'src/v2/common';
 import { IEventAggregator } from 'src/v2/messaging';
 import {
@@ -40,6 +41,17 @@ export class RmrkNftService implements IRmrkNftService {
       await this.wallet.signAndSend(transaction, param.senderAddress);
     } catch (error) {
       console.error(error);
+    }
+  }
+
+  public async fetchParentInventories(walletAddress: string): Promise<ParentInventory[]> {
+    Guard.ThrowIfUndefined('walletAddress', walletAddress);
+    try {
+      const inventories = await queryParentInventories(walletAddress);
+      return inventories;
+    } catch (error) {
+      console.error(error);
+      return [];
     }
   }
 }

@@ -74,7 +74,8 @@
   border-radius: 16px;
   width: 166px;
   height: 280px;
-
+  overflow: auto;
+  cursor: pointer;
   @media (min-width: $md) {
     width: 256px;
     height: 324px;
