@@ -1,0 +1,24 @@
+@import 'src/css/quasar.variables.scss';
+
+.image-container--parent {
+  position: relative;
+  height: 230px;
+}
+
+.image--parent {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+}
+
+.row--name {
+  display: flex;
+  column-gap: 10px;
+  margin-bottom: 8px;
+}
+
+.text--name {
+  font-weight: 600;
+  font-size: 14px;
+  color: #b1b7c1;
+}

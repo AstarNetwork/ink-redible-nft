@@ -1,9 +1,12 @@
-import { Asset } from 'src/v2/models';
-
-export interface AssetsStateInterface {}
+import { ParentInventory } from 'src/modules/nft/index';
+export interface AssetsStateInterface {
+  parentInventories: ParentInventory[];
+}
 
 function state(): AssetsStateInterface {
-  return {};
+  return {
+    parentInventories: [],
+  };
 }
 
 export default state;

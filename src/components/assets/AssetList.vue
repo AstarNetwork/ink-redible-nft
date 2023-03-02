@@ -6,20 +6,10 @@
         {{ address }}
       </span>
     </div>
-
-    <div v-if="dummyList.length > 0" class="container--item">
-      <div v-for="(item, index) in dummyList" :key="index" class="card--item">
-        <img :src="item.img" :alt="item.name" class="item--img" />
-        <div class="row--name">
-          <span class="text--name">
-            {{ item.name }}
-          </span>
-          <div v-if="item.isValid">
-            <astar-icon-valid />
-          </div>
-        </div>
-        <div>
-          <span class="text--description">{{ item.description }}</span>
+    <div v-if="parentInventories">
+      <div class="container--item">
+        <div v-for="(item, index) in parentInventories" :key="index" class="card--item">
+          <parent-card :id="Number(item.id)" />
         </div>
       </div>
     </div>
@@ -93,12 +83,14 @@ import {
 } from 'src/hooks';
 import { defineComponent, computed, watchEffect } from 'vue';
 import { getShortenAddress } from '@astar-network/astar-sdk-core';
-import { IBasePart } from 'src/modules/nft';
+import { IBasePart, ParentInventory } from 'src/modules/nft';
 import { endpointKey } from 'src/config/chainEndpoints';
 import AcceptedEquipment from 'src/components/assets/AcceptedEquipment.vue';
+import ParentCard from 'src/components/assets/ParentCard.vue';
+import { useStore } from 'src/store';
 
 export default defineComponent({
-  components: { AcceptedEquipment },
+  components: { AcceptedEquipment, ParentCard },
   setup() {
     const { width, screenSize } = useBreakpoints();
     const { currentAccount, currentAccountName } = useAccount();
@@ -108,16 +100,18 @@ export default defineComponent({
     });
     const { currentNetworkIdx } = useNetworkInfo();
     const isShibuya = computed(() => currentNetworkIdx.value === endpointKey.SHIBUYA);
+    const store = useStore();
+    const parentInventories = computed<ParentInventory[]>(
+      () => store.getters['assets/getParentInventories']
+    );
 
     // Todo: get from url
     const tokenId = 1;
     const { parts, unequip, equip, getChildrenToEquipPreview } = useNft(tokenId);
-
     const isSlotEquipped = (part: IBasePart): boolean =>
       !!part.metadataUri && !!part.equippable && part.equippable.length > 0;
 
     const isSlot = (part: IBasePart): boolean => part.partType === 'Slot';
-
     watchEffect(() => {
       console.log('parts', parts.value);
     });
@@ -141,10 +135,11 @@ export default defineComponent({
       chunkyAddress,
       partsAddress,
       tokenId,
+      parentInventories,
+      isShibuya,
       isSlotEquipped,
       isSlot,
       unequip,
-      isShibuya,
       equip,
       getChildrenToEquipPreview,
     };
