@@ -8,7 +8,12 @@
     </div>
     <div v-if="parentInventories">
       <div class="container--item">
-        <div v-for="(item, index) in parentInventories" :key="index" class="card--item">
+        <div
+          v-for="(item, index) in parentInventories"
+          :key="index"
+          class="card--item"
+          @click="navigateToParent(item.id)"
+        >
           <parent-card :id="Number(item.id)" />
         </div>
       </div>
@@ -88,6 +93,8 @@ import { endpointKey } from 'src/config/chainEndpoints';
 import AcceptedEquipment from 'src/components/assets/AcceptedEquipment.vue';
 import ParentCard from 'src/components/assets/ParentCard.vue';
 import { useStore } from 'src/store';
+import { networkParam, Path } from 'src/router/routes';
+import { useRouter } from 'vue-router';
 
 export default defineComponent({
   components: { AcceptedEquipment, ParentCard },
@@ -100,6 +107,7 @@ export default defineComponent({
     });
     const { currentNetworkIdx } = useNetworkInfo();
     const isShibuya = computed(() => currentNetworkIdx.value === endpointKey.SHIBUYA);
+    const router = useRouter();
     const store = useStore();
     const parentInventories = computed<ParentInventory[]>(
       () => store.getters['assets/getParentInventories']
@@ -126,6 +134,12 @@ export default defineComponent({
 
     const dummyList = [dummyItem, dummyItem, dummyItem, dummyItem];
 
+    const navigateToParent = (id: string): void => {
+      const base = networkParam + Path.Parent;
+      const url = `${base}?tokenId=${id}`;
+      router.push(url);
+    };
+
     return {
       currentAccount,
       currentAccountName,
@@ -142,6 +156,7 @@ export default defineComponent({
       unequip,
       equip,
       getChildrenToEquipPreview,
+      navigateToParent,
     };
   },
 });
