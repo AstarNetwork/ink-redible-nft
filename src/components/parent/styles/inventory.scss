@@ -37,6 +37,7 @@
 .card--item {
   display: flex;
   flex-direction: column;
+  justify-content: center;
   row-gap: 8px;
   width: 120px;
   cursor: pointer;

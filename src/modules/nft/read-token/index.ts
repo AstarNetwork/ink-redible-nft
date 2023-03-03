@@ -220,8 +220,6 @@ export const unequipSlot = async ({
 }: UnequipSlot): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> => {
   const { initialGasLimit, contract } = getRmrkContract({ api, address: contractAddress });
   const apiBlockWeight = await api.query.system.blockWeight();
-  console.log('apiBlockWeight', apiBlockWeight.toString());
-  console.log('initialGasLimit', initialGasLimit.toString());
 
   const { gasRequired } = await contract.query['equippable::unequip'](
     senderAddress,
@@ -229,11 +227,9 @@ export const unequipSlot = async ({
     { u64: tokenId },
     slotId
   );
-  console.log('gasRequired', gasRequired.toString());
 
   // const gasLimit = api.registry.createType('WeightV2', gasRequired) as WeightV2;
   const gasLimit = api.registry.createType('WeightV2', initialGasLimit) as WeightV2;
-  console.log('gasLimit', gasLimit.toString());
   const transaction = contract.tx['equippable::unequip'](
     { gasLimit: gasLimit.refTime.toBn().muln(2) },
     { u64: tokenId },
@@ -322,7 +318,6 @@ export const equipSlot = async ({
   );
 
   const gasLimit = api.registry.createType('WeightV2', gasRequired) as WeightV2;
-  console.log('gasLimit', gasLimit.toString());
   const transaction = contract.tx['equippable::equip'](
     { gasLimit: gasLimit.refTime.toBn().muln(2) },
     IdBuilder.U64(tokenId.u64 ?? 0),

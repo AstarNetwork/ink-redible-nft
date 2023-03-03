@@ -22,6 +22,29 @@
   background: $img-background;
 }
 
+.image-container--parent {
+  position: relative;
+  height: auto;
+  width: 358px;
+  height: 350px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: $img-background;
+  border-radius: 16px;
+  padding-left: 56px;
+}
+
+.row--no-images {
+  padding-right: 56px;
+}
+
+.image--parent {
+  position: absolute;
+  max-height: 350px;
+  width: 100%;
+}
+
 .buttons {
   display: flex;
   column-gap: 16px;

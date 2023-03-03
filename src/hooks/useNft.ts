@@ -112,7 +112,7 @@ export const useNft = (tokenId: number) => {
   ): Promise<Map<Id, (ExtendedAsset | null)[]> | null> => {
     const children = await getEquippableChildren(
       chunkyAddress,
-      tokenId,
+      slotId,
       $api!,
       currentAccount.value
     );
@@ -121,8 +121,9 @@ export const useNft = (tokenId: number) => {
   };
 
   watchEffect(() => {
-    // fetchNftParts();
+    fetchNftParts();
   });
+
   watchEffect(async () => {
     await getChildrenToEquipPreview(tokenId);
   });
