@@ -218,7 +218,9 @@ export const unequipSlot = async ({
   const gasLimit = api.registry.createType('WeightV2', initialGasLimit) as WeightV2;
   console.log('gasLimit', gasLimit.toString());
   const transaction = contract.tx['equippable::unequip'](
-    { gasLimit: gasLimit.refTime.toBn().muln(2) },
+    {
+      gasLimit: getGas(contract, gasRequired),
+    },
     { u64: tokenId },
     slotId
   );
@@ -287,6 +289,13 @@ const getRmrkContract = ({ api, address }: { api: ApiPromise; address: string })
   return { contract, initialGasLimit };
 };
 
+const getGas = (contract: ContractPromise, gasRequired: WeightV2): WeightV2 => {
+  return contract.registry.createType('WeightV2', {
+    proofSize: gasRequired.proofSize.toBn().muln(2),
+    refTime: gasRequired.refTime.toBn().muln(2),
+  });
+};
+
 export const equipSlot = async ({
   parentContractAddress,
   tokenId,
@@ -313,10 +322,7 @@ export const equipSlot = async ({
 
   const transaction = contract.tx['equippable::equip'](
     {
-      gasLimit: contract.registry.createType('WeightV2', {
-        proofSize: gasRequired.proofSize.toBn().muln(2),
-        refTime: gasRequired.refTime.toBn().muln(2),
-      }),
+      gasLimit: getGas(contract, gasRequired),
     },
     IdBuilder.U64(tokenId.u64 ?? 0),
     assetId,
