@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper--child">
     <div class="container--child">
-      <img :src="dummyNft.img" alt="nft-logo" class="img--nft-big" />
+      <nft :contract-address="contractAddress" :token-id="tokenId" />
 
       <div class="buttons">
         <astar-button :width="130" :height="48">
@@ -45,10 +45,16 @@ import { computed, defineComponent } from 'vue';
 import NftIntroduction from 'src/components/common/NftIntroduction.vue';
 import Attributes from 'src/components/common/Attributes.vue';
 import ParentInfo from 'src/components/child/ParentInfo.vue';
+import Nft from 'src/components/common/Nft.vue';
+import { useRoute } from 'vue-router';
 
 export default defineComponent({
-  components: { NftIntroduction, Attributes, ParentInfo },
+  components: { NftIntroduction, Attributes, ParentInfo, Nft },
   setup() {
+    const route = useRoute();
+    const contractAddress = route.query.contractAddress?.toString() ?? '';
+    const tokenId = route.query.tokenId?.toString() ?? '';
+
     const reload = (): void => {
       window.location.reload();
     };
@@ -83,7 +89,15 @@ export default defineComponent({
       };
     });
 
-    return { dummyNft, reload, dummyItems, dummySpecifics, dummyParentNft };
+    return {
+      dummyNft,
+      reload,
+      dummyItems,
+      dummySpecifics,
+      dummyParentNft,
+      contractAddress,
+      tokenId,
+    };
   },
 });
 </script>
