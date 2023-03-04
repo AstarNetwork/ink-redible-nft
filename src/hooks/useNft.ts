@@ -1,3 +1,4 @@
+import { getEquipment } from './../modules/nft';
 import { container } from 'src/v2/common';
 import { $api } from 'src/boot/api';
 import { ref, watchEffect } from 'vue';
@@ -108,16 +109,21 @@ export const useNft = (tokenId: number) => {
   };
 
   const getChildrenToEquipPreview = async (
-    slotId: number
+    tokenId: number
   ): Promise<Map<Id, (ExtendedAsset | null)[]> | null> => {
     const children = await getEquippableChildren(
       chunkyAddress,
-      slotId,
+      tokenId,
       $api!,
       currentAccount.value
     );
 
     return children;
+  };
+
+  const getEquipmentPreview = async (tokenId: number) => {
+    const slotPartId = 1;
+    await getEquipment(chunkyAddress, tokenId, slotPartId, $api!, currentAccount.value);
   };
 
   watchEffect(() => {
@@ -126,6 +132,10 @@ export const useNft = (tokenId: number) => {
 
   watchEffect(async () => {
     await getChildrenToEquipPreview(tokenId);
+  });
+
+  watchEffect(async () => {
+    await getEquipmentPreview(tokenId);
   });
 
   return {

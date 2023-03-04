@@ -239,48 +239,63 @@ export const unequipSlot = async ({
 };
 
 // Todo
+export const getEquipment = async (
+  contractAddress: string,
+  tokenId: number,
+  slotPartId: number,
+  api: ApiPromise,
+  senderAddress: string
+) => {
+  try {
+    const contract = new Contract(contractAddress, senderAddress, api);
+    const res = await contract.query.getEquipment(IdBuilder.U64(tokenId), slotPartId);
+    console.log('getEquipment', res);
+    const result = new Map<Id, (ExtendedAsset | null)[]>();
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 export const getEquippableChildren = async (
   contractAddress: string,
   tokenId: number,
   api: ApiPromise,
   senderAddress: string
 ): Promise<Map<Id, (ExtendedAsset | null)[]> | null> => {
-  await cryptoWaitReady();
+  try {
+    const contract = new Contract(contractAddress, senderAddress, api);
+    const children = await contract.query.getAcceptedChildren(IdBuilder.U64(tokenId));
+    const result = new Map<Id, (ExtendedAsset | null)[]>();
 
-  const abi = new Abi(rmrkAbi, api.registry.getChainProperties());
-  const contract = new Contract(contractAddress, senderAddress, api);
-  if (!contract || contract === null) new Error('There is no contract found');
+    if (children.value) {
+      for (let child of children.value) {
+        const partsContract = new Contract(child[0].toString(), senderAddress, api);
+        const childTokenId = IdBuilder.U64(child[1].u64 ?? 0);
+        const assetIds = await partsContract.query.getAcceptedTokenAssets(childTokenId);
 
-  const children = await contract.query.getAcceptedChildren(IdBuilder.U64(tokenId));
-  const result = new Map<Id, (ExtendedAsset | null)[]>();
-
-  if (children.value) {
-    for (let child of children.value) {
-      // const partsContract = await getTypedContract(child[0].toString(), signer);
-      const partsContract = new Contract(child[0].toString(), senderAddress, api);
-      const childTokenId = IdBuilder.U64(child[1].u64 ?? 0);
-      const assetIds = await partsContract.query.getAcceptedTokenAssets(childTokenId);
-
-      if (assetIds.value.ok) {
-        const assetsToAdd: ExtendedAsset[] = [];
-        for (let id of assetIds.value.unwrap()) {
-          const asset = await partsContract.query['multiAsset::getAsset'](id);
-          if (asset.value) {
-            assetsToAdd.push({
-              ...asset.value,
-              id,
-              gatewayUrl: sanitizeIpfsUrl(hex2ascii(asset.value.assetUri.toString())),
-            } as ExtendedAsset);
+        if (assetIds.value.ok) {
+          const assetsToAdd: ExtendedAsset[] = [];
+          for (let id of assetIds.value.unwrap()) {
+            const asset = await partsContract.query['multiAsset::getAsset'](id);
+            if (asset.value) {
+              assetsToAdd.push({
+                ...asset.value,
+                id,
+                gatewayUrl: sanitizeIpfsUrl(hex2ascii(asset.value.assetUri.toString())),
+              } as ExtendedAsset);
+            }
           }
-        }
 
-        //@ts-ignore
-        result.set(child[1], assetsToAdd);
+          //@ts-ignore
+          result.set(child[1], assetsToAdd);
+        }
       }
     }
+    return result;
+  } catch (error) {
+    console.error(error);
+    return null;
   }
-
-  return result;
 };
 
 const getRmrkContract = ({ api, address }: { api: ApiPromise; address: string }) => {
