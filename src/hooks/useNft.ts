@@ -1,4 +1,4 @@
-import { getEquipment } from './../modules/nft';
+import { providerEndpoints } from 'src/config/chainEndpoints';
 import { container } from 'src/v2/common';
 import { $api } from 'src/boot/api';
 import { ref, watchEffect } from 'vue';
@@ -12,6 +12,7 @@ import { IdBuilder } from 'src/modules/nft/rmrk-contract';
 import { hex2ascii } from 'src/modules/nft/read-token';
 import { Asset } from 'src/modules/nft/rmrk-contract/types/types-returns/rmrk_contract';
 import { sanitizeIpfsUrl } from 'src/modules/nft/ipfs';
+import { useNetworkInfo } from 'src/hooks/useNetworkInfo';
 
 export interface AssetPreview {
   id: number;
@@ -22,16 +23,17 @@ export interface AssetExtended extends Asset {
   proxiedAssetUri: string;
 }
 
-// Todo: fetch from url or global state
-export const chunkyAddress = 'aEa8Jx4noRvq1gs79yd5THenLuBiqbNFnvWXkNRPj7ADdqp';
-export const partsAddress = 'XxLjz535ZFcWDb2kn3gBYvNAyiTZvaBrJBmkP5hUnRPSAcE';
-
 export const useNft = (tokenId: number) => {
   const { currentAccount } = useAccount();
   const parts = ref<IBasePart[]>([]);
   const isLoading = ref<boolean>(true);
+  const { currentNetworkIdx } = useNetworkInfo();
 
-  const rmrkNftService = container.get<IRmrkNftService>(Symbols.RmrkNftService);
+  const chunkyAddress = String(providerEndpoints[Number(currentNetworkIdx.value)].chunkyAddress);
+
+  const partsAddress = String(providerEndpoints[Number(currentNetworkIdx.value)].partsAddress);
+
+  const rmrkNftService = container.get<IRmrkNftService>(Symbols.RmrkNftService) || '';
 
   const fetchNftParts = async (): Promise<void> => {
     parts.value = await readNft(chunkyAddress, partsAddress, tokenId, currentAccount.value, $api!);
@@ -121,21 +123,12 @@ export const useNft = (tokenId: number) => {
     return children;
   };
 
-  const getEquipmentPreview = async (tokenId: number) => {
-    const slotPartId = 1;
-    await getEquipment(chunkyAddress, tokenId, slotPartId, $api!, currentAccount.value);
-  };
-
   watchEffect(() => {
     fetchNftParts();
   });
 
   watchEffect(async () => {
     await getChildrenToEquipPreview(tokenId);
-  });
-
-  watchEffect(async () => {
-    await getEquipmentPreview(tokenId);
   });
 
   return {
@@ -145,5 +138,7 @@ export const useNft = (tokenId: number) => {
     unequip,
     getChildrenToEquipPreview,
     getToken,
+    chunkyAddress,
+    partsAddress,
   };
 };

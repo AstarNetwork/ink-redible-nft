@@ -238,24 +238,6 @@ export const unequipSlot = async ({
   return transaction;
 };
 
-// Todo
-export const getEquipment = async (
-  contractAddress: string,
-  tokenId: number,
-  slotPartId: number,
-  api: ApiPromise,
-  senderAddress: string
-) => {
-  try {
-    const contract = new Contract(contractAddress, senderAddress, api);
-    const res = await contract.query.getEquipment(IdBuilder.U64(tokenId), slotPartId);
-    console.log('getEquipment', res);
-    const result = new Map<Id, (ExtendedAsset | null)[]>();
-  } catch (error) {
-    console.error(error);
-  }
-};
-
 export const getEquippableChildren = async (
   contractAddress: string,
   tokenId: number,

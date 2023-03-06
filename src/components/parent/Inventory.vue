@@ -24,7 +24,7 @@
       </div> -->
     </div>
     <div v-else class="wrapper--items">
-      <div v-for="(item, index) in equipped" :key="index">
+      <div v-for="(item, index) in equipped" :key="index" @click="navigateToChild(String(item.z))">
         <div v-if="!isSlot(item) || isSlotEquipped(item)" class="card--item">
           <div class="box--nft-img">
             <img :src="item.metadataUri" :alt="String(item.id)" class="img--item" />
@@ -40,6 +40,10 @@ import { defineComponent, ref, PropType, computed, watchEffect } from 'vue';
 import ModeTabs from 'src/components/common/ModeTabs.vue';
 import { getShortenAddress } from '@astar-network/astar-sdk-core';
 import { ExtendedAsset, IBasePart, Id } from 'src/modules/nft';
+import { networkParam, Path } from 'src/router/routes';
+import { useNetworkInfo } from 'src/hooks';
+import { providerEndpoints } from 'src/config/chainEndpoints';
+import { useRouter } from 'vue-router';
 
 enum InventoryTab {
   inventory = 'Inventory',
@@ -65,6 +69,8 @@ export default defineComponent({
   setup(props) {
     const selectedTab = ref<InventoryTab>(InventoryTab.inventory);
     const acceptableEquipments = ref<Map<Id, (ExtendedAsset | null)[]>>();
+    const { currentNetworkIdx } = useNetworkInfo();
+    const router = useRouter();
 
     const setAcceptableEquipments = async (): Promise<void> => {
       acceptableEquipments.value = await props.getChildren(props.tokenId);
@@ -102,9 +108,14 @@ export default defineComponent({
 
     const dummyEquippedList = [dummyItemB, dummyItemA];
 
-    const equipped = computed<IBasePart[]>(() =>
-      props.parts.filter((it) => !isSlot(it) || isSlotEquipped(it))
-    );
+    const equipped = computed<IBasePart[]>(() => props.parts.filter((it) => isSlotEquipped(it)));
+
+    const navigateToChild = (id: string): void => {
+      const partsAddress = String(providerEndpoints[Number(currentNetworkIdx.value)].partsAddress);
+      const base = networkParam + Path.Child;
+      const url = `${base}?tokenId=${id}&contractAddress=${partsAddress}`;
+      router.push(url);
+    };
 
     watchEffect(setAcceptableEquipments);
 
@@ -117,6 +128,7 @@ export default defineComponent({
       getShortenAddress,
       isSlot,
       isSlotEquipped,
+      navigateToChild,
     };
   },
 });

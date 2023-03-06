@@ -19,8 +19,8 @@ export interface ChainProvider {
   faucetEndpoint: string;
   // Memo: using `require` occurs error in `yarn test`
   defaultLogo: string;
-  // Memo: XVM transfer contracts address
-  xvmErcTransferContract?: string;
+  chunkyAddress?: string;
+  partsAddress?: string;
 }
 
 export enum endpointKey {
@@ -101,7 +101,8 @@ export const providerEndpoints: ChainProvider[] = [
     faucetEndpoint: 'https://us-central1-facuet-bot.cloudfunctions.net/app/shibuya',
     defaultLogo:
       'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/chain/shibuya.png?raw=true',
-    xvmErcTransferContract: 'ZdNJsZUK96jGxr8iRfT8xHXUi5iQ7XwL9qbyJkADPdH7C1U',
+    chunkyAddress: 'aEa8Jx4noRvq1gs79yd5THenLuBiqbNFnvWXkNRPj7ADdqp',
+    partsAddress: 'XxLjz535ZFcWDb2kn3gBYvNAyiTZvaBrJBmkP5hUnRPSAcE',
   },
   {
     networkAlias: 'development',
@@ -118,8 +119,6 @@ export const providerEndpoints: ChainProvider[] = [
     faucetEndpoint: '',
     defaultLogo:
       'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/chain/shibuya.png?raw=true',
-    // Memo: paste the contract addresses after deployed the contracts on the local network
-    // xvmErcTransferContract: '',
   },
   {
     networkAlias: 'custom-node',
