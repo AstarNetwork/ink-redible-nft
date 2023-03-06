@@ -156,7 +156,9 @@ export const readNft = async (
               'baseUri'
             );
 
+            console.log('equippableParts', equippableParts);
             for (let ePart of equippableParts) {
+              console.log('ePart.id', ePart.id);
               const { output: equipment } = await contract.query['equippable::getEquipment'](
                 address,
                 {
@@ -166,6 +168,8 @@ export const readNft = async (
                 tokenId,
                 ePart.id
               );
+              console.log('equipment', equipment);
+              console.log('equipment', equipment?.toJSON());
 
               if (equipment?.isEmpty) {
                 continue;

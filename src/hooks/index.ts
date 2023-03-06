@@ -5,6 +5,7 @@ export * from './useChainInfo';
 export * from './useConnectWallet';
 export * from './ui/useBreakpoints';
 export * from './ui/useTooltip';
+export * from './ui/usePageReady';
 export * from './useGasPrice';
 export * from './useNetworkInfo';
 export * from './useAppRouter';

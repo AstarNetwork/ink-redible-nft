@@ -10,18 +10,17 @@
     </div>
 
     <div v-if="selectedTab === InventoryTab.inventory" class="wrapper--items">
-      <div v-for="[k, v] in acceptableEquipments" :key="Number(k.u64)" class="card--item">
+      <div
+        v-for="[k, v] in acceptableEquipments"
+        :key="Number(k.u64)"
+        class="card--item"
+        @click="navigateToChild(String(String(k.u64)))"
+      >
         <div class="box--nft-img">
           <img :src="v[0]?.gatewayUrl" :alt="String(v[0]?.id)" class="img--item" />
         </div>
         <span class="text--name">{{ v[0]?.id }}</span>
       </div>
-      <!-- <div class="card--item">
-        <div class="box--nft-add">
-          <span class="text--lg">+</span>
-          <span class="text--name">{{ $t('add') }}</span>
-        </div>
-      </div> -->
     </div>
     <div v-else class="wrapper--items">
       <div v-for="(item, index) in equipped" :key="index" @click="navigateToChild(String(item.z))">
@@ -118,6 +117,10 @@ export default defineComponent({
     };
 
     watchEffect(setAcceptableEquipments);
+
+    watchEffect(() => {
+      console.log('acceptableEquipments', acceptableEquipments.value);
+    });
 
     return {
       selectedTab,
