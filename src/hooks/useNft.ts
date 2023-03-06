@@ -29,7 +29,8 @@ export const useNft = (tokenId: number) => {
   const isLoading = ref<boolean>(true);
   const { currentNetworkIdx } = useNetworkInfo();
 
-  const chunkyAddress = String(providerEndpoints[Number(currentNetworkIdx.value)].chunkyAddress);
+  const chunkyAddress =
+    String(providerEndpoints[Number(currentNetworkIdx.value)].baseContractAddress![0]) || '';
 
   const partsAddress = String(providerEndpoints[Number(currentNetworkIdx.value)].partsAddress);
 
@@ -45,6 +46,7 @@ export const useNft = (tokenId: number) => {
     if ($api) {
       const id = IdBuilder.U64(tokenId);
       const contract = new Contract(contractAddress, currentAccount.value, $api);
+      console.log('contract', contract);
       const assets = await contract.query.getAcceptedTokenAssets(id);
       if (assets.value.err) {
         throw assets.value.err;

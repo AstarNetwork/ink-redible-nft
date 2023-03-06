@@ -14,7 +14,7 @@
         v-for="[k, v] in acceptableEquipments"
         :key="Number(k.u64)"
         class="card--item"
-        @click="navigateToChild(String(String(k.u64)))"
+        @click="navigateToChildFromInventory(Number(k.u64), String(v[0]?.partsAddress))"
       >
         <div class="box--nft-img">
           <img :src="v[0]?.gatewayUrl" :alt="String(v[0]?.id)" class="img--item" />
@@ -23,7 +23,11 @@
       </div>
     </div>
     <div v-else class="wrapper--items">
-      <div v-for="(item, index) in equipped" :key="index" @click="navigateToChild(String(item.z))">
+      <div
+        v-for="(item, index) in equipped"
+        :key="index"
+        @click="navigateToChildFromEquipped(Number(item.id))"
+      >
         <div v-if="!isSlot(item) || isSlotEquipped(item)" class="card--item">
           <div class="box--nft-img">
             <img :src="item.metadataUri" :alt="String(item.id)" class="img--item" />
@@ -40,9 +44,11 @@ import ModeTabs from 'src/components/common/ModeTabs.vue';
 import { getShortenAddress } from '@astar-network/astar-sdk-core';
 import { ExtendedAsset, IBasePart, Id } from 'src/modules/nft';
 import { networkParam, Path } from 'src/router/routes';
-import { useNetworkInfo } from 'src/hooks';
+import { useAccount, useNetworkInfo } from 'src/hooks';
 import { providerEndpoints } from 'src/config/chainEndpoints';
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
+import { getContract, getGasLimit } from 'src/modules/nft/common-api';
+import { $api } from 'src/boot/api';
 
 enum InventoryTab {
   inventory = 'Inventory',
@@ -68,8 +74,11 @@ export default defineComponent({
   setup(props) {
     const selectedTab = ref<InventoryTab>(InventoryTab.inventory);
     const acceptableEquipments = ref<Map<Id, (ExtendedAsset | null)[]>>();
+    const { currentAccount } = useAccount();
     const { currentNetworkIdx } = useNetworkInfo();
     const router = useRouter();
+    const route = useRoute();
+    const tokenId = route.query.tokenId?.toString() ?? '';
 
     const setAcceptableEquipments = async (): Promise<void> => {
       acceptableEquipments.value = await props.getChildren(props.tokenId);
@@ -87,40 +96,43 @@ export default defineComponent({
       !!part.metadataUri && !!part.equippable && part.equippable.length > 0;
     const isSlot = (part: IBasePart): boolean => part.partType === 'Slot';
 
-    const dummyItemA = {
-      id: 1,
-      name: 'The Reborn Nebula',
-      description: 'description',
-      img: 'https://astar.network/_nuxt/reading-astar.87a786d8.svg',
-      isValid: true,
-    };
-
-    const dummyItemB = {
-      id: 555,
-      name: 'Starmap',
-      description: 'description',
-      img: require('../../assets/img/parent-example.svg'),
-      isValid: true,
-    };
-
-    const dummyList = [dummyItemA, dummyItemB, dummyItemA, dummyItemB];
-
-    const dummyEquippedList = [dummyItemB, dummyItemA];
-
     const equipped = computed<IBasePart[]>(() => props.parts.filter((it) => isSlotEquipped(it)));
 
-    const navigateToChild = (id: string): void => {
-      const partsAddress = String(providerEndpoints[Number(currentNetworkIdx.value)].partsAddress);
+    const navigateToChildFromEquipped = async (id: number): Promise<void> => {
+      try {
+        const mainContractAddress =
+          String(providerEndpoints[Number(currentNetworkIdx.value)].baseContractAddress![0]) || '';
+        const contract = await getContract({ api: $api!, address: mainContractAddress });
+
+        const { output: equipment } = await contract.query['equippable::getEquipment'](
+          currentAccount.value,
+          {
+            gasLimit: getGasLimit(contract.api),
+            storageDepositLimit: null,
+          },
+          { u64: tokenId },
+          id
+        );
+        const equipmentString = equipment?.toString() as string;
+        const childId = Number(JSON.parse(equipmentString).childNft[1].u64);
+        const childTokenAddress = String(JSON.parse(equipmentString).childNft[0]);
+        const base = networkParam + Path.Child;
+        const url = `${base}?tokenId=${childId}&contractAddress=${childTokenAddress}`;
+        router.push(url);
+      } catch (error) {
+        console.error(error);
+        const fallback = networkParam + Path.Assets;
+        router.push(fallback);
+      }
+    };
+
+    const navigateToChildFromInventory = (childId: number, partsAddress: string): void => {
       const base = networkParam + Path.Child;
-      const url = `${base}?tokenId=${id}&contractAddress=${partsAddress}`;
+      const url = `${base}?tokenId=${childId}&contractAddress=${partsAddress}`;
       router.push(url);
     };
 
     watchEffect(setAcceptableEquipments);
-
-    watchEffect(() => {
-      console.log('acceptableEquipments', acceptableEquipments.value);
-    });
 
     return {
       selectedTab,
@@ -131,7 +143,8 @@ export default defineComponent({
       getShortenAddress,
       isSlot,
       isSlotEquipped,
-      navigateToChild,
+      navigateToChildFromInventory,
+      navigateToChildFromEquipped,
     };
   },
 });

@@ -67,10 +67,7 @@ export const readNft = async (
   api: ApiPromise
 ): Promise<IBasePart[]> => {
   try {
-    // TODO provide contract address as param.
-    // await cryptoWaitReady();
     const contract = await getContract({ api, address: mainContractAddress });
-    const partsContract = await getContract({ api, address: partsContractAddress });
     const tokenId = { u64: id };
 
     // 1. Get assets
@@ -156,9 +153,7 @@ export const readNft = async (
               'baseUri'
             );
 
-            console.log('equippableParts', equippableParts);
             for (let ePart of equippableParts) {
-              console.log('ePart.id', ePart.id);
               const { output: equipment } = await contract.query['equippable::getEquipment'](
                 address,
                 {
@@ -168,8 +163,6 @@ export const readNft = async (
                 tokenId,
                 ePart.id
               );
-              console.log('equipment', equipment);
-              console.log('equipment', equipment?.toJSON());
 
               if (equipment?.isEmpty) {
                 continue;
@@ -255,7 +248,8 @@ export const getEquippableChildren = async (
 
     if (children.value) {
       for (let child of children.value) {
-        const partsContract = new Contract(child[0].toString(), senderAddress, api);
+        const partsAddress = child[0].toString();
+        const partsContract = new Contract(partsAddress, senderAddress, api);
         const childTokenId = IdBuilder.U64(child[1].u64 ?? 0);
         const assetIds = await partsContract.query.getAcceptedTokenAssets(childTokenId);
 
@@ -268,6 +262,7 @@ export const getEquippableChildren = async (
                 ...asset.value,
                 id,
                 gatewayUrl: sanitizeIpfsUrl(hex2ascii(asset.value.assetUri.toString())),
+                partsAddress,
               } as ExtendedAsset);
             }
           }

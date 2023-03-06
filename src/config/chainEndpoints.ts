@@ -19,7 +19,7 @@ export interface ChainProvider {
   faucetEndpoint: string;
   // Memo: using `require` occurs error in `yarn test`
   defaultLogo: string;
-  chunkyAddress?: string;
+  baseContractAddress?: string[];
   partsAddress?: string;
 }
 
@@ -101,7 +101,7 @@ export const providerEndpoints: ChainProvider[] = [
     faucetEndpoint: 'https://us-central1-facuet-bot.cloudfunctions.net/app/shibuya',
     defaultLogo:
       'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/chain/shibuya.png?raw=true',
-    chunkyAddress: 'aEa8Jx4noRvq1gs79yd5THenLuBiqbNFnvWXkNRPj7ADdqp',
+    baseContractAddress: ['aEa8Jx4noRvq1gs79yd5THenLuBiqbNFnvWXkNRPj7ADdqp'],
     partsAddress: 'XxLjz535ZFcWDb2kn3gBYvNAyiTZvaBrJBmkP5hUnRPSAcE',
   },
   {
