@@ -78,14 +78,7 @@
   </div>
 </template>
 <script lang="ts">
-import {
-  useAccount,
-  useBreakpoints,
-  useNft,
-  chunkyAddress,
-  partsAddress,
-  useNetworkInfo,
-} from 'src/hooks';
+import { useAccount, useBreakpoints, useNft, useNetworkInfo } from 'src/hooks';
 import { defineComponent, computed, watchEffect } from 'vue';
 import { getShortenAddress } from '@astar-network/astar-sdk-core';
 import { IBasePart, ParentInventory } from 'src/modules/nft';
@@ -115,7 +108,8 @@ export default defineComponent({
 
     // Todo: get from url
     const tokenId = 1;
-    const { parts, unequip, equip, getChildrenToEquipPreview } = useNft(tokenId);
+    const { parts, unequip, equip, getChildrenToEquipPreview, chunkyAddress, partsAddress } =
+      useNft(tokenId);
     const isSlotEquipped = (part: IBasePart): boolean =>
       !!part.metadataUri && !!part.equippable && part.equippable.length > 0;
 

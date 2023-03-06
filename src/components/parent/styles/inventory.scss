@@ -32,11 +32,19 @@
   @media (min-width: $xl) {
     column-gap: 20px;
   }
+  :hover {
+    .img--item {
+      transition: all 0.3s ease 0s;
+      border: 2px solid $astar-blue;
+      box-shadow: 0px 0px 6px #1cb8d2;
+    }
+  }
 }
 
 .card--item {
   display: flex;
   flex-direction: column;
+  justify-content: center;
   row-gap: 8px;
   width: 120px;
   cursor: pointer;
@@ -50,6 +58,8 @@
   max-height: 100px;
   border-radius: 8px;
   background: $img-background;
+  transition: all 0.3s ease 0s;
+  border: 2px solid black;
 }
 
 .text--name {

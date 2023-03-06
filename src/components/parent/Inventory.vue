@@ -10,33 +10,45 @@
     </div>
 
     <div v-if="selectedTab === InventoryTab.inventory" class="wrapper--items">
-      <div v-for="(item, index) in dummyList" :key="index" class="card--item">
+      <div
+        v-for="[k, v] in acceptableEquipments"
+        :key="Number(k.u64)"
+        class="card--item"
+        @click="navigateToChildFromInventory(Number(k.u64), String(v[0]?.partsAddress))"
+      >
         <div class="box--nft-img">
-          <img :src="item.img" :alt="item.name" class="img--item" />
+          <img :src="v[0]?.gatewayUrl" :alt="String(v[0]?.id)" class="img--item" />
         </div>
-        <span class="text--name">{{ item.name }}</span>
-      </div>
-      <div class="card--item">
-        <div class="box--nft-add">
-          <span class="text--lg">+</span>
-          <span class="text--name">{{ $t('add') }}</span>
-        </div>
+        <span class="text--name">{{ v[0]?.id }}</span>
       </div>
     </div>
     <div v-else class="wrapper--items">
-      <div v-for="(item, index) in dummyEquippedList" :key="index" class="card--item">
-        <div class="box--nft-img">
-          <img :src="item.img" :alt="item.name" class="img--item" />
+      <div
+        v-for="(item, index) in equipped"
+        :key="index"
+        @click="navigateToChildFromEquipped(Number(item.id))"
+      >
+        <div v-if="!isSlot(item) || isSlotEquipped(item)" class="card--item">
+          <div class="box--nft-img">
+            <img :src="item.metadataUri" :alt="String(item.id)" class="img--item" />
+          </div>
+          <span class="text--name">{{ item.id }}</span>
         </div>
-        <span class="text--name">{{ item.name }}</span>
       </div>
     </div>
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, PropType, computed, watchEffect } from 'vue';
 import ModeTabs from 'src/components/common/ModeTabs.vue';
 import { getShortenAddress } from '@astar-network/astar-sdk-core';
+import { ExtendedAsset, IBasePart, Id } from 'src/modules/nft';
+import { networkParam, Path } from 'src/router/routes';
+import { useAccount, useNetworkInfo } from 'src/hooks';
+import { providerEndpoints } from 'src/config/chainEndpoints';
+import { useRouter, useRoute } from 'vue-router';
+import { getContract, getGasLimit } from 'src/modules/nft/common-api';
+import { $api } from 'src/boot/api';
 
 enum InventoryTab {
   inventory = 'Inventory',
@@ -45,8 +57,33 @@ enum InventoryTab {
 
 export default defineComponent({
   components: { ModeTabs },
+  props: {
+    parts: {
+      type: Object as PropType<IBasePart[]>,
+      required: true,
+    },
+    getChildren: {
+      type: Function,
+      required: true,
+    },
+    tokenId: {
+      type: Number,
+      required: true,
+    },
+  },
   setup(props) {
     const selectedTab = ref<InventoryTab>(InventoryTab.inventory);
+    const acceptableEquipments = ref<Map<Id, (ExtendedAsset | null)[]>>();
+    const { currentAccount } = useAccount();
+    const { currentNetworkIdx } = useNetworkInfo();
+    const router = useRouter();
+    const route = useRoute();
+    const tokenId = route.query.tokenId?.toString() ?? '';
+
+    const setAcceptableEquipments = async (): Promise<void> => {
+      acceptableEquipments.value = await props.getChildren(props.tokenId);
+    };
+
     const setSelectedTab = (isAttribute: boolean): void => {
       if (isAttribute) {
         selectedTab.value = InventoryTab.inventory;
@@ -55,33 +92,59 @@ export default defineComponent({
       }
     };
 
-    const dummyItemA = {
-      id: 1,
-      name: 'The Reborn Nebula',
-      description: 'description',
-      img: 'https://astar.network/_nuxt/reading-astar.87a786d8.svg',
-      isValid: true,
+    const isSlotEquipped = (part: IBasePart): boolean =>
+      !!part.metadataUri && !!part.equippable && part.equippable.length > 0;
+    const isSlot = (part: IBasePart): boolean => part.partType === 'Slot';
+
+    const equipped = computed<IBasePart[]>(() => props.parts.filter((it) => isSlotEquipped(it)));
+
+    const navigateToChildFromEquipped = async (id: number): Promise<void> => {
+      try {
+        const mainContractAddress =
+          String(providerEndpoints[Number(currentNetworkIdx.value)].baseContractAddress![0]) || '';
+        const contract = await getContract({ api: $api!, address: mainContractAddress });
+
+        const { output: equipment } = await contract.query['equippable::getEquipment'](
+          currentAccount.value,
+          {
+            gasLimit: getGasLimit(contract.api),
+            storageDepositLimit: null,
+          },
+          { u64: tokenId },
+          id
+        );
+        const equipmentString = equipment?.toString() as string;
+        const childId = Number(JSON.parse(equipmentString).childNft[1].u64);
+        const childTokenAddress = String(JSON.parse(equipmentString).childNft[0]);
+        const base = networkParam + Path.Child;
+        const url = `${base}?tokenId=${childId}&contractAddress=${childTokenAddress}`;
+        router.push(url);
+      } catch (error) {
+        console.error(error);
+        const fallback = networkParam + Path.Assets;
+        router.push(fallback);
+      }
     };
 
-    const dummyItemB = {
-      id: 555,
-      name: 'Starmap',
-      description: 'description',
-      img: require('../../assets/img/parent-example.svg'),
-      isValid: true,
+    const navigateToChildFromInventory = (childId: number, partsAddress: string): void => {
+      const base = networkParam + Path.Child;
+      const url = `${base}?tokenId=${childId}&contractAddress=${partsAddress}`;
+      router.push(url);
     };
 
-    const dummyList = [dummyItemA, dummyItemB, dummyItemA, dummyItemB];
-
-    const dummyEquippedList = [dummyItemB, dummyItemA];
+    watchEffect(setAcceptableEquipments);
 
     return {
       selectedTab,
       InventoryTab,
+      equipped,
+      acceptableEquipments,
       setSelectedTab,
       getShortenAddress,
-      dummyList,
-      dummyEquippedList,
+      isSlot,
+      isSlotEquipped,
+      navigateToChildFromInventory,
+      navigateToChildFromEquipped,
     };
   },
 });
