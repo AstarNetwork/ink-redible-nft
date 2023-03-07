@@ -3,7 +3,7 @@ import type BN from 'bn.js';
 export { unequipSlot, getEquippableChildren, equipSlot, readNft } from 'src/modules/nft/read-token';
 export { queryParentInventories } from 'src/modules/nft/graphQl';
 
-export type ExtendedAsset = Asset & { id: number; gatewayUrl: string };
+export type ExtendedAsset = Asset & { id: number; gatewayUrl: string; partsAddress: string };
 
 export type PartType = 'None' | 'Slot' | 'Fixed';
 

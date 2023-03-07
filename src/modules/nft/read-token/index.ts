@@ -3,7 +3,6 @@ import { Abi, ContractPromise } from '@polkadot/api-contract';
 import type { SubmittableExtrinsic } from '@polkadot/api/types';
 import type { WeightV2 } from '@polkadot/types/interfaces';
 import { ISubmittableResult } from '@polkadot/types/types';
-import { cryptoWaitReady } from '@polkadot/util-crypto';
 import { ExtendedAsset, IBasePart, Id } from 'src/modules/nft';
 import { rmrkAbi } from 'src/modules/nft/abi/rmrk';
 import { getContract, getGasLimit } from 'src/modules/nft/common-api';
@@ -58,10 +57,7 @@ export const readNft = async (
   api: ApiPromise
 ): Promise<IBasePart[]> => {
   try {
-    // TODO provide contract address as param.
-    // await cryptoWaitReady();
     const contract = await getContract({ api, address: mainContractAddress });
-    const partsContract = await getContract({ api, address: partsContractAddress });
     const tokenId = { u64: id };
 
     // 1. Get assets
@@ -210,6 +206,7 @@ export const unequipSlot = async ({
   senderAddress,
 }: UnequipSlot): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> => {
   const { initialGasLimit, contract } = getRmrkContract({ api, address: contractAddress });
+  const apiBlockWeight = await api.query.system.blockWeight();
 
   const { gasRequired } = await contract.query['equippable::unequip'](
     senderAddress,
@@ -229,49 +226,48 @@ export const unequipSlot = async ({
   return transaction;
 };
 
-// Todo
 export const getEquippableChildren = async (
   contractAddress: string,
   tokenId: number,
   api: ApiPromise,
   senderAddress: string
 ): Promise<Map<Id, (ExtendedAsset | null)[]> | null> => {
-  await cryptoWaitReady();
+  try {
+    const contract = new Contract(contractAddress, senderAddress, api);
+    const children = await contract.query.getAcceptedChildren(IdBuilder.U64(tokenId));
+    const result = new Map<Id, (ExtendedAsset | null)[]>();
 
-  const abi = new Abi(rmrkAbi, api.registry.getChainProperties());
-  const contract = new Contract(contractAddress, senderAddress, api);
-  if (!contract || contract === null) new Error('There is no contract found');
+    if (children.value) {
+      for (let child of children.value) {
+        const partsAddress = child[0].toString();
+        const partsContract = new Contract(partsAddress, senderAddress, api);
+        const childTokenId = IdBuilder.U64(child[1].u64 ?? 0);
+        const assetIds = await partsContract.query.getAcceptedTokenAssets(childTokenId);
 
-  const children = await contract.query.getAcceptedChildren(IdBuilder.U64(tokenId));
-  const result = new Map<Id, (ExtendedAsset | null)[]>();
-
-  if (children.value) {
-    for (let child of children.value) {
-      // const partsContract = await getTypedContract(child[0].toString(), signer);
-      const partsContract = new Contract(child[0].toString(), senderAddress, api);
-      const childTokenId = IdBuilder.U64(child[1].u64 ?? 0);
-      const assetIds = await partsContract.query.getAcceptedTokenAssets(childTokenId);
-
-      if (assetIds.value.ok) {
-        const assetsToAdd: ExtendedAsset[] = [];
-        for (let id of assetIds.value.unwrap()) {
-          const asset = await partsContract.query['multiAsset::getAsset'](id);
-          if (asset.value) {
-            assetsToAdd.push({
-              ...asset.value,
-              id,
-              gatewayUrl: sanitizeIpfsUrl(hex2ascii(asset.value.assetUri.toString())),
-            } as ExtendedAsset);
+        if (assetIds.value.ok) {
+          const assetsToAdd: ExtendedAsset[] = [];
+          for (let id of assetIds.value.unwrap()) {
+            const asset = await partsContract.query['multiAsset::getAsset'](id);
+            if (asset.value) {
+              assetsToAdd.push({
+                ...asset.value,
+                id,
+                gatewayUrl: sanitizeIpfsUrl(hex2ascii(asset.value.assetUri.toString())),
+                partsAddress,
+              } as ExtendedAsset);
+            }
           }
-        }
 
-        //@ts-ignore
-        result.set(child[1], assetsToAdd);
+          //@ts-ignore
+          result.set(child[1], assetsToAdd);
+        }
       }
     }
+    return result;
+  } catch (error) {
+    console.error(error);
+    return null;
   }
-
-  return result;
 };
 
 const getRmrkContract = ({ api, address }: { api: ApiPromise; address: string }) => {

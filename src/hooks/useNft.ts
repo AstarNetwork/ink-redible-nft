@@ -1,3 +1,4 @@
+import { providerEndpoints } from 'src/config/chainEndpoints';
 import { container } from 'src/v2/common';
 import { $api } from 'src/boot/api';
 import { ref, watchEffect } from 'vue';
@@ -11,6 +12,7 @@ import { IdBuilder } from 'src/modules/nft/rmrk-contract';
 import { hex2ascii } from 'src/modules/nft/read-token';
 import { Asset } from 'src/modules/nft/rmrk-contract/types/types-returns/rmrk_contract';
 import { sanitizeIpfsUrl } from 'src/modules/nft/ipfs';
+import { useNetworkInfo } from 'src/hooks/useNetworkInfo';
 
 export interface AssetPreview {
   id: number;
@@ -21,16 +23,18 @@ export interface AssetExtended extends Asset {
   proxiedAssetUri: string;
 }
 
-// Todo: fetch from url or global state
-export const chunkyAddress = 'aEa8Jx4noRvq1gs79yd5THenLuBiqbNFnvWXkNRPj7ADdqp';
-export const partsAddress = 'XxLjz535ZFcWDb2kn3gBYvNAyiTZvaBrJBmkP5hUnRPSAcE';
-
 export const useNft = (tokenId: number) => {
   const { currentAccount } = useAccount();
   const parts = ref<IBasePart[]>([]);
   const isLoading = ref<boolean>(true);
+  const { currentNetworkIdx } = useNetworkInfo();
 
-  const rmrkNftService = container.get<IRmrkNftService>(Symbols.RmrkNftService);
+  const chunkyAddress =
+    String(providerEndpoints[Number(currentNetworkIdx.value)].baseContractAddress![0]) || '';
+
+  const partsAddress = String(providerEndpoints[Number(currentNetworkIdx.value)].partsAddress);
+
+  const rmrkNftService = container.get<IRmrkNftService>(Symbols.RmrkNftService) || '';
 
   const fetchNftParts = async (): Promise<void> => {
     parts.value = await readNft(chunkyAddress, partsAddress, tokenId, currentAccount.value, $api!);
@@ -42,6 +46,7 @@ export const useNft = (tokenId: number) => {
     if ($api) {
       const id = IdBuilder.U64(tokenId);
       const contract = new Contract(contractAddress, currentAccount.value, $api);
+      console.log('contract', contract);
       const assets = await contract.query.getAcceptedTokenAssets(id);
       if (assets.value.err) {
         throw assets.value.err;
@@ -108,7 +113,7 @@ export const useNft = (tokenId: number) => {
   };
 
   const getChildrenToEquipPreview = async (
-    slotId: number
+    tokenId: number
   ): Promise<Map<Id, (ExtendedAsset | null)[]> | null> => {
     const children = await getEquippableChildren(
       chunkyAddress,
@@ -121,8 +126,9 @@ export const useNft = (tokenId: number) => {
   };
 
   watchEffect(() => {
-    // fetchNftParts();
+    fetchNftParts();
   });
+
   watchEffect(async () => {
     await getChildrenToEquipPreview(tokenId);
   });
@@ -134,5 +140,7 @@ export const useNft = (tokenId: number) => {
     unequip,
     getChildrenToEquipPreview,
     getToken,
+    chunkyAddress,
+    partsAddress,
   };
 };
