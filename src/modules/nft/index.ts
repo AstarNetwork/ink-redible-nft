@@ -1,6 +1,7 @@
 import type BN from 'bn.js';
 
 export { unequipSlot, getEquippableChildren, equipSlot, readNft } from 'src/modules/nft/read-token';
+export { queryParentInventories } from 'src/modules/nft/graphQl';
 
 export type ExtendedAsset = Asset & { id: number; gatewayUrl: string };
 
@@ -29,4 +30,8 @@ export interface Id {
   u64?: number | string | BN;
   u128?: number | string | BN;
   bytes?: Array<any>;
+}
+
+export interface ParentInventory {
+  id: string;
 }
