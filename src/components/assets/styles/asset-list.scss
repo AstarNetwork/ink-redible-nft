@@ -20,6 +20,7 @@
   }
 
   @media (min-width: $lg) {
+    width: 470px;
     margin-left: 16px;
     padding: 28px 24px;
   }
@@ -41,6 +42,13 @@
   @media (min-width: $md) {
     font-size: 14px;
   }
+}
+
+.container--example {
+  margin-top: 100px;
+  display: flex;
+  flex-direction: column;
+  row-gap: 32px;
 }
 
 .container--item {
@@ -66,7 +74,8 @@
   border-radius: 16px;
   width: 166px;
   height: 280px;
-
+  overflow: auto;
+  cursor: pointer;
   @media (min-width: $md) {
     width: 256px;
     height: 324px;
@@ -97,4 +106,17 @@
   @media (min-width: $md) {
     height: 200px;
   }
+}
+
+.image-container {
+  position: relative;
+  margin-bottom: 400px;
+}
+
+.image {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: 400px;
+  z-index: -1;
 }

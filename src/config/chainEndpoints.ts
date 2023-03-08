@@ -19,8 +19,8 @@ export interface ChainProvider {
   faucetEndpoint: string;
   // Memo: using `require` occurs error in `yarn test`
   defaultLogo: string;
-  // Memo: XVM transfer contracts address
-  xvmErcTransferContract?: string;
+  baseContractAddress?: string[];
+  partsAddress?: string;
 }
 
 export enum endpointKey {
@@ -37,7 +37,7 @@ export const providerEndpoints: ChainProvider[] = [
     displayName: 'Astar Network',
     info: 'Smart contract platform for decentralized applications (dapps) on the Polkadot network',
     endpoints: [
-      { name: 'Astar', endpoint: 'wss://wss.astar.network' },
+      { name: 'Astar', endpoint: 'wss://rpc.astar.network' },
       { name: 'Dwellir', endpoint: 'wss://astar-rpc.dwellir.com' },
       { name: 'Pinknode', endpoint: 'wss://public-rpc.pinknode.io/astar' },
       { name: 'OnFinality', endpoint: 'wss://astar.api.onfinality.io/public-ws' },
@@ -101,7 +101,8 @@ export const providerEndpoints: ChainProvider[] = [
     faucetEndpoint: 'https://us-central1-facuet-bot.cloudfunctions.net/app/shibuya',
     defaultLogo:
       'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/chain/shibuya.png?raw=true',
-    xvmErcTransferContract: 'ZdNJsZUK96jGxr8iRfT8xHXUi5iQ7XwL9qbyJkADPdH7C1U',
+    baseContractAddress: ['aEa8Jx4noRvq1gs79yd5THenLuBiqbNFnvWXkNRPj7ADdqp'],
+    partsAddress: 'XxLjz535ZFcWDb2kn3gBYvNAyiTZvaBrJBmkP5hUnRPSAcE',
   },
   {
     networkAlias: 'development',
@@ -118,8 +119,6 @@ export const providerEndpoints: ChainProvider[] = [
     faucetEndpoint: '',
     defaultLogo:
       'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/chain/shibuya.png?raw=true',
-    // Memo: paste the contract addresses after deployed the contracts on the local network
-    // xvmErcTransferContract: '',
   },
   {
     networkAlias: 'custom-node',

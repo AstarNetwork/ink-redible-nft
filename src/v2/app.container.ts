@@ -2,10 +2,18 @@ import 'reflect-metadata';
 import { interfaces } from 'inversify';
 import { IApi, IApiFactory } from './integration';
 import { ApiFactory, DefaultApi } from './integration/implementation';
-import { IMetadataRepository, ISystemRepository } from './repositories';
-import { MetadataRepository, SystemRepository } from './repositories/implementations';
-import { IGasPriceProvider, IWalletService, WalletType } from './services';
-import { PolkadotWalletService, GasPriceProvider } from './services/implementations';
+import { IMetadataRepository, ISystemRepository, IRmrkNftRepository } from './repositories';
+import {
+  MetadataRepository,
+  SystemRepository,
+  RmrkNftRepository,
+} from './repositories/implementations';
+import { IGasPriceProvider, IWalletService, WalletType, IRmrkNftService } from './services';
+import {
+  PolkadotWalletService,
+  GasPriceProvider,
+  RmrkNftService,
+} from './services/implementations';
 import { Symbols } from './symbols';
 import { IEventAggregator, EventAggregator } from './messaging';
 import { container } from './common';
@@ -41,11 +49,13 @@ export default function buildDependencyContainer(network: endpointKey): void {
 
   container.addTransient<IMetadataRepository>(MetadataRepository, Symbols.MetadataRepository);
   container.addTransient<ISystemRepository>(SystemRepository, Symbols.SystemRepository);
+  container.addTransient<IRmrkNftRepository>(RmrkNftRepository, Symbols.RmrkNftRepository);
 
   // Services
   container.addTransient<IWalletService>(PolkadotWalletService, Symbols.PolkadotWalletService);
   container.addTransient<IWalletService>(PolkadotWalletService, Symbols.PolkadotWalletService);
   container.addSingleton<IGasPriceProvider>(GasPriceProvider, Symbols.GasPriceProvider);
+  container.addSingleton<IRmrkNftService>(RmrkNftService, Symbols.RmrkNftService);
 
   // const typeMappings = XcmConfiguration.reduce(
   //   (result, { networkAlias, repository }) => ({ ...result, [networkAlias]: repository }),

@@ -1,7 +1,17 @@
 <template>
-  <div class="wrapper--parent">
+  <div v-if="!isLoading" class="wrapper--parent">
     <div class="container--parent">
-      <img :src="dummyNft.img" alt="nft-logo" class="img--nft-big" />
+      <div class="image-container--parent">
+        <img
+          v-for="(part, index) in p"
+          :key="`part-${index}`"
+          class="image--parent"
+          :src="part.metadataUri"
+        />
+        <div v-if="p.length === 0" class="row--no-images">
+          <span class="text--lg">No images for token ID: {{ tokenId }}</span>
+        </div>
+      </div>
 
       <div class="buttons">
         <astar-button :width="130" :height="48">
@@ -20,7 +30,7 @@
 
       <div class="wrapper-nft-introduction">
         <nft-introduction
-          :id="dummyNft.id"
+          :name="tokenId"
           :collection="dummyNft.collection"
           :description="dummyNft.description"
           :img="dummyNft.img"
@@ -35,27 +45,31 @@
           :dummy-items="dummyItems"
           :dummy-specifics="dummySpecifics"
         />
-        <inventory />
+        <inventory
+          :token-id="Number(tokenId)"
+          :parts="p"
+          :get-children="getChildrenToEquipPreview"
+        />
       </div>
     </div>
   </div>
 </template>
 <script lang="ts">
-import { computed, defineComponent } from 'vue';
-// import { useRoute } from 'vue-router';
+import { computed, defineComponent, watchEffect } from 'vue';
+import { useRoute } from 'vue-router';
 import NftIntroduction from 'src/components/common/NftIntroduction.vue';
 import Attributes from 'src/components/common/Attributes.vue';
 import Inventory from 'src/components/parent/Inventory.vue';
+import { useNft } from 'src/hooks';
+import { IBasePart } from 'src/modules/nft';
 
 export default defineComponent({
   components: { NftIntroduction, Attributes, Inventory },
   setup() {
-    // const route = useRoute();
-    // const id = computed<string>(() => route.query.id as string);
-
-    // watchEffect(() => {
-    //   console.log('id', id);
-    // });
+    const route = useRoute();
+    const tokenId = computed<string>(() => route.query.tokenId as string);
+    const { parts, isLoading, getChildrenToEquipPreview } = useNft(Number(tokenId.value));
+    const p = computed<IBasePart[]>(() => parts.value as IBasePart[]);
 
     const reload = (): void => {
       window.location.reload();
@@ -84,7 +98,20 @@ export default defineComponent({
       chain: 'ASTAR',
     };
 
-    return { dummyNft, reload, dummyItems, dummySpecifics };
+    watchEffect(() => {
+      console.log('parts', parts.value);
+    });
+
+    return {
+      dummyNft,
+      reload,
+      dummyItems,
+      dummySpecifics,
+      isLoading,
+      p,
+      tokenId,
+      getChildrenToEquipPreview,
+    };
   },
 });
 </script>

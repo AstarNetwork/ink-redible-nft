@@ -76,7 +76,8 @@ export default defineComponent({
       }
     };
 
-    const buttonWidth = computed<number>(() => (width.value > screenSize.xl ? 124 : 102));
+    const buttonWidth = computed<number>(() => (width.value > screenSize.xl ? 170 : 142));
+    // const buttonWidth = computed<number>(() => (width.value > screenSize.xl ? 124 : 102));
 
     const dummyItemA = {
       id: 1,

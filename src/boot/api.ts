@@ -33,7 +33,7 @@ export default boot(async ({ store }) => {
     } else {
       localStorage.setItem(
         LOCAL_STORAGE.SELECTED_ENDPOINT,
-        JSON.stringify({ '0': providerEndpoints[0].endpoints[0].endpoint })
+        JSON.stringify({ '2': providerEndpoints[2].endpoints[0].endpoint })
       );
     }
   }

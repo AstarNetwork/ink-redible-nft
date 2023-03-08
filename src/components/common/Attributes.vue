@@ -22,8 +22,8 @@
           <span class="text--ranking-value">{{ rarity }}</span>
         </div>
       </div>
-      <div v-if="selectedTab === AttributeTab.attributes" class="wrapper--items">
-        <div v-if="dummyItems">
+      <div v-if="selectedTab === AttributeTab.attributes">
+        <div v-if="dummyItems" class="wrapper--items">
           <div v-for="item in dummyItems" :key="item.description" class="container--item">
             <span class="text--attributes-value">{{ item.description }}</span>
             <span class="text--attributes-value">{{ item.value }}</span>

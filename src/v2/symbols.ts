@@ -10,4 +10,6 @@ export const Symbols = {
   TypeMappings: Symbol.for('TypeMappings'),
   CurrentWallet: Symbol.for('CurrentWallet'),
   PolkadotWalletService: Symbol.for('PolkadotWalletService'),
+  RmrkNftService: Symbol.for('RmrkNftService'),
+  RmrkNftRepository: Symbol.for('RmrkNftRepository'),
 };
