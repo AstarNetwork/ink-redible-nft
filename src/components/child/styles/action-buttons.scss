@@ -2,13 +2,7 @@
 
 .row--buttons {
   display: flex;
-  justify-content: space-between;
-  @media (min-width: 400px) {
-    justify-content: space-evenly;
-  }
-  @media (min-width: $lg) {
-    justify-content: space-between;
-  }
+  justify-content: space-around;
 }
 
 .icon--button {

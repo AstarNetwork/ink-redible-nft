@@ -18,7 +18,6 @@ import { LOCAL_STORAGE } from 'src/config/localStorage';
 import AssetList from 'src/components/assets/AssetList.vue';
 import { useRoute } from 'vue-router';
 import { useStore } from 'src/store';
-import { ParentInventory } from 'src/modules/nft';
 
 export default defineComponent({
   components: { HeroConnectWallet, AssetList },
@@ -28,9 +27,6 @@ export default defineComponent({
     const { currentAccount } = useAccount();
     const isRequiredConnectWallet = computed<boolean>(
       () => selectedAddress === 'null' && currentAccount.value === ''
-    );
-    const parentInventories = computed<ParentInventory[]>(
-      () => store.getters['assets/getParentInventories']
     );
 
     watch(
@@ -46,14 +42,6 @@ export default defineComponent({
       },
       { immediate: false }
     );
-
-    // watch(
-    //   [parentInventories],
-    //   () => {
-    //     console.log('parentInventories', parentInventories.value);
-    //   },
-    //   { immediate: true }
-    // );
 
     const route = useRoute();
     const id = computed<string>(() => route.query.id as string);

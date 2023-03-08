@@ -1,12 +1,19 @@
 <template>
   <div class="row--buttons">
-    <astar-button :width="buttonWidth" :height="buttonHeight">
+    <astar-button :width="buttonWidth" :height="buttonHeight" class="button-action">
+      <div class="icon--button">
+        <astar-icon-unequip />
+      </div>
       <span class="text--button">{{ $t('unequip') }}</span>
     </astar-button>
 
-    <astar-button :width="buttonWidth" :height="buttonHeight">
-      <span class="text--button">{{ $t('remove') }}</span>
-    </astar-button>
+    <!-- Todo: add v-if to the button above  -->
+    <!-- <astar-button :width="buttonWidth" :height="buttonHeight" class="button-action">
+      <div class="icon--button">
+        <astar-icon-equip />
+      </div>
+      <span class="text--button">{{ $t('equip') }}</span>
+    </astar-button> -->
 
     <a href="https://astar.subscan.io/" target="_blank" rel="noopener noreferrer">
       <astar-button :width="buttonWidth" :height="buttonHeight" class="button-action">
