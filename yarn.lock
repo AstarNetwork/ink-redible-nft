@@ -59,11 +59,12 @@
     ethers "^5.6.9"
     web3 "^1.7.3"
 
-"@astar-network/astar-ui@^0.0.76":
-  version "0.0.76"
-  resolved "https://registry.yarnpkg.com/@astar-network/astar-ui/-/astar-ui-0.0.76.tgz#ec07eb292192446e2333ed5f3da4b15e79e74205"
-  integrity sha512-s2C27N5Um8/WzE4RSYofxoS/93LOrv7q9Ht8qxJa++Ybx2H8zKblyGRT7BEqxyKrU2EeSohOVx3AAQGTYpx91g==
+"@astar-network/astar-ui@^0.0.78":
+  version "0.0.78"
+  resolved "https://registry.yarnpkg.com/@astar-network/astar-ui/-/astar-ui-0.0.78.tgz#c3b712a94a3bbfb1a563388d5c371e786458f78e"
+  integrity sha512-OSjTNDXHD0K+bx6P1pENgBTQl6yapq+yIDbQmzyK0RWgzHR6A/GzbT1Nlp9rtmiV0y2p1Qy0bIsY4gQMXW+pzw==
   dependencies:
+    "@iconify-prerendered/vue-ic" "^0.21.1672653513"
     vue "^3.2.23"
 
 "@babel/code-frame@7.12.11":
@@ -1871,6 +1872,11 @@
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/@humanwhocodes/object-schema/-/object-schema-1.2.1.tgz#b520529ec21d8e5945a1851dfd1c32e94e39ff45"
   integrity sha512-ZnQMnLV4e7hDlUvw8H+U8ASL02SS2Gn6+9Ac3wGGLIe7+je2AeAOxPY+izIPJDfFDb7eDjev0Us8MO1iFRN8hA==
+
+"@iconify-prerendered/vue-ic@^0.21.1672653513":
+  version "0.21.1672653513"
+  resolved "https://registry.yarnpkg.com/@iconify-prerendered/vue-ic/-/vue-ic-0.21.1672653513.tgz#81861b686e3b1c1916dcc39410da92b307fe9e29"
+  integrity sha512-kbDbNkx/W/eR/XCtDKhehpljDiDP7sojKLPUVdjRWaXNq1Z8RsrOJBMyVk1W5NX5hffp+p6YPsSbi+HHV6kLmQ==
 
 "@intlify/core-base@9.1.9":
   version "9.1.9"

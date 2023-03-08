@@ -3,12 +3,13 @@ import { Abi, ContractPromise } from '@polkadot/api-contract';
 import type { SubmittableExtrinsic } from '@polkadot/api/types';
 import type { WeightV2 } from '@polkadot/types/interfaces';
 import { ISubmittableResult } from '@polkadot/types/types';
-import { ExtendedAsset, IBasePart, Id } from 'src/modules/nft';
+import { ChildDetail, ExtendedAsset, IBasePart, Id } from 'src/modules/nft';
 import { rmrkAbi } from 'src/modules/nft/abi/rmrk';
 import { getContract, getGasLimit } from 'src/modules/nft/common-api';
 import { sanitizeIpfsUrl } from 'src/modules/nft/ipfs';
 import { IdBuilder } from 'src/modules/nft/rmrk-contract';
 import Contract from '../rmrk-contract/types/contracts/rmrk_contract';
+import axios from 'axios';
 
 interface EquippableData {
   equippableGroupId: string;
@@ -95,6 +96,7 @@ export const readNft = async (
           // Parts contract address should come from the above call (getAssetAndEquippableData).
           // Raised an issue https://github.com/rmrk-team/rmrk-ink/issues/46
           const partsContract = await getContract({ api, address: partsContractAddress });
+          console.log('partsContract', partsContract);
 
           const parts = await Promise.all(
             partIds.map(async (id) => {
@@ -161,10 +163,10 @@ export const readNft = async (
               const equipmentJson = JSON.parse(equipment?.toString() ?? '');
               // TODO use TypeChain or similar
               if (equipmentJson && equipmentJson.childNft) {
-                const partTokenId = equipmentJson.childNft[1].u64;
-                const metadataJsonUri = `${sanitizeIpfsUrl(
-                  baseUri?.toHuman()?.toString()
-                )}/${partTokenId}.json`;
+                // const partTokenId = equipmentJson.childNft[1].u64;
+                // const metadataJsonUri = `${sanitizeIpfsUrl(
+                //   baseUri?.toHuman()?.toString()
+                // )}/${partTokenId}.json`;
 
                 const { output: assetUri } = await partsContract.query['multiAsset::getAssetUri'](
                   address,
@@ -322,4 +324,61 @@ export const equipSlot = async ({
     childAssetId
   );
   return transaction;
+};
+
+export const fetchChildDetails = async ({
+  api,
+  baseContractAddress,
+  partsAddress,
+  walletAddress,
+  partTokenId,
+}: {
+  api: ApiPromise;
+  baseContractAddress: string;
+  partsAddress: string;
+  walletAddress: string;
+  partTokenId: string;
+}): Promise<ChildDetail> => {
+  try {
+    const [contract, partsContract] = await Promise.all([
+      getContract({ api, address: baseContractAddress }),
+      getContract({ api, address: partsAddress }),
+    ]);
+
+    const { output: collectionId } = await partsContract.query['psp34::collectionId'](
+      walletAddress,
+      {
+        gasLimit: getGasLimit(contract.api),
+        storageDepositLimit: null,
+      }
+    );
+
+    const { output: baseUri } = await partsContract.query['psp34Metadata::getAttribute'](
+      walletAddress,
+      {
+        gasLimit: getGasLimit(contract.api),
+        storageDepositLimit: null,
+      },
+      collectionId?.toHuman(),
+      'baseUri'
+    );
+
+    const metadataJsonUri = `${sanitizeIpfsUrl(
+      baseUri?.toHuman()?.toString()
+    )}/${partTokenId}.json`;
+    const metadataJson = await axios.get(metadataJsonUri);
+    const { description, image, name } = metadataJson.data;
+    return {
+      description,
+      image: sanitizeIpfsUrl(image),
+      name,
+    };
+  } catch (error) {
+    console.error(error);
+    return {
+      description: '',
+      image: '',
+      name: '',
+    };
+  }
 };

@@ -29,7 +29,7 @@ export const useNft = (tokenId: number) => {
   const isLoading = ref<boolean>(true);
   const { currentNetworkIdx } = useNetworkInfo();
 
-  const chunkyAddress =
+  const baseContractAddress =
     String(providerEndpoints[Number(currentNetworkIdx.value)].baseContractAddress![0]) || '';
 
   const partsAddress = String(providerEndpoints[Number(currentNetworkIdx.value)].partsAddress);
@@ -37,7 +37,13 @@ export const useNft = (tokenId: number) => {
   const rmrkNftService = container.get<IRmrkNftService>(Symbols.RmrkNftService) || '';
 
   const fetchNftParts = async (): Promise<void> => {
-    parts.value = await readNft(chunkyAddress, partsAddress, tokenId, currentAccount.value, $api!);
+    parts.value = await readNft(
+      baseContractAddress,
+      partsAddress,
+      tokenId,
+      currentAccount.value,
+      $api!
+    );
     isLoading.value = false;
   };
 
@@ -46,7 +52,6 @@ export const useNft = (tokenId: number) => {
     if ($api) {
       const id = IdBuilder.U64(tokenId);
       const contract = new Contract(contractAddress, currentAccount.value, $api);
-      console.log('contract', contract);
       const assets = await contract.query.getAcceptedTokenAssets(id);
       if (assets.value.err) {
         throw assets.value.err;
@@ -73,7 +78,7 @@ export const useNft = (tokenId: number) => {
     console.log('unequipping', slot);
     if (slot) {
       await rmrkNftService.unequip({
-        contractAddress: chunkyAddress,
+        contractAddress: baseContractAddress,
         tokenId,
         slotId: slot.toString(),
         senderAddress: currentAccount.value,
@@ -99,7 +104,7 @@ export const useNft = (tokenId: number) => {
       const assetId = assets ? assets[assetIndex]?.id.toString() : '1';
 
       await rmrkNftService.equip({
-        parentContractAddress: chunkyAddress,
+        parentContractAddress: baseContractAddress,
         tokenId: { u64: tokenId },
         assetId: parentAssetToEquip,
         slot: Number(slot.toString()),
@@ -116,7 +121,7 @@ export const useNft = (tokenId: number) => {
     tokenId: number
   ): Promise<Map<Id, (ExtendedAsset | null)[]> | null> => {
     const children = await getEquippableChildren(
-      chunkyAddress,
+      baseContractAddress,
       tokenId,
       $api!,
       currentAccount.value
@@ -140,7 +145,7 @@ export const useNft = (tokenId: number) => {
     unequip,
     getChildrenToEquipPreview,
     getToken,
-    chunkyAddress,
+    baseContractAddress,
     partsAddress,
   };
 };
