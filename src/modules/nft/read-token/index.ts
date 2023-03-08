@@ -11,15 +11,6 @@ import { IdBuilder } from 'src/modules/nft/rmrk-contract';
 import Contract from '../rmrk-contract/types/contracts/rmrk_contract';
 import axios from 'axios';
 
-// "refTime: 4900005895"
-// "proofSize: 42866"
-const REF_TIME = 9480453976;
-const PROOF_SIZE = 531072;
-// const REF_TIME = 4900005895;
-// const PROOF_SIZE = 42866;
-// const REF_TIME = 4690845427;
-// const PROOF_SIZE = 1208;
-
 interface EquippableData {
   equippableGroupId: string;
   assetUri: string;
@@ -226,13 +217,14 @@ export const unequipSlot = async ({
     slotId
   );
 
-  // const gasLimit = api.registry.createType('WeightV2', gasRequired) as WeightV2;
-  const gasLimit = api.registry.createType('WeightV2', initialGasLimit) as WeightV2;
   const transaction = contract.tx['equippable::unequip'](
-    { gasLimit: gasLimit.refTime.toBn().muln(2) },
+    {
+      gasLimit: getGas(contract, gasRequired),
+    },
     { u64: tokenId },
     slotId
   );
+
   return transaction;
 };
 
@@ -285,11 +277,18 @@ const getRmrkContract = ({ api, address }: { api: ApiPromise; address: string })
   const contract = new ContractPromise(api, abi, address);
   if (!contract || contract === null) new Error('There is no contract found');
 
-  const initialGasLimit = contract.registry.createType('WeightV2', {
-    proofSize: PROOF_SIZE,
-    refTime: REF_TIME,
-  });
+  const initialGasLimit = contract.registry.createType(
+    'WeightV2',
+    api.consts.system.blockWeights['maxBlock']
+  );
   return { contract, initialGasLimit };
+};
+
+const getGas = (contract: ContractPromise, gasRequired: WeightV2): WeightV2 => {
+  return contract.registry.createType('WeightV2', {
+    proofSize: gasRequired.proofSize.toBn().muln(2),
+    refTime: gasRequired.refTime.toBn().muln(2),
+  });
 };
 
 export const equipSlot = async ({
@@ -314,9 +313,10 @@ export const equipSlot = async ({
     childAssetId
   );
 
-  const gasLimit = api.registry.createType('WeightV2', gasRequired) as WeightV2;
   const transaction = contract.tx['equippable::equip'](
-    { gasLimit: gasLimit.refTime.toBn().muln(2) },
+    {
+      gasLimit: getGas(contract, gasRequired),
+    },
     IdBuilder.U64(tokenId.u64 ?? 0),
     assetId,
     slot,

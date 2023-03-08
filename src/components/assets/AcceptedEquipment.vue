@@ -38,7 +38,7 @@ export default defineComponent({
     const previews = ref<Map<Id, (ExtendedAsset | null)[]>>();
 
     const getPreviews = async (): Promise<void> => {
-      previews.value = await props.getChildren(props.slotId);
+      previews.value = await props.getChildren(props.tokenId);
     };
 
     watchEffect(async () => {
