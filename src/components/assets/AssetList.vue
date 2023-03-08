@@ -26,7 +26,7 @@
     <div v-if="isShibuya" class="container--example">
       <div>
         <p class="text--xl">Fetching NFTs example</p>
-        <p class="text--lg">Chunky Address: {{ chunkyAddress }}</p>
+        <p class="text--lg">Base Contract Address: {{ baseContractAddress }}</p>
         <p class="text--lg">Parts Address: {{ partsAddress }}</p>
       </div>
 
@@ -108,7 +108,7 @@ export default defineComponent({
 
     // Todo: get from url
     const tokenId = 1;
-    const { parts, unequip, equip, getChildrenToEquipPreview, chunkyAddress, partsAddress } =
+    const { parts, unequip, equip, getChildrenToEquipPreview, baseContractAddress, partsAddress } =
       useNft(tokenId);
     const isSlotEquipped = (part: IBasePart): boolean =>
       !!part.metadataUri && !!part.equippable && part.equippable.length > 0;
@@ -140,7 +140,7 @@ export default defineComponent({
       address,
       dummyList,
       parts,
-      chunkyAddress,
+      baseContractAddress,
       partsAddress,
       tokenId,
       parentInventories,

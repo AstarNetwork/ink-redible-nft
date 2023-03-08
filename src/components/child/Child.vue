@@ -1,5 +1,5 @@
 <template>
-  <div class="wrapper--child">
+  <div v-if="!isFetching" class="wrapper--child">
     <div class="container--child">
       <nft :contract-address="contractAddress" :token-id="tokenId" />
 
@@ -20,11 +20,11 @@
 
       <div class="wrapper-nft-introduction">
         <nft-introduction
-          :id="dummyNft.id"
-          :collection="dummyNft.collection"
-          :description="dummyNft.description"
-          :img="dummyNft.img"
-          :is-valid="dummyNft.isValid"
+          :name="childDetail.name"
+          :description="childDetail.description"
+          :img="dummyParentNft.img"
+          :collection="dummyParentNft.collection"
+          :is-valid="true"
         />
       </div>
       <div class="wrapper--nft-option">
@@ -47,6 +47,7 @@ import Attributes from 'src/components/common/Attributes.vue';
 import ParentInfo from 'src/components/child/ParentInfo.vue';
 import Nft from 'src/components/common/Nft.vue';
 import { useRoute } from 'vue-router';
+import { useChildNft } from 'src/hooks';
 
 export default defineComponent({
   components: { NftIntroduction, Attributes, ParentInfo, Nft },
@@ -54,6 +55,7 @@ export default defineComponent({
     const route = useRoute();
     const contractAddress = route.query.contractAddress?.toString() ?? '';
     const tokenId = route.query.tokenId?.toString() ?? '';
+    const { isFetching, childDetail } = useChildNft(tokenId);
 
     const reload = (): void => {
       window.location.reload();
@@ -97,6 +99,8 @@ export default defineComponent({
       dummyParentNft,
       contractAddress,
       tokenId,
+      isFetching,
+      childDetail,
     };
   },
 });
