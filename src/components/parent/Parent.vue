@@ -30,7 +30,7 @@
 
       <div class="wrapper-nft-introduction">
         <nft-introduction
-          :id="tokenId"
+          :name="tokenId"
           :collection="dummyNft.collection"
           :description="dummyNft.description"
           :img="dummyNft.img"
