@@ -1,18 +1,18 @@
-import { providerEndpoints } from 'src/config/chainEndpoints';
-import { container } from 'src/v2/common';
 import { $api } from 'src/boot/api';
+import { providerEndpoints } from 'src/config/chainEndpoints';
+import { ExtendedAsset, getEquippableChildren, IBasePart, Id, readNft } from 'src/modules/nft';
+import { container } from 'src/v2/common';
 import { ref, watchEffect } from 'vue';
-import { IBasePart, readNft, getEquippableChildren, ExtendedAsset, Id } from 'src/modules/nft';
 
 import { useAccount } from 'src/hooks/useAccount';
+import { useNetworkInfo } from 'src/hooks/useNetworkInfo';
+import { sanitizeIpfsUrl } from 'src/modules/nft/ipfs';
+import { hex2ascii } from 'src/modules/nft/read-token';
+import { IdBuilder } from 'src/modules/nft/rmrk-contract';
+import Contract from 'src/modules/nft/rmrk-contract/types/contracts/rmrk_contract';
+import { Asset } from 'src/modules/nft/rmrk-contract/types/types-returns/rmrk_contract';
 import { IRmrkNftService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
-import Contract from 'src/modules/nft/rmrk-contract/types/contracts/rmrk_contract';
-import { IdBuilder } from 'src/modules/nft/rmrk-contract';
-import { hex2ascii } from 'src/modules/nft/read-token';
-import { Asset } from 'src/modules/nft/rmrk-contract/types/types-returns/rmrk_contract';
-import { sanitizeIpfsUrl } from 'src/modules/nft/ipfs';
-import { useNetworkInfo } from 'src/hooks/useNetworkInfo';
 
 export interface AssetPreview {
   id: number;

@@ -49,7 +49,7 @@ export const useChildNft = (partTokenId: string) => {
     }
   };
 
-  watch([currentAccount, baseContractAddress, partsAddress], setChildDetail, { immediate: true });
+  watch([currentAccount, baseContractAddress, partsAddress], setChildDetail, { immediate: false });
 
   return {
     isFetching,

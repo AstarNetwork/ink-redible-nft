@@ -23,9 +23,14 @@
   width: 74px;
   border-radius: 16px;
   background: $img-background;
+  position: relative;
   @media (min-width: $lg) {
     width: 120px;
   }
+}
+
+.item--img {
+  position: absolute;
 }
 
 .row--nft-img-buttons {

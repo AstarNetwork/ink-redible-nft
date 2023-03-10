@@ -3,10 +3,17 @@
     <div class="box--title">
       <span class="text--parent">{{ $t('parent') }}</span>
     </div>
-    <div class="box-nft--info">
+    <div v-if="equippedParentNft" class="box-nft--info">
       <span>{{ $t('child.equippedInventory') }}</span>
       <div class="row--nft-img-buttons">
-        <img :src="img" alt="parent" class="box--nft-img" />
+        <div class="box--nft-img">
+          <img
+            v-for="(part, index) in equippedParentNft.parts"
+            :key="`part-${index}`"
+            class="item--img"
+            :src="part.metadataUri"
+          />
+        </div>
         <div class="column--nft-right">
           <div class="row--nft-title">
             <span class="text--label">{{ collection }}</span>
@@ -16,17 +23,35 @@
           </div>
           <div class="row--parent-nft-id">
             <span class="text--lg">
-              {{ $t('child.parentNft', { id }) }}
+              {{ $t('child.parentNft', { id: equippedParentNft.parentId }) }}
             </span>
           </div>
           <div class="buttons--lg-screen">
-            <action-buttons :button-width="buttonWidth" :button-height="48" />
+            <action-buttons
+              :button-width="buttonWidth"
+              :button-height="48"
+              :is-equipped="!!equippedParentNft"
+            />
           </div>
         </div>
       </div>
     </div>
+    <div v-else class="box-nft--info">
+      <span>{{ $t('child.unequippedInventory') }}</span>
+      <div class="buttons--lg-screen">
+        <action-buttons
+          :button-width="buttonWidth"
+          :button-height="48"
+          :is-equipped="!!equippedParentNft"
+        />
+      </div>
+    </div>
     <div class="buttons--phone-screen">
-      <action-buttons :button-width="buttonWidth" :button-height="48" />
+      <action-buttons
+        :is-equipped="!!equippedParentNft"
+        :button-width="buttonWidth"
+        :button-height="48"
+      />
     </div>
   </div>
 </template>
@@ -35,6 +60,10 @@ import { defineComponent, ref, computed } from 'vue';
 import { getShortenAddress } from '@astar-network/astar-sdk-core';
 import { useBreakpoints } from 'src/hooks';
 import ActionButtons from 'src/components/child/ActionBurrons.vue';
+import { IdBasePart } from 'src/modules/nft';
+import { useStore } from 'src/store';
+import { useRoute } from 'vue-router';
+
 enum InventoryTab {
   inventory = 'Inventory',
   equipped = 'Equipped',
@@ -47,15 +76,7 @@ export default defineComponent({
       type: String,
       required: true,
     },
-    id: {
-      type: String,
-      required: true,
-    },
     description: {
-      type: String,
-      required: true,
-    },
-    img: {
       type: String,
       required: true,
     },
@@ -66,6 +87,7 @@ export default defineComponent({
     },
   },
   setup(props) {
+    const route = useRoute();
     const { width, screenSize } = useBreakpoints();
     const selectedTab = ref<InventoryTab>(InventoryTab.inventory);
     const setSelectedTab = (isAttribute: boolean): void => {
@@ -79,34 +101,33 @@ export default defineComponent({
     const buttonWidth = computed<number>(() => (width.value > screenSize.xl ? 170 : 142));
     // const buttonWidth = computed<number>(() => (width.value > screenSize.xl ? 124 : 102));
 
-    const dummyItemA = {
-      id: 1,
-      name: 'The Reborn Nebula',
-      description: 'description',
-      img: 'https://astar.network/_nuxt/reading-astar.87a786d8.svg',
-      isValid: true,
-    };
+    const store = useStore();
+    const parentNfts = computed<IdBasePart[]>(() => store.getters['assets/getParentNfts']);
 
-    const dummyItemB = {
-      id: 555,
-      name: 'Starmap',
-      description: 'description',
-      img: require('../../assets/img/parent-example.svg'),
-      isValid: true,
-    };
+    const tokenId = route.query.tokenId?.toString() ?? '';
 
-    const dummyList = [dummyItemA, dummyItemB, dummyItemA, dummyItemB];
-
-    const dummyEquippedList = [dummyItemB, dummyItemA];
+    // Todo: refactor here to make it more scalable
+    const equippedParentNft = computed<IdBasePart | false>(() => {
+      const parentNftsRef = parentNfts.value;
+      if (parentNftsRef) {
+        for (const it of parentNftsRef) {
+          for (const part of it.parts) {
+            if (part.childId === Number(tokenId)) {
+              return it;
+            }
+          }
+        }
+      }
+      return false;
+    });
 
     return {
       selectedTab,
       InventoryTab,
       setSelectedTab,
       getShortenAddress,
-      dummyList,
-      dummyEquippedList,
       buttonWidth,
+      equippedParentNft,
     };
   },
 });

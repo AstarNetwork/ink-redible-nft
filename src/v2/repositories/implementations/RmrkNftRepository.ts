@@ -1,12 +1,16 @@
-import { unequipSlot } from './../../../modules/nft/read-token/index';
-import { IRmrkNftRepository, UnequipCallParam } from 'src/v2/repositories/IRmrkNftRepository';
+import {
+  IRmrkNftRepository,
+  UnequipCallParam,
+  GetParentNftsParam,
+} from 'src/v2/repositories/IRmrkNftRepository';
 import { SubmittableExtrinsic } from '@polkadot/api/types';
 import { ISubmittableResult } from '@polkadot/types/types';
 import { inject, injectable } from 'inversify';
 import { IApi } from 'src/v2/integration';
 import { Symbols } from 'src/v2/symbols';
-import { equipSlot } from 'src/modules/nft/read-token';
+import { equipSlot, fetchAllParentNfts } from 'src/modules/nft/read-token';
 import { EquipCallParam } from './../IRmrkNftRepository';
+import { IdBasePart, unequipSlot } from 'src/modules/nft';
 
 @injectable()
 export class RmrkNftRepository implements IRmrkNftRepository {
@@ -52,5 +56,19 @@ export class RmrkNftRepository implements IRmrkNftRepository {
       api,
     });
     return transaction;
+  }
+
+  public async getParentNfts({
+    mainContractAddress,
+    partsContractAddress,
+    senderAddress,
+  }: GetParentNftsParam): Promise<IdBasePart[]> {
+    const api = await this.api.getApi();
+    return await fetchAllParentNfts({
+      mainContractAddress,
+      partsContractAddress,
+      senderAddress,
+      api,
+    });
   }
 }

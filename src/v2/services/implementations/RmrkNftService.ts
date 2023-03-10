@@ -1,11 +1,12 @@
 import { inject, injectable } from 'inversify';
-import { ParentInventory, queryParentInventories } from 'src/modules/nft';
+import { IdBasePart, ParentInventory, queryParentInventories } from 'src/modules/nft';
 import { Guard } from 'src/v2/common';
 import { IEventAggregator } from 'src/v2/messaging';
 import {
   EquipCallParam,
   IRmrkNftRepository,
   UnequipCallParam,
+  GetParentNftsParam,
 } from 'src/v2/repositories/IRmrkNftRepository';
 import { IWalletService } from 'src/v2/services';
 import { IRmrkNftService } from 'src/v2/services/IRmrkNftService';
@@ -53,5 +54,11 @@ export class RmrkNftService implements IRmrkNftService {
       console.error(error);
       return [];
     }
+  }
+
+  public async fetchParentNfts(param: GetParentNftsParam): Promise<IdBasePart[]> {
+    Guard.ThrowIfUndefined('param', param);
+    const parentNfts = await this.rmrkNftRepository.getParentNfts(param);
+    return parentNfts;
   }
 }

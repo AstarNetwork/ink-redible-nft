@@ -6,6 +6,7 @@ export {
   equipSlot,
   readNft,
   fetchChildDetails,
+  fetchAllParentNfts,
 } from 'src/modules/nft/read-token';
 export { queryParentInventories } from 'src/modules/nft/graphQl';
 
@@ -21,6 +22,8 @@ export interface IBasePart {
   metadataUri?: string;
   isEquippableByAll?: boolean;
   z?: number;
+  childId?: number;
+  childTokenAddress?: string;
 }
 
 export type Asset = {
@@ -46,4 +49,10 @@ export interface ChildDetail {
   description: string;
   image: string;
   name: string;
+}
+
+export interface IdBasePart {
+  parentId: number;
+  parts: IBasePart[];
+  owner: string;
 }

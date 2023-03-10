@@ -1,6 +1,11 @@
 <template>
   <div class="row--buttons">
-    <astar-button :width="buttonWidth" :height="buttonHeight" class="button-action">
+    <astar-button
+      v-if="isEquipped"
+      :width="buttonWidth"
+      :height="buttonHeight"
+      class="button-action"
+    >
       <div class="icon--button">
         <astar-icon-unequip />
       </div>
@@ -8,12 +13,12 @@
     </astar-button>
 
     <!-- Todo: add v-if to the button above  -->
-    <!-- <astar-button :width="buttonWidth" :height="buttonHeight" class="button-action">
+    <astar-button v-else :width="buttonWidth" :height="buttonHeight" class="button-action">
       <div class="icon--button">
         <astar-icon-equip />
       </div>
       <span class="text--button">{{ $t('equip') }}</span>
-    </astar-button> -->
+    </astar-button>
 
     <a href="https://astar.subscan.io/" target="_blank" rel="noopener noreferrer">
       <astar-button :width="buttonWidth" :height="buttonHeight" class="button-action">
@@ -37,6 +42,10 @@ export default defineComponent({
     },
     buttonHeight: {
       type: Number,
+      required: true,
+    },
+    isEquipped: {
+      type: Boolean,
       required: true,
     },
   },

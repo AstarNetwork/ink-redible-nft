@@ -1,6 +1,6 @@
 import { SubmittableExtrinsic } from '@polkadot/api/types';
 import { ISubmittableResult } from '@polkadot/types/types';
-import { Id } from 'src/modules/nft';
+import { Id, IdBasePart } from 'src/modules/nft';
 
 export interface EquipCallParam {
   parentContractAddress: string;
@@ -19,6 +19,11 @@ export interface UnequipCallParam {
   slotId: string;
   senderAddress: string;
 }
+export interface GetParentNftsParam {
+  mainContractAddress: string;
+  partsContractAddress: string;
+  senderAddress: string;
+}
 
 export interface IRmrkNftRepository {
   getEquipCallData(
@@ -27,4 +32,5 @@ export interface IRmrkNftRepository {
   getUnequipCallData(
     param: UnequipCallParam
   ): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>>;
+  getParentNfts(param: GetParentNftsParam): Promise<IdBasePart[]>;
 }
