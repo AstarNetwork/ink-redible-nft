@@ -2,9 +2,9 @@
   <div class="wrapper">
     <header-comp>
       <template #left>
-        <div class="app-logo">
+        <router-link to="/" class="app-logo">
           <img src="../../assets/img/app-logo.svg" alt="app-logo" class="app-logo" />
-        </div>
+        </router-link>
       </template>
       <template v-if="!currentAccount">
         <connect-button @click="openSelectModal">

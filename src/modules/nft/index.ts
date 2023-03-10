@@ -14,6 +14,8 @@ export type ExtendedAsset = Asset & { id: number; gatewayUrl: string; partsAddre
 
 export type PartType = 'None' | 'Slot' | 'Fixed';
 
+export const SAMPLE_WALLET_ADDRESS = 'XLoLJBQoMPHMLXYhdFobSpH5GujRoUH8d1sUtaEtoBG7zaS';
+
 export interface IBasePart {
   id?: string | number;
   partType: PartType;

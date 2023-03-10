@@ -1,7 +1,7 @@
 <template>
   <div v-if="!isFetching" class="wrapper--child">
     <div class="container--child">
-      <nft :contract-address="contractAddress" :token-id="tokenId" />
+      <nft :contract-address="contractAddress" :token-id="childId" />
 
       <div class="buttons">
         <astar-button :width="130" :height="48">
@@ -40,26 +40,25 @@
   </div>
 </template>
 <script lang="ts">
-import { computed, defineComponent, watchEffect } from 'vue';
-import NftIntroduction from 'src/components/common/NftIntroduction.vue';
-import Attributes from 'src/components/common/Attributes.vue';
 import ParentInfo from 'src/components/child/ParentInfo.vue';
+import Attributes from 'src/components/common/Attributes.vue';
 import Nft from 'src/components/common/Nft.vue';
-import { useRoute } from 'vue-router';
-import { useAccount, useChildNft, useNetworkInfo } from 'src/hooks';
-import { IdBasePart } from 'src/modules/nft';
-import { useStore } from 'src/store';
+import NftIntroduction from 'src/components/common/NftIntroduction.vue';
 import { providerEndpoints } from 'src/config/chainEndpoints';
+import { useChildNft, useNetworkInfo } from 'src/hooks';
+import { SAMPLE_WALLET_ADDRESS } from 'src/modules/nft';
+import { useStore } from 'src/store';
+import { computed, defineComponent, watchEffect } from 'vue';
+import { useRoute } from 'vue-router';
 
 export default defineComponent({
   components: { NftIntroduction, Attributes, ParentInfo, Nft },
   setup() {
     const route = useRoute();
-    const { currentAccount } = useAccount();
     const { currentNetworkIdx } = useNetworkInfo();
     const contractAddress = route.query.contractAddress?.toString() ?? '';
-    const tokenId = route.query.tokenId?.toString() ?? '';
-    const { isFetching, childDetail } = useChildNft(tokenId);
+    const childId = route.query.childId?.toString() ?? '';
+    const { isFetching, childDetail } = useChildNft(childId);
     const store = useStore();
 
     const baseContractAddress =
@@ -71,7 +70,7 @@ export default defineComponent({
       await store.dispatch('assets/getParentNfts', {
         mainContractAddress: baseContractAddress,
         partsContractAddress: partsAddress,
-        senderAddress: currentAccount.value,
+        senderAddress: SAMPLE_WALLET_ADDRESS,
       });
     });
 
@@ -116,7 +115,7 @@ export default defineComponent({
       dummySpecifics,
       dummyParentNft,
       contractAddress,
-      tokenId,
+      childId,
       isFetching,
       childDetail,
       // equippedParentNft,

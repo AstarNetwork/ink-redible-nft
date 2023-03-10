@@ -31,6 +31,7 @@
               :button-width="buttonWidth"
               :button-height="48"
               :is-equipped="!!equippedParentNft"
+              :handle-equip="handleEquip"
             />
           </div>
         </div>
@@ -43,6 +44,7 @@
           :button-width="buttonWidth"
           :button-height="48"
           :is-equipped="!!equippedParentNft"
+          :handle-equip="handleEquip"
         />
       </div>
     </div>
@@ -51,6 +53,7 @@
         :is-equipped="!!equippedParentNft"
         :button-width="buttonWidth"
         :button-height="48"
+        :handle-equip="handleEquip"
       />
     </div>
   </div>
@@ -58,11 +61,15 @@
 <script lang="ts">
 import { defineComponent, ref, computed } from 'vue';
 import { getShortenAddress } from '@astar-network/astar-sdk-core';
-import { useBreakpoints } from 'src/hooks';
-import ActionButtons from 'src/components/child/ActionBurrons.vue';
+import { useAccount, useBreakpoints, useNetworkInfo } from 'src/hooks';
+import ActionButtons from 'src/components/child/ActionButtons.vue';
 import { IdBasePart } from 'src/modules/nft';
 import { useStore } from 'src/store';
 import { useRoute } from 'vue-router';
+import { providerEndpoints } from 'src/config/chainEndpoints';
+import { container } from 'src/v2/common';
+import { IRmrkNftService } from 'src/v2/services';
+import { Symbols } from 'src/v2/symbols';
 
 enum InventoryTab {
   inventory = 'Inventory',
@@ -88,6 +95,8 @@ export default defineComponent({
   },
   setup(props) {
     const route = useRoute();
+    const { currentAccount } = useAccount();
+    const { currentNetworkIdx } = useNetworkInfo();
     const { width, screenSize } = useBreakpoints();
     const selectedTab = ref<InventoryTab>(InventoryTab.inventory);
     const setSelectedTab = (isAttribute: boolean): void => {
@@ -121,6 +130,44 @@ export default defineComponent({
       return false;
     });
 
+    const handleEquip = async () => {
+      const rmrkNftService = container.get<IRmrkNftService>(Symbols.RmrkNftService) || '';
+
+      if (equippedParentNft.value) {
+        const baseContractAddress =
+          String(providerEndpoints[Number(currentNetworkIdx.value)].baseContractAddress![0]) || '';
+        const part = equippedParentNft.value.parts.find((it) => tokenId === String(it.childId));
+        await rmrkNftService.unequip({
+          contractAddress: baseContractAddress,
+          tokenId: Number(equippedParentNft.value.parentId),
+          slotId: String(part?.id),
+          senderAddress: currentAccount.value,
+        });
+      } else {
+        const partsAddress = String(
+          providerEndpoints[Number(currentNetworkIdx.value)].partsAddress
+        );
+
+        // TODO see how to handle this
+        // const parentAssetToEquip = '2';
+        // TODO determine asset to equip
+        // Assumption. Asset 0 is preview, asset 1 goes to lowest slot number, asset 2 to next one and so on....
+        // const slots = parts.value.filter((x) => x.partType === 'Slot').map((x) => x.id);
+        // const assetIndex = slots.indexOf(slot) + 1;
+        // const assetId = assets ? assets[assetIndex]?.id.toString() : '1';
+        // await rmrkNftService.equip({
+        //   parentContractAddress: baseContractAddress,
+        //   tokenId: { u64: tokenId },
+        //   assetId: parentAssetToEquip,
+        //   slot: Number(slot.toString()), // 12
+        //   childContractAddress: partsAddress,
+        //   childTokenId: childTokenId,  // {u64: 1}
+        //   childAssetId: assetId ?? '1',
+        //   senderAddress: currentAccount.value,
+        // });
+      }
+    };
+
     return {
       selectedTab,
       InventoryTab,
@@ -128,6 +175,7 @@ export default defineComponent({
       getShortenAddress,
       buttonWidth,
       equippedParentNft,
+      handleEquip,
     };
   },
 });

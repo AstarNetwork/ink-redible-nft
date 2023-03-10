@@ -35,13 +35,12 @@ export default defineComponent({
       async () => {
         if (!currentAccount.value) return;
         const sampleWalletAddress = 'XLoLJBQoMPHMLXYhdFobSpH5GujRoUH8d1sUtaEtoBG7zaS';
-
         await store.dispatch('assets/getParentInventories', {
           // address: currentAccount.value,
           address: sampleWalletAddress,
         });
       },
-      { immediate: false }
+      { immediate: true }
     );
 
     const route = useRoute();

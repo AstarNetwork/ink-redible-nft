@@ -117,7 +117,7 @@ export default defineComponent({
         const childId = Number(JSON.parse(equipmentString).childNft[1].u64);
         const childTokenAddress = String(JSON.parse(equipmentString).childNft[0]);
         const base = networkParam + Path.Child;
-        const url = `${base}?tokenId=${childId}&contractAddress=${childTokenAddress}`;
+        const url = `${base}?childId=${childId}&parentId=${tokenId}&contractAddress=${childTokenAddress}`;
         router.push(url);
       } catch (error) {
         console.error(error);
@@ -128,7 +128,7 @@ export default defineComponent({
 
     const navigateToChildFromInventory = (childId: number, partsAddress: string): void => {
       const base = networkParam + Path.Child;
-      const url = `${base}?tokenId=${childId}&contractAddress=${partsAddress}`;
+      const url = `${base}?childId=${childId}&parentId=${tokenId}&contractAddress=${partsAddress}`;
       router.push(url);
     };
 

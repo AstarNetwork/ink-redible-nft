@@ -14,7 +14,6 @@ import { defineComponent, toRefs } from 'vue';
 import { useBreakpoints } from 'src/hooks';
 
 export default defineComponent({
-  props: {},
   setup(props) {
     const { width, screenSize } = useBreakpoints();
 

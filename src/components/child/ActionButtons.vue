@@ -5,6 +5,7 @@
       :width="buttonWidth"
       :height="buttonHeight"
       class="button-action"
+      @click="handleEquip()"
     >
       <div class="icon--button">
         <astar-icon-unequip />
@@ -13,7 +14,13 @@
     </astar-button>
 
     <!-- Todo: add v-if to the button above  -->
-    <astar-button v-else :width="buttonWidth" :height="buttonHeight" class="button-action">
+    <astar-button
+      v-else
+      :width="buttonWidth"
+      :height="buttonHeight"
+      class="button-action"
+      @click="handleEquip()"
+    >
       <div class="icon--button">
         <astar-icon-equip />
       </div>
@@ -46,6 +53,10 @@ export default defineComponent({
     },
     isEquipped: {
       type: Boolean,
+      required: true,
+    },
+    handleEquip: {
+      type: Function,
       required: true,
     },
   },

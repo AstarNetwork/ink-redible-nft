@@ -75,7 +75,7 @@ export const useNft = (tokenId: number) => {
   };
 
   const unequip = async (slot?: string | number): Promise<void> => {
-    console.log('unequipping', slot);
+    console.log('unequipping', slot); //13
     if (slot) {
       await rmrkNftService.unequip({
         contractAddress: baseContractAddress,
@@ -94,6 +94,9 @@ export const useNft = (tokenId: number) => {
     childTokenId: Id,
     assets: (ExtendedAsset | null)[] | undefined
   ): Promise<void> => {
+    console.log('slot', slot); // 12
+    console.log('childTokenId', childTokenId); // {u64: 1}
+    console.log('assets', assets);
     // TODO see how to handle this
     const parentAssetToEquip = '2';
     if (slot) {
