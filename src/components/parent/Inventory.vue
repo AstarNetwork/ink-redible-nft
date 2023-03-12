@@ -78,7 +78,7 @@ export default defineComponent({
     const { currentNetworkIdx } = useNetworkInfo();
     const router = useRouter();
     const route = useRoute();
-    const tokenId = route.query.tokenId?.toString() ?? '';
+    const parentId = route.query.parentId?.toString() ?? '';
 
     const setAcceptableEquipments = async (): Promise<void> => {
       acceptableEquipments.value = await props.getChildren(props.tokenId);
@@ -110,14 +110,14 @@ export default defineComponent({
             gasLimit: getGasLimit(contract.api),
             storageDepositLimit: null,
           },
-          { u64: tokenId },
+          { u64: parentId },
           id
         );
         const equipmentString = equipment?.toString() as string;
         const childId = Number(JSON.parse(equipmentString).childNft[1].u64);
         const childTokenAddress = String(JSON.parse(equipmentString).childNft[0]);
         const base = networkParam + Path.Child;
-        const url = `${base}?childId=${childId}&parentId=${tokenId}&contractAddress=${childTokenAddress}`;
+        const url = `${base}?childId=${childId}&parentId=${parentId}&contractAddress=${childTokenAddress}`;
         router.push(url);
       } catch (error) {
         console.error(error);
@@ -128,7 +128,7 @@ export default defineComponent({
 
     const navigateToChildFromInventory = (childId: number, partsAddress: string): void => {
       const base = networkParam + Path.Child;
-      const url = `${base}?childId=${childId}&parentId=${tokenId}&contractAddress=${partsAddress}`;
+      const url = `${base}?childId=${childId}&parentId=${parentId}&contractAddress=${partsAddress}`;
       router.push(url);
     };
 

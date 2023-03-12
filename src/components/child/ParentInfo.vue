@@ -4,11 +4,11 @@
       <span class="text--parent">{{ $t('parent') }}</span>
     </div>
     <div v-if="equippedParentNft" class="box-nft--info">
-      <span>{{ $t('child.equippedInventory') }}</span>
+      <span v-if="!isLoading && !isLoadingItem">{{ $t('child.equippedInventory') }}</span>
       <div class="row--nft-img-buttons">
         <div class="box--nft-img">
           <img
-            v-for="(part, index) in equippedParentNft.parts"
+            v-for="(part, index) in parts"
             :key="`part-${index}`"
             class="item--img"
             :src="part.metadataUri"
@@ -23,7 +23,7 @@
           </div>
           <div class="row--parent-nft-id">
             <span class="text--lg">
-              {{ $t('child.parentNft', { id: equippedParentNft.parentId }) }}
+              {{ $t('child.parentNft', { id: parentId }) }}
             </span>
           </div>
           <div class="buttons--lg-screen">
@@ -32,44 +32,43 @@
               :button-height="48"
               :is-equipped="!!equippedParentNft"
               :handle-equip="handleEquip"
+              :is-ready="!isLoadingItem && !isLoading"
             />
           </div>
         </div>
       </div>
     </div>
     <div v-else class="box-nft--info">
-      <span>{{ $t('child.unequippedInventory') }}</span>
+      <span v-if="!isLoading && !isLoadingItem">{{ $t('child.unequippedInventory') }}</span>
       <div class="buttons--lg-screen">
         <action-buttons
           :button-width="buttonWidth"
           :button-height="48"
-          :is-equipped="!!equippedParentNft"
+          :is-equipped="equippedParentNft"
           :handle-equip="handleEquip"
+          :is-ready="!isLoadingItem && !isLoading"
         />
       </div>
     </div>
     <div class="buttons--phone-screen">
       <action-buttons
-        :is-equipped="!!equippedParentNft"
+        :is-equipped="equippedParentNft"
         :button-width="buttonWidth"
         :button-height="48"
         :handle-equip="handleEquip"
+        :is-loading-item="isLoadingItem"
+        :is-ready="!isLoadingItem && !isLoading"
       />
     </div>
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, ref, computed } from 'vue';
 import { getShortenAddress } from '@astar-network/astar-sdk-core';
-import { useAccount, useBreakpoints, useNetworkInfo } from 'src/hooks';
 import ActionButtons from 'src/components/child/ActionButtons.vue';
-import { IdBasePart } from 'src/modules/nft';
-import { useStore } from 'src/store';
+import { useBreakpoints, useNft } from 'src/hooks';
+import { ExtendedAsset, Id } from 'src/modules/nft';
+import { computed, defineComponent, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
-import { providerEndpoints } from 'src/config/chainEndpoints';
-import { container } from 'src/v2/common';
-import { IRmrkNftService } from 'src/v2/services';
-import { Symbols } from 'src/v2/symbols';
 
 enum InventoryTab {
   inventory = 'Inventory',
@@ -95,8 +94,15 @@ export default defineComponent({
   },
   setup(props) {
     const route = useRoute();
-    const { currentAccount } = useAccount();
-    const { currentNetworkIdx } = useNetworkInfo();
+    const childId = route.query.childId?.toString() ?? '';
+    const parentId = route.query.parentId?.toString() ?? '';
+    const itemPreview = ref<[Id, (ExtendedAsset | null)[]]>();
+    const isLoadingItem = ref<boolean>(false);
+
+    const { parts, unequip, equip, getChildrenToEquipPreview, isLoading } = useNft(
+      Number(parentId)
+    );
+
     const { width, screenSize } = useBreakpoints();
     const selectedTab = ref<InventoryTab>(InventoryTab.inventory);
     const setSelectedTab = (isAttribute: boolean): void => {
@@ -108,74 +114,57 @@ export default defineComponent({
     };
 
     const buttonWidth = computed<number>(() => (width.value > screenSize.xl ? 170 : 142));
-    // const buttonWidth = computed<number>(() => (width.value > screenSize.xl ? 124 : 102));
 
-    const store = useStore();
-    const parentNfts = computed<IdBasePart[]>(() => store.getters['assets/getParentNfts']);
-
-    const tokenId = route.query.tokenId?.toString() ?? '';
-
-    // Todo: refactor here to make it more scalable
-    const equippedParentNft = computed<IdBasePart | false>(() => {
-      const parentNftsRef = parentNfts.value;
-      if (parentNftsRef) {
-        for (const it of parentNftsRef) {
-          for (const part of it.parts) {
-            if (part.childId === Number(tokenId)) {
-              return it;
-            }
+    const equippedParentNft = computed<boolean>(() => {
+      if (parts.value) {
+        for (const part of parts.value) {
+          if (part.childId === Number(childId)) {
+            return true;
           }
         }
       }
       return false;
     });
 
+    const setItemPreview = async (): Promise<void> => {
+      if (!equippedParentNft.value && !isLoading.value) {
+        isLoadingItem.value = true;
+        const preview = await getChildrenToEquipPreview(Number(parentId));
+        if (!preview) return;
+        const p = Array.from(preview).find((it) => it[0].u64 === Number(childId));
+        itemPreview.value = p;
+        isLoadingItem.value = false;
+      }
+    };
+
+    watch([equippedParentNft, isLoading], setItemPreview, { immediate: true });
+
     const handleEquip = async () => {
-      const rmrkNftService = container.get<IRmrkNftService>(Symbols.RmrkNftService) || '';
-
       if (equippedParentNft.value) {
-        const baseContractAddress =
-          String(providerEndpoints[Number(currentNetworkIdx.value)].baseContractAddress![0]) || '';
-        const part = equippedParentNft.value.parts.find((it) => tokenId === String(it.childId));
-        await rmrkNftService.unequip({
-          contractAddress: baseContractAddress,
-          tokenId: Number(equippedParentNft.value.parentId),
-          slotId: String(part?.id),
-          senderAddress: currentAccount.value,
-        });
+        const part = parts.value.find((it) => it.childId === Number(childId));
+        await unequip(Number(part?.id));
       } else {
-        const partsAddress = String(
-          providerEndpoints[Number(currentNetworkIdx.value)].partsAddress
-        );
-
-        // TODO see how to handle this
-        // const parentAssetToEquip = '2';
-        // TODO determine asset to equip
-        // Assumption. Asset 0 is preview, asset 1 goes to lowest slot number, asset 2 to next one and so on....
-        // const slots = parts.value.filter((x) => x.partType === 'Slot').map((x) => x.id);
-        // const assetIndex = slots.indexOf(slot) + 1;
-        // const assetId = assets ? assets[assetIndex]?.id.toString() : '1';
-        // await rmrkNftService.equip({
-        //   parentContractAddress: baseContractAddress,
-        //   tokenId: { u64: tokenId },
-        //   assetId: parentAssetToEquip,
-        //   slot: Number(slot.toString()), // 12
-        //   childContractAddress: partsAddress,
-        //   childTokenId: childTokenId,  // {u64: 1}
-        //   childAssetId: assetId ?? '1',
-        //   senderAddress: currentAccount.value,
-        // });
+        const p = itemPreview.value;
+        if (!p) return;
+        // Memo: find a way to select the position (such as right or left hand) from UI
+        const slotLocation = parts.value.find((it) => it.partType === 'Slot' && !it.childId);
+        const slotId = Number(slotLocation?.id);
+        await equip(slotId, p[0], p[1]);
       }
     };
 
     return {
       selectedTab,
       InventoryTab,
-      setSelectedTab,
-      getShortenAddress,
       buttonWidth,
       equippedParentNft,
+      parts,
+      parentId,
+      isLoadingItem,
+      isLoading,
       handleEquip,
+      setSelectedTab,
+      getShortenAddress,
     };
   },
 });

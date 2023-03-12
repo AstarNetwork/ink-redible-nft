@@ -58,6 +58,7 @@ export default defineComponent({
     const { currentNetworkIdx } = useNetworkInfo();
     const contractAddress = route.query.contractAddress?.toString() ?? '';
     const childId = route.query.childId?.toString() ?? '';
+    const parentId = route.query.parentId?.toString() ?? '';
     const { isFetching, childDetail } = useChildNft(childId);
     const store = useStore();
 
