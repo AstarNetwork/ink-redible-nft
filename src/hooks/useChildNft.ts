@@ -3,7 +3,6 @@ import { $api } from 'src/boot/api';
 import { providerEndpoints } from 'src/config/chainEndpoints';
 import { ref, watch, computed } from 'vue';
 
-import { useAccount } from 'src/hooks/useAccount';
 import { useNetworkInfo } from 'src/hooks/useNetworkInfo';
 import { ChildDetail, fetchChildDetails } from 'src/modules/nft';
 

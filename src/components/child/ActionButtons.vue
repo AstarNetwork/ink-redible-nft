@@ -1,18 +1,13 @@
 <template>
   <div v-if="isReady" class="row--buttons">
-    <astar-button
-      :width="buttonWidth"
-      :height="buttonHeight"
-      class="button-action"
-      @click="handleEquip()"
-    >
-      <div v-if="isEquipped">
+    <astar-button :width="buttonWidth" :height="buttonHeight" @click="handleEquip()">
+      <div v-if="isEquipped" class="button-action">
         <div class="icon--button">
           <astar-icon-unequip />
         </div>
         <span class="text--button">{{ $t('unequip') }}</span>
       </div>
-      <div v-else>
+      <div v-else class="button-action">
         <div class="icon--button">
           <astar-icon-equip />
         </div>
@@ -28,8 +23,8 @@
       </astar-button>
     </a>
   </div>
-  <div v-else>
-    <h1>Loading...</h1>
+  <div v-else class="container--spinner">
+    <q-spinner-gears color="primary" size="56px" />
   </div>
 </template>
 <script lang="ts">

@@ -81,7 +81,7 @@
 import { useAccount, useBreakpoints, useNft, useNetworkInfo } from 'src/hooks';
 import { defineComponent, computed, watchEffect } from 'vue';
 import { getShortenAddress } from '@astar-network/astar-sdk-core';
-import { IBasePart, IdBasePart, ParentInventory } from 'src/modules/nft';
+import { IBasePart, ParentInventory } from 'src/modules/nft';
 import { endpointKey } from 'src/config/chainEndpoints';
 import AcceptedEquipment from 'src/components/assets/AcceptedEquipment.vue';
 import ParentCard from 'src/components/assets/ParentCard.vue';

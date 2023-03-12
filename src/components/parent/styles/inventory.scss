@@ -86,3 +86,13 @@
   align-items: center;
   flex-direction: column;
 }
+
+.container--spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  @media (min-width: $md) {
+    margin-top: 100px;
+  }
+}

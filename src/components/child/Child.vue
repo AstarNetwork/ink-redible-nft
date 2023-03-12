@@ -44,36 +44,17 @@ import ParentInfo from 'src/components/child/ParentInfo.vue';
 import Attributes from 'src/components/common/Attributes.vue';
 import Nft from 'src/components/common/Nft.vue';
 import NftIntroduction from 'src/components/common/NftIntroduction.vue';
-import { providerEndpoints } from 'src/config/chainEndpoints';
-import { useChildNft, useNetworkInfo } from 'src/hooks';
-import { SAMPLE_WALLET_ADDRESS } from 'src/modules/nft';
-import { useStore } from 'src/store';
-import { computed, defineComponent, watchEffect } from 'vue';
+import { useChildNft } from 'src/hooks';
+import { computed, defineComponent } from 'vue';
 import { useRoute } from 'vue-router';
 
 export default defineComponent({
   components: { NftIntroduction, Attributes, ParentInfo, Nft },
   setup() {
     const route = useRoute();
-    const { currentNetworkIdx } = useNetworkInfo();
     const contractAddress = route.query.contractAddress?.toString() ?? '';
     const childId = route.query.childId?.toString() ?? '';
-    const parentId = route.query.parentId?.toString() ?? '';
     const { isFetching, childDetail } = useChildNft(childId);
-    const store = useStore();
-
-    const baseContractAddress =
-      String(providerEndpoints[Number(currentNetworkIdx.value)].baseContractAddress![0]) || '';
-
-    const partsAddress = String(providerEndpoints[Number(currentNetworkIdx.value)].partsAddress);
-
-    watchEffect(async () => {
-      await store.dispatch('assets/getParentNfts', {
-        mainContractAddress: baseContractAddress,
-        partsContractAddress: partsAddress,
-        senderAddress: SAMPLE_WALLET_ADDRESS,
-      });
-    });
 
     const reload = (): void => {
       window.location.reload();
@@ -111,7 +92,6 @@ export default defineComponent({
 
     return {
       dummyNft,
-      reload,
       dummyItems,
       dummySpecifics,
       dummyParentNft,
@@ -119,7 +99,7 @@ export default defineComponent({
       childId,
       isFetching,
       childDetail,
-      // equippedParentNft,
+      reload,
     };
   },
 });

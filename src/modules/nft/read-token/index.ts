@@ -3,14 +3,13 @@ import { Abi, ContractPromise } from '@polkadot/api-contract';
 import type { SubmittableExtrinsic } from '@polkadot/api/types';
 import type { WeightV2 } from '@polkadot/types/interfaces';
 import { ISubmittableResult } from '@polkadot/types/types';
-import { ChildDetail, ExtendedAsset, IBasePart, Id, IdBasePart } from 'src/modules/nft';
+import { ChildDetail, ExtendedAsset, IBasePart, Id } from 'src/modules/nft';
 import { rmrkAbi } from 'src/modules/nft/abi/rmrk';
 import { getContract, getGasLimit } from 'src/modules/nft/common-api';
 import { sanitizeIpfsUrl } from 'src/modules/nft/ipfs';
 import { IdBuilder } from 'src/modules/nft/rmrk-contract';
-import Contract from '../rmrk-contract/types/contracts/rmrk_contract';
+import Contract from 'src/modules/nft/rmrk-contract/types/contracts/rmrk_contract';
 import axios from 'axios';
-import { createNumberArray } from 'src/modules/common';
 
 interface EquippableData {
   equippableGroupId: string;
@@ -80,7 +79,7 @@ export const readNft = async (
         return [];
       }
       for (let assetId of assetIds) {
-        const { result, output } = await contract.query['equippable::getAssetAndEquippableData'](
+        const { output } = await contract.query['equippable::getAssetAndEquippableData'](
           address,
           {
             gasLimit: getGasLimit(contract.api),
@@ -157,27 +156,6 @@ export const readNft = async (
 
           // get equipment
           if (equippableParts.length > 0) {
-            // determine base Uri
-            // get collection id
-            const { output: collectionId } = await partsContract.query['psp34::collectionId'](
-              address,
-              {
-                gasLimit: getGasLimit(contract.api),
-                storageDepositLimit: null,
-              }
-            );
-
-            // get baseUri (passed as constructor argument during the contract initialization.)
-            const { output: baseUri } = await partsContract.query['psp34Metadata::getAttribute'](
-              address,
-              {
-                gasLimit: getGasLimit(contract.api),
-                storageDepositLimit: null,
-              },
-              collectionId?.toHuman(),
-              'baseUri'
-            );
-
             for (let ePart of equippableParts) {
               const { output: equipment } = await contract.query['equippable::getEquipment'](
                 address,
@@ -196,11 +174,6 @@ export const readNft = async (
               const equipmentJson = JSON.parse(equipment?.toString() ?? '');
               // TODO use TypeChain or similar
               if (equipmentJson && equipmentJson.childNft) {
-                // const partTokenId = equipmentJson.childNft[1].u64;
-                // const metadataJsonUri = `${sanitizeIpfsUrl(
-                //   baseUri?.toHuman()?.toString()
-                // )}/${partTokenId}.json`;
-
                 const { output: assetUri } = await partsContract.query['multiAsset::getAssetUri'](
                   address,
                   {
@@ -209,17 +182,12 @@ export const readNft = async (
                   },
                   equipmentJson.childAssetId
                 );
-
-                // fetch json through IPFS gateway
-                // const metadataJson = await axios.get(metadataJsonUri);
-                // ePart.metadataUri = sanitizeIpfsUrl(metadataJson.data.image);
                 ePart.metadataUri = sanitizeIpfsUrl(assetUri?.toHuman()?.toString());
               }
             }
           }
 
           // Now we have all IPFS urls and we are ready to render parts.
-          // console.log(sortedParts);
           return sortedParts;
         }
       }
@@ -229,57 +197,9 @@ export const readNft = async (
 
     return [];
   } catch (error) {
+    console.error(error);
     return [];
   }
-};
-
-export const fetchAllParentNfts = async ({
-  mainContractAddress,
-  partsContractAddress,
-  senderAddress,
-  api,
-}: {
-  mainContractAddress: string;
-  partsContractAddress: string;
-  senderAddress: string;
-  api: ApiPromise;
-}): Promise<IdBasePart[]> => {
-  const contract = await getContract({ api, address: mainContractAddress });
-  const { output } = await contract.query['psp34::totalSupply'](senderAddress, {
-    gasLimit: getGasLimit(contract.api),
-    storageDepositLimit: null,
-  });
-  const totalSupply = Number(output?.toJSON());
-
-  const getOwnerOf = async (parentId: number): Promise<string> => {
-    const { output } = await contract.query['psp34::ownerOf'](
-      senderAddress,
-      {
-        gasLimit: getGasLimit(contract.api),
-        storageDepositLimit: null,
-      },
-      { u64: parentId }
-    );
-    return output?.toString() || '';
-  };
-
-  const parents = (await Promise.all(
-    createNumberArray(totalSupply)
-      .map(async (parentId: number) => {
-        try {
-          const [part, owner] = await Promise.all([
-            readNft(mainContractAddress, partsContractAddress, parentId, senderAddress, api),
-            getOwnerOf(parentId),
-          ]);
-          return { parentId, parts: part, owner };
-        } catch (error) {
-          console.error;
-        }
-      })
-      .filter((it) => it !== undefined)
-  )) as IdBasePart[];
-
-  return parents;
 };
 
 export const unequipSlot = async ({
@@ -290,7 +210,6 @@ export const unequipSlot = async ({
   senderAddress,
 }: UnequipSlot): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> => {
   const { initialGasLimit, contract } = getRmrkContract({ api, address: contractAddress });
-  const apiBlockWeight = await api.query.system.blockWeight();
 
   const { gasRequired } = await contract.query['equippable::unequip'](
     senderAddress,

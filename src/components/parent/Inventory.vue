@@ -9,17 +9,22 @@
       />
     </div>
 
-    <div v-if="selectedTab === InventoryTab.inventory" class="wrapper--items">
-      <div
-        v-for="[k, v] in acceptableEquipments"
-        :key="Number(k.u64)"
-        class="card--item"
-        @click="navigateToChildFromInventory(Number(k.u64), String(v[0]?.partsAddress))"
-      >
-        <div class="box--nft-img">
-          <img :src="v[0]?.gatewayUrl" :alt="String(v[0]?.id)" class="img--item" />
+    <div v-if="selectedTab === InventoryTab.inventory">
+      <div v-if="isLoadingInventory" class="wrapper--items container--spinner">
+        <q-spinner-gears color="primary" :size="gearHeight" />
+      </div>
+      <div v-else class="wrapper--items">
+        <div
+          v-for="[k, v] in acceptableEquipments"
+          :key="Number(k.u64)"
+          class="card--item"
+          @click="navigateToChildFromInventory(Number(k.u64), String(v[0]?.partsAddress))"
+        >
+          <div class="box--nft-img">
+            <img :src="v[0]?.gatewayUrl" :alt="String(v[0]?.id)" class="img--item" />
+          </div>
+          <span class="text--name">{{ v[0]?.id }}</span>
         </div>
-        <span class="text--name">{{ v[0]?.id }}</span>
       </div>
     </div>
     <div v-else class="wrapper--items">
@@ -39,16 +44,13 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, ref, PropType, computed, watchEffect } from 'vue';
-import ModeTabs from 'src/components/common/ModeTabs.vue';
 import { getShortenAddress } from '@astar-network/astar-sdk-core';
+import ModeTabs from 'src/components/common/ModeTabs.vue';
+import { useBreakpoints } from 'src/hooks';
 import { ExtendedAsset, IBasePart, Id } from 'src/modules/nft';
 import { networkParam, Path } from 'src/router/routes';
-import { useAccount, useNetworkInfo } from 'src/hooks';
-import { providerEndpoints } from 'src/config/chainEndpoints';
-import { useRouter, useRoute } from 'vue-router';
-import { getContract, getGasLimit } from 'src/modules/nft/common-api';
-import { $api } from 'src/boot/api';
+import { computed, defineComponent, PropType, ref, watchEffect } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 
 enum InventoryTab {
   inventory = 'Inventory',
@@ -74,14 +76,18 @@ export default defineComponent({
   setup(props) {
     const selectedTab = ref<InventoryTab>(InventoryTab.inventory);
     const acceptableEquipments = ref<Map<Id, (ExtendedAsset | null)[]>>();
-    const { currentAccount } = useAccount();
-    const { currentNetworkIdx } = useNetworkInfo();
     const router = useRouter();
     const route = useRoute();
     const parentId = route.query.parentId?.toString() ?? '';
+    const isLoadingInventory = ref<boolean>(false);
+
+    const { width, screenSize } = useBreakpoints();
+    const gearHeight = computed<string>(() => (width.value > screenSize.md ? '100px' : '48px'));
 
     const setAcceptableEquipments = async (): Promise<void> => {
+      isLoadingInventory.value = true;
       acceptableEquipments.value = await props.getChildren(props.tokenId);
+      isLoadingInventory.value = false;
     };
 
     const setSelectedTab = (isAttribute: boolean): void => {
@@ -98,32 +104,11 @@ export default defineComponent({
 
     const equipped = computed<IBasePart[]>(() => props.parts.filter((it) => isSlotEquipped(it)));
 
-    const navigateToChildFromEquipped = async (id: number): Promise<void> => {
-      try {
-        const mainContractAddress =
-          String(providerEndpoints[Number(currentNetworkIdx.value)].baseContractAddress![0]) || '';
-        const contract = await getContract({ api: $api!, address: mainContractAddress });
-
-        const { output: equipment } = await contract.query['equippable::getEquipment'](
-          currentAccount.value,
-          {
-            gasLimit: getGasLimit(contract.api),
-            storageDepositLimit: null,
-          },
-          { u64: parentId },
-          id
-        );
-        const equipmentString = equipment?.toString() as string;
-        const childId = Number(JSON.parse(equipmentString).childNft[1].u64);
-        const childTokenAddress = String(JSON.parse(equipmentString).childNft[0]);
-        const base = networkParam + Path.Child;
-        const url = `${base}?childId=${childId}&parentId=${parentId}&contractAddress=${childTokenAddress}`;
-        router.push(url);
-      } catch (error) {
-        console.error(error);
-        const fallback = networkParam + Path.Assets;
-        router.push(fallback);
-      }
+    const navigateToChildFromEquipped = (id: number): void => {
+      const base = networkParam + Path.Child;
+      const part = props.parts.find((it) => it.id === id);
+      const url = `${base}?childId=${part?.childId}&parentId=${parentId}&contractAddress=${part?.childTokenAddress}`;
+      router.push(url);
     };
 
     const navigateToChildFromInventory = (childId: number, partsAddress: string): void => {
@@ -139,6 +124,8 @@ export default defineComponent({
       InventoryTab,
       equipped,
       acceptableEquipments,
+      isLoadingInventory,
+      gearHeight,
       setSelectedTab,
       getShortenAddress,
       isSlot,

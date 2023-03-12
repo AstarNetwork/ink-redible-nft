@@ -6,7 +6,6 @@ export {
   equipSlot,
   readNft,
   fetchChildDetails,
-  fetchAllParentNfts,
 } from 'src/modules/nft/read-token';
 export { queryParentInventories } from 'src/modules/nft/graphQl';
 
@@ -14,6 +13,7 @@ export type ExtendedAsset = Asset & { id: number; gatewayUrl: string; partsAddre
 
 export type PartType = 'None' | 'Slot' | 'Fixed';
 
+// Memo: use for fetching NFT's metadata without connecting wallet (it doesn't matter which address is being used)
 export const SAMPLE_WALLET_ADDRESS = 'XLoLJBQoMPHMLXYhdFobSpH5GujRoUH8d1sUtaEtoBG7zaS';
 
 export interface IBasePart {
@@ -51,10 +51,4 @@ export interface ChildDetail {
   description: string;
   image: string;
   name: string;
-}
-
-export interface IdBasePart {
-  parentId: number;
-  parts: IBasePart[];
-  owner: string;
 }
