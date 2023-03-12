@@ -9,6 +9,9 @@
   margin-right: -16px;
   width: 100vw;
   overflow: scroll;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+
   @media (min-width: $md) {
     max-width: 380px;
     margin-left: 0px;
@@ -17,6 +20,10 @@
     padding: 36px 32px;
     max-height: 462px;
   }
+}
+
+.wrapper--attributes::-webkit-scrollbar {
+  display: none;
 }
 
 .wrapper--mode-tabs {

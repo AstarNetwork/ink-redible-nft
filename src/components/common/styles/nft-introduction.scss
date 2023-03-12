@@ -9,15 +9,18 @@
   margin-left: -16px;
   margin-right: -16px;
   width: 100vw;
+
   @media (min-width: $md) {
     margin-left: 0px;
     margin-right: 0px;
     border-radius: 16px;
     padding: 36px 32px;
   }
+
   @media (min-width: $lg) {
     max-width: 940px;
   }
+
   @media (min-width: $xl) {
     max-width: 1026px;
   }
@@ -37,6 +40,7 @@
   align-items: center;
   padding-top: 34px;
   margin-bottom: 24px;
+
   @media (min-width: $md) {
     padding-top: 44px;
   }
@@ -58,8 +62,7 @@
   background: $img-background;
 }
 
-.column--nft-title {
-}
+.column--nft-title {}
 
 .row--title-valid {
   display: flex;
@@ -68,6 +71,12 @@
 
 .box--description {
   overflow: scroll;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.box--description::-webkit-scrollbar {
+  display: none;
 }
 
 .icon--valid {

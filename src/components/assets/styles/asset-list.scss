@@ -63,6 +63,7 @@
     grid-template-columns: repeat(auto-fill, 256px);
     row-gap: 40px;
   }
+
   @media (min-width: $lg) {
     justify-content: flex-start;
   }
@@ -74,12 +75,19 @@
   border-radius: 16px;
   width: 166px;
   height: 280px;
-  overflow: auto;
   cursor: pointer;
+  overflow: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+
   @media (min-width: $md) {
     width: 256px;
     height: 324px;
   }
+}
+
+.card--item::-webkit-scrollbar {
+  display: none;
 }
 
 .row--name {
@@ -103,6 +111,7 @@
 .item--img {
   width: auto;
   height: 130px;
+
   @media (min-width: $md) {
     height: 200px;
   }

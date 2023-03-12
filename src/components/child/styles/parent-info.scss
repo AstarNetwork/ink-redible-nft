@@ -9,6 +9,9 @@
   margin-right: -16px;
   width: 100vw;
   overflow: scroll;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+
   @media (min-width: $md) {
     width: 100%;
     margin-left: 0px;
@@ -19,11 +22,16 @@
   }
 }
 
+.wrapper--parent-info::-webkit-scrollbar {
+  display: none;
+}
+
 .box--nft-img {
   width: 74px;
   border-radius: 16px;
   background: $img-background;
   position: relative;
+
   @media (min-width: $lg) {
     width: 120px;
   }
@@ -37,6 +45,7 @@
   display: grid;
   grid-template-columns: 74px auto;
   column-gap: 14px;
+
   @media (min-width: $lg) {
     grid-template-columns: 120px auto;
   }
@@ -68,8 +77,7 @@
   margin-bottom: 4px;
 }
 
-.icon--valid {
-}
+.icon--valid {}
 
 .row--parent-nft-id {
   margin-bottom: 28px;
@@ -77,6 +85,7 @@
 
 .buttons--lg-screen {
   display: none;
+
   @media (min-width: $lg) {
     display: block;
   }
@@ -84,6 +93,7 @@
 
 .buttons--phone-screen {
   margin-top: 24px;
+
   @media (min-width: $lg) {
     margin-top: 0px;
     display: none;
