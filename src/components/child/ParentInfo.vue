@@ -3,10 +3,17 @@
     <div class="box--title">
       <span class="text--parent">{{ $t('parent') }}</span>
     </div>
-    <div class="box-nft--info">
-      <span>{{ $t('child.equippedInventory') }}</span>
+    <div v-if="equippedParentNft" class="box-nft--info">
+      <span v-if="!isLoading && !isLoadingItem">{{ $t('child.equippedInventory') }}</span>
       <div class="row--nft-img-buttons">
-        <img :src="img" alt="parent" class="box--nft-img" />
+        <div class="box--nft-img" @click="navigateToParent">
+          <img
+            v-for="(part, index) in parts"
+            :key="`part-${index}`"
+            class="item--img"
+            :src="part.metadataUri"
+          />
+        </div>
         <div class="column--nft-right">
           <div class="row--nft-title">
             <span class="text--label">{{ collection }}</span>
@@ -16,25 +23,67 @@
           </div>
           <div class="row--parent-nft-id">
             <span class="text--lg">
-              {{ $t('child.parentNft', { id }) }}
+              {{ $t('child.parentNft', { id: parentId }) }}
             </span>
           </div>
           <div class="buttons--lg-screen">
-            <action-buttons :button-width="buttonWidth" :button-height="48" />
+            <action-buttons
+              :is-disabled="!slotVacant"
+              :button-width="buttonWidth"
+              :button-height="48"
+              :is-equipped="equippedParentNft"
+              :handle-equip="handleEquip"
+              :handle-unequip="handleUnequip"
+              :is-ready="!isLoadingItem && !isLoading"
+            />
           </div>
         </div>
       </div>
     </div>
+    <div v-else class="box-nft--info">
+      <div v-if="!isLoading && !isLoadingItem">
+        <span v-if="!slotVacant" class="text--description">
+          {{ $t('child.parentNotVacant') }}
+        </span>
+        <span v-else class="text--description">
+          {{ $t('child.unequippedInventory') }}
+        </span>
+      </div>
+      <div class="buttons--lg-screen">
+        <action-buttons
+          :is-disabled="!slotVacant"
+          :button-width="buttonWidth"
+          :button-height="48"
+          :is-equipped="equippedParentNft"
+          :handle-equip="handleEquip"
+          :handle-unequip="handleUnequip"
+          :is-ready="!isLoadingItem && !isLoading"
+        />
+      </div>
+    </div>
     <div class="buttons--phone-screen">
-      <action-buttons :button-width="buttonWidth" :button-height="48" />
+      <action-buttons
+        :is-disabled="!slotVacant"
+        :is-equipped="equippedParentNft"
+        :button-width="buttonWidth"
+        :button-height="48"
+        :handle-equip="handleEquip"
+        :handle-unequip="handleUnequip"
+        :is-loading-item="isLoadingItem"
+        :is-ready="!isLoadingItem && !isLoading"
+      />
     </div>
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, ref, computed } from 'vue';
 import { getShortenAddress } from '@astar-network/astar-sdk-core';
-import { useBreakpoints } from 'src/hooks';
-import ActionButtons from 'src/components/child/ActionBurrons.vue';
+import ActionButtons from 'src/components/child/ActionButtons.vue';
+import { useBreakpoints, useNft } from 'src/hooks';
+import { ExtendedAsset, IBasePart, Id } from 'src/modules/nft';
+import { networkParam, Path } from 'src/router/routes';
+import { computed, defineComponent, ref, watch } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+
 enum InventoryTab {
   inventory = 'Inventory',
   equipped = 'Equipped',
@@ -47,15 +96,7 @@ export default defineComponent({
       type: String,
       required: true,
     },
-    id: {
-      type: String,
-      required: true,
-    },
     description: {
-      type: String,
-      required: true,
-    },
-    img: {
       type: String,
       required: true,
     },
@@ -67,46 +108,88 @@ export default defineComponent({
   },
   setup(props) {
     const { width, screenSize } = useBreakpoints();
+    const router = useRouter();
+    const route = useRoute();
+    const childId = String(route.query.childId);
+    const parentId = String(route.query.parentId);
+
+    const { parts, unequip, equip, getChildrenToEquipPreview, isLoading } = useNft(
+      Number(parentId)
+    );
+
+    const itemPreview = ref<[Id, (ExtendedAsset | null)[]]>();
+    const isLoadingItem = ref<boolean>(false);
     const selectedTab = ref<InventoryTab>(InventoryTab.inventory);
+
     const setSelectedTab = (isAttribute: boolean): void => {
-      if (isAttribute) {
-        selectedTab.value = InventoryTab.inventory;
-      } else {
-        selectedTab.value = InventoryTab.equipped;
+      selectedTab.value = isAttribute ? InventoryTab.inventory : InventoryTab.equipped;
+    };
+
+    const buttonWidth = computed<number>(() => {
+      const widthTwoButtons = width.value > screenSize.xl ? 170 : 142;
+      const widthThreeButtons = width.value > screenSize.xl ? 124 : 102;
+      return equippedParentNft ? widthThreeButtons : widthTwoButtons;
+    });
+
+    const slotVacant = computed<IBasePart | undefined>(() => {
+      return parts.value.find((it) => it.partType === 'Slot' && !it.childId);
+    });
+
+    const equippedParentNft = computed<boolean>(() => {
+      if (parts.value) {
+        for (const part of parts.value) {
+          if (part.childId === Number(childId)) {
+            return true;
+          }
+        }
+      }
+      return false;
+    });
+
+    const setItemPreview = async (): Promise<void> => {
+      if (!isLoading.value && slotVacant.value) {
+        isLoadingItem.value = true;
+        const preview = await getChildrenToEquipPreview(Number(parentId));
+        if (!preview) throw Error(`there are no equitable child Nfts with parentId:${parentId}`);
+        itemPreview.value = Array.from(preview).find((it) => it[0].u64 === Number(childId));
+        isLoadingItem.value = false;
       }
     };
 
-    const buttonWidth = computed<number>(() => (width.value > screenSize.xl ? 170 : 142));
-    // const buttonWidth = computed<number>(() => (width.value > screenSize.xl ? 124 : 102));
-
-    const dummyItemA = {
-      id: 1,
-      name: 'The Reborn Nebula',
-      description: 'description',
-      img: 'https://astar.network/_nuxt/reading-astar.87a786d8.svg',
-      isValid: true,
+    const handleUnequip = async (): Promise<void> => {
+      const part = parts.value.find((it) => it.childId === Number(childId));
+      await unequip(Number(part?.id));
     };
 
-    const dummyItemB = {
-      id: 555,
-      name: 'Starmap',
-      description: 'description',
-      img: require('../../assets/img/parent-example.svg'),
-      isValid: true,
+    const handleEquip = async (): Promise<void> => {
+      if (!itemPreview.value || !slotVacant.value) return;
+      // Todo: find a way to select the position (such as right or left hand) from UI
+      const slotId = Number(slotVacant.value.id);
+      await equip(slotId, itemPreview.value[0], itemPreview.value[1]);
     };
 
-    const dummyList = [dummyItemA, dummyItemB, dummyItemA, dummyItemB];
+    const navigateToParent = (): void => {
+      const base = networkParam + Path.Parent;
+      const url = `${base}?parentId=${parentId}`;
+      router.push(url);
+    };
 
-    const dummyEquippedList = [dummyItemB, dummyItemA];
-
+    watch([equippedParentNft, isLoading], setItemPreview, { immediate: true });
     return {
       selectedTab,
       InventoryTab,
+      buttonWidth,
+      equippedParentNft,
+      parts,
+      parentId,
+      isLoadingItem,
+      isLoading,
+      slotVacant,
+      handleUnequip,
+      handleEquip,
       setSelectedTab,
       getShortenAddress,
-      dummyList,
-      dummyEquippedList,
-      buttonWidth,
+      navigateToParent,
     };
   },
 });

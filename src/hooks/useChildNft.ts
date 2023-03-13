@@ -1,8 +1,8 @@
+import { SAMPLE_WALLET_ADDRESS } from './../modules/nft/index';
 import { $api } from 'src/boot/api';
 import { providerEndpoints } from 'src/config/chainEndpoints';
 import { ref, watch, computed } from 'vue';
 
-import { useAccount } from 'src/hooks/useAccount';
 import { useNetworkInfo } from 'src/hooks/useNetworkInfo';
 import { ChildDetail, fetchChildDetails } from 'src/modules/nft';
 
@@ -13,7 +13,6 @@ const initialChildDetail = {
 };
 
 export const useChildNft = (partTokenId: string) => {
-  const { currentAccount } = useAccount();
   const { currentNetworkIdx } = useNetworkInfo();
 
   const isFetching = ref<boolean>(true);
@@ -34,7 +33,7 @@ export const useChildNft = (partTokenId: string) => {
         api: $api!,
         baseContractAddress: baseContractAddress.value,
         partsAddress: partsAddress.value,
-        walletAddress: currentAccount.value,
+        walletAddress: SAMPLE_WALLET_ADDRESS,
         partTokenId,
       });
       childDetail.value = {
@@ -49,7 +48,7 @@ export const useChildNft = (partTokenId: string) => {
     }
   };
 
-  watch([currentAccount, baseContractAddress, partsAddress], setChildDetail, { immediate: true });
+  watch([baseContractAddress, partsAddress], setChildDetail, { immediate: true });
 
   return {
     isFetching,

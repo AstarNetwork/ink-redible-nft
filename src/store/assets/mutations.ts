@@ -1,4 +1,4 @@
-import { ParentInventory } from './../../modules/nft/index';
+import { ParentInventory } from 'src/modules/nft';
 import { MutationTree } from 'vuex';
 import { AssetsStateInterface as State } from './state';
 export interface AssetsMutations<S = State> {

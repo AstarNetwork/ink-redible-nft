@@ -1,4 +1,4 @@
-import { ParentInventory } from './../../modules/nft/index';
+import { ParentInventory } from 'src/modules/nft';
 import { GetterTree } from 'vuex';
 import { StateInterface } from '../index';
 import { AssetsStateInterface as State } from './state';

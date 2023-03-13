@@ -13,7 +13,7 @@
 <script lang="ts">
 import { defineComponent, computed, watch } from 'vue';
 import HeroConnectWallet from 'src/components/assets/HeroConnectWallet.vue';
-import { useAccount } from 'src/hooks';
+import { useAccount, useNetworkInfo } from 'src/hooks';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import AssetList from 'src/components/assets/AssetList.vue';
 import { useRoute } from 'vue-router';
@@ -28,19 +28,19 @@ export default defineComponent({
     const isRequiredConnectWallet = computed<boolean>(
       () => selectedAddress === 'null' && currentAccount.value === ''
     );
+    const { currentNetworkIdx } = useNetworkInfo();
 
     watch(
-      [currentAccount],
+      [currentAccount, currentNetworkIdx],
       async () => {
         if (!currentAccount.value) return;
         const sampleWalletAddress = 'XLoLJBQoMPHMLXYhdFobSpH5GujRoUH8d1sUtaEtoBG7zaS';
-
         await store.dispatch('assets/getParentInventories', {
           // address: currentAccount.value,
           address: sampleWalletAddress,
         });
       },
-      { immediate: false }
+      { immediate: true }
     );
 
     const route = useRoute();

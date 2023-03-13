@@ -1,7 +1,7 @@
 @import 'src/css/quasar.variables.scss';
 
 .wrapper--accepted-equipment {
-  overflow: scroll;
+  overflow: hide;
 }
 
 img {
@@ -15,7 +15,7 @@ img {
   display: flex;
   flex-wrap: wrap;
   background-color: transparent;
-  overflow: scroll;
+  overflow: hide;
   align-items: center;
   column-gap: 12px;
 }

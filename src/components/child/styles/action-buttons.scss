@@ -15,6 +15,7 @@
   column-gap: 4px;
   align-items: center;
   justify-content: center;
+
   @media (min-width: $xl) {
     column-gap: 10px;
   }
@@ -23,4 +24,10 @@
 .text--button {
   font-weight: 600;
   font-size: 14px;
+}
+
+.container--spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

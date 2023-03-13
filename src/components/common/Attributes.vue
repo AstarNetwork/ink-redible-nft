@@ -39,13 +39,13 @@
         <div class="container--specifics">
           <span class="text--attributes-value">Contract</span>
           <a
-            href="https://astar.subscan.io/"
+            :href="subScanContractUrl"
             target="_blank"
             rel="noopener noreferrer"
             class="column--external-link"
           >
             <span class="text--attributes-value">
-              {{ getShortenAddress(dummySpecifics.contract) }}
+              {{ getShortenAddress(contractAddress) }}
             </span>
             <div class="icon--external-link">
               <astar-icon-external-link />
@@ -61,7 +61,7 @@
             class="column--external-link"
           >
             <span class="text--attributes-value">
-              {{ dummySpecifics.tokenId }}
+              {{ tokenId }}
             </span>
             <div class="icon--external-link">
               <astar-icon-external-link />
@@ -97,11 +97,12 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, ref, PropType } from 'vue';
+import { defineComponent, ref, PropType, computed } from 'vue';
 import ModeTabs from 'src/components/common/ModeTabs.vue';
 import { getShortenAddress } from '@astar-network/astar-sdk-core';
 import { useNetworkInfo } from 'src/hooks';
 import { astarChain } from 'src/config/chain';
+import { providerEndpoints } from 'src/config/chainEndpoints';
 
 enum AttributeTab {
   attributes = 'Attributes',
@@ -130,14 +131,21 @@ export default defineComponent({
       type: Object as PropType<any[]>,
       required: true,
     },
-    dummySpecifics: {
-      type: Object,
+    contractAddress: {
+      type: String,
+      required: true,
+    },
+    tokenId: {
+      type: String,
       required: true,
     },
   },
   setup(props) {
     const selectedTab = ref<AttributeTab>(AttributeTab.attributes);
-    const { currentNetworkName } = useNetworkInfo();
+    const { currentNetworkName, currentNetworkIdx } = useNetworkInfo();
+    const subScanContractUrl = computed<string>(
+      () => `${providerEndpoints[currentNetworkIdx.value].subscan}/account/${props.contractAddress}`
+    );
 
     const setSelectedTab = (isAttribute: boolean): void => {
       if (isAttribute) {
@@ -152,6 +160,7 @@ export default defineComponent({
       AttributeTab,
       currentNetworkName,
       astarChain,
+      subScanContractUrl,
       setSelectedTab,
       getShortenAddress,
     };

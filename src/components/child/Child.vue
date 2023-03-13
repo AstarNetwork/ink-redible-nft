@@ -1,7 +1,7 @@
 <template>
   <div v-if="!isFetching" class="wrapper--child">
     <div class="container--child">
-      <nft :contract-address="contractAddress" :token-id="tokenId" />
+      <nft :contract-address="contractAddress" :token-id="childId" />
 
       <div class="buttons">
         <astar-button :width="130" :height="48">
@@ -28,9 +28,12 @@
         />
       </div>
       <div class="wrapper--nft-option">
-        <attributes :dummy-specifics="dummySpecifics" :dummy-items="dummyItems" />
+        <attributes
+          :dummy-items="dummyItems"
+          :token-id="childId"
+          :contract-address="contractAddress"
+        />
         <parent-info
-          :id="dummyParentNft.id"
           :collection="dummyParentNft.collection"
           :description="dummyParentNft.description"
           :img="dummyParentNft.img"
@@ -41,44 +44,27 @@
   </div>
 </template>
 <script lang="ts">
-import { computed, defineComponent } from 'vue';
-import NftIntroduction from 'src/components/common/NftIntroduction.vue';
-import Attributes from 'src/components/common/Attributes.vue';
 import ParentInfo from 'src/components/child/ParentInfo.vue';
+import Attributes from 'src/components/common/Attributes.vue';
 import Nft from 'src/components/common/Nft.vue';
-import { useRoute } from 'vue-router';
+import NftIntroduction from 'src/components/common/NftIntroduction.vue';
 import { useChildNft } from 'src/hooks';
+import { computed, defineComponent } from 'vue';
+import { useRoute } from 'vue-router';
 
 export default defineComponent({
   components: { NftIntroduction, Attributes, ParentInfo, Nft },
   setup() {
     const route = useRoute();
-    const contractAddress = route.query.contractAddress?.toString() ?? '';
-    const tokenId = route.query.tokenId?.toString() ?? '';
-    const { isFetching, childDetail } = useChildNft(tokenId);
+    const contractAddress = String(route.query.contractAddress);
+    const childId = String(route.query.childId);
+    const { isFetching, childDetail } = useChildNft(childId);
 
     const reload = (): void => {
       window.location.reload();
     };
 
-    const dummyNft = computed(() => {
-      return {
-        id: '10',
-        collection: 'Starmap',
-        description:
-          "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-        img: 'https://astar.network/_nuxt/reading-astar.87a786d8.svg',
-        isValid: true,
-      };
-    });
-
     const dummyItems = [{ description: 'Background', value: 'AAA', changeRate: 20 }];
-
-    const dummySpecifics = {
-      contract: 'Axjio5fSDjfdsliZxNxNGhGhsdaZsifdslAbcCb02',
-      tokenId: '10',
-      chain: 'ASTAR',
-    };
 
     const dummyParentNft = computed(() => {
       return {
@@ -92,15 +78,13 @@ export default defineComponent({
     });
 
     return {
-      dummyNft,
-      reload,
       dummyItems,
-      dummySpecifics,
       dummyParentNft,
       contractAddress,
-      tokenId,
+      childId,
       isFetching,
       childDetail,
+      reload,
     };
   },
 });

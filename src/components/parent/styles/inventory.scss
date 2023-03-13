@@ -9,6 +9,9 @@
   margin-right: -16px;
   width: 100vw;
   overflow: scroll;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+
   @media (min-width: $md) {
     width: 100%;
     margin-left: 0px;
@@ -17,6 +20,10 @@
     padding: 36px 32px;
     max-height: 462px;
   }
+}
+
+.wrapper--inventory::-webkit-scrollbar {
+  display: none;
 }
 
 .wrapper--mode-tabs {
@@ -29,9 +36,11 @@
   column-gap: 16px;
   row-gap: 34px;
   justify-content: space-evenly;
+
   @media (min-width: $xl) {
     column-gap: 20px;
   }
+
   :hover {
     .img--item {
       transition: all 0.3s ease 0s;
@@ -75,4 +84,14 @@
   justify-content: center;
   align-items: center;
   flex-direction: column;
+}
+
+.container--spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  @media (min-width: $md) {
+    margin-top: 100px;
+  }
 }
