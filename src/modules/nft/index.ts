@@ -13,6 +13,9 @@ export type ExtendedAsset = Asset & { id: number; gatewayUrl: string; partsAddre
 
 export type PartType = 'None' | 'Slot' | 'Fixed';
 
+// Memo: use for fetching NFT's metadata without connecting wallet (it doesn't matter which address is being used)
+export const SAMPLE_WALLET_ADDRESS = 'XLoLJBQoMPHMLXYhdFobSpH5GujRoUH8d1sUtaEtoBG7zaS';
+
 export interface IBasePart {
   id?: string | number;
   partType: PartType;
@@ -21,6 +24,8 @@ export interface IBasePart {
   metadataUri?: string;
   isEquippableByAll?: boolean;
   z?: number;
+  childId?: number;
+  childTokenAddress?: string;
 }
 
 export type Asset = {

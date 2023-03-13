@@ -9,7 +9,7 @@
           :src="part.metadataUri"
         />
         <div v-if="p.length === 0" class="row--no-images">
-          <span class="text--lg">No images for token ID: {{ tokenId }}</span>
+          <span class="text--lg"> No images for token ID: {{ parentId }} </span>
         </div>
       </div>
 
@@ -30,7 +30,7 @@
 
       <div class="wrapper-nft-introduction">
         <nft-introduction
-          :name="tokenId"
+          :name="parentId"
           :collection="dummyNft.collection"
           :description="dummyNft.description"
           :img="dummyNft.img"
@@ -43,10 +43,11 @@
           ranking-all="2222"
           rarity="34.19"
           :dummy-items="dummyItems"
-          :dummy-specifics="dummySpecifics"
+          :token-id="parentId"
+          :contract-address="baseContractAddress"
         />
         <inventory
-          :token-id="Number(tokenId)"
+          :token-id="Number(parentId)"
           :parts="p"
           :get-children="getChildrenToEquipPreview"
         />
@@ -55,7 +56,7 @@
   </div>
 </template>
 <script lang="ts">
-import { computed, defineComponent, watchEffect } from 'vue';
+import { computed, defineComponent } from 'vue';
 import { useRoute } from 'vue-router';
 import NftIntroduction from 'src/components/common/NftIntroduction.vue';
 import Attributes from 'src/components/common/Attributes.vue';
@@ -67,8 +68,10 @@ export default defineComponent({
   components: { NftIntroduction, Attributes, Inventory },
   setup() {
     const route = useRoute();
-    const tokenId = computed<string>(() => route.query.tokenId as string);
-    const { parts, isLoading, getChildrenToEquipPreview } = useNft(Number(tokenId.value));
+    const parentId = String(route.query.parentId);
+    const { parts, isLoading, getChildrenToEquipPreview, baseContractAddress } = useNft(
+      Number(parentId)
+    );
     const p = computed<IBasePart[]>(() => parts.value as IBasePart[]);
 
     const reload = (): void => {
@@ -92,25 +95,15 @@ export default defineComponent({
       { description: 'Signature', value: 'YES', changeRate: 30 },
     ];
 
-    const dummySpecifics = {
-      contract: 'Axjio5fSDjfdsliZxNxNGhGhsdaZsifdslAbcCb02',
-      tokenId: '555',
-      chain: 'ASTAR',
-    };
-
-    watchEffect(() => {
-      console.log('parts', parts.value);
-    });
-
     return {
       dummyNft,
-      reload,
       dummyItems,
-      dummySpecifics,
       isLoading,
       p,
-      tokenId,
+      parentId,
+      baseContractAddress,
       getChildrenToEquipPreview,
+      reload,
     };
   },
 });

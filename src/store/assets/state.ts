@@ -1,4 +1,4 @@
-import { ParentInventory } from 'src/modules/nft/index';
+import { ParentInventory } from 'src/modules/nft';
 export interface AssetsStateInterface {
   parentInventories: ParentInventory[];
 }

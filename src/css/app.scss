@@ -14,8 +14,9 @@
 @use 'src/css/markdown.scss';
 
 body {
-  overflow: hidden;
+  overflow: hide;
 }
+
 
 main {
   background-image: url('src/assets/img/stars.svg');
@@ -24,7 +25,15 @@ main {
   background-color: #000000;
   backdrop-filter: blur(50px);
   -webkit-backdrop-filter: blur(50px);
+  overflow: hide;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
+
+main::-webkit-scrollbar {
+  display: none;
+}
+
 
 .screen--phone {
   @media (min-width: $sm) {
@@ -34,6 +43,7 @@ main {
 
 .screen--sm {
   display: none;
+
   @media (min-width: $sm) {
     display: block;
   }
@@ -41,6 +51,7 @@ main {
 
 .screen--md {
   display: none;
+
   @media (min-width: $md) {
     display: block;
   }
@@ -48,6 +59,7 @@ main {
 
 .screen--lg {
   display: none;
+
   @media (min-width: $lg) {
     display: block;
   }
@@ -55,6 +67,7 @@ main {
 
 .screen--xl {
   display: none;
+
   @media (min-width: $xl) {
     display: block;
   }
@@ -83,6 +96,7 @@ main {
   .border--separator {
     border-top: 1px solid $border-separator-dark;
   }
+
   .toggle--custom {
     .q-toggle__inner--falsy {
       .q-toggle__thumb:after {

@@ -1,4 +1,4 @@
-import { IRmrkNftService } from './../../v2/services/IRmrkNftService';
+import { IRmrkNftService } from 'src/v2/services/IRmrkNftService';
 import { StateInterface } from 'src/store';
 import { AssetsStateInterface as State } from 'src/store/assets/state';
 import { ActionTree } from 'vuex';

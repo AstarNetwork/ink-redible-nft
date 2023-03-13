@@ -130,7 +130,7 @@ export default defineComponent({
 
     const navigateToParent = (id: string): void => {
       const base = networkParam + Path.Parent;
-      const url = `${base}?tokenId=${id}`;
+      const url = `${base}?parentId=${id}`;
       router.push(url);
     };
 
