@@ -1,18 +1,29 @@
 <template>
   <div v-if="isReady" class="row--buttons">
-    <astar-button :width="buttonWidth" :height="buttonHeight" @click="handleEquip()">
-      <div v-if="isEquipped" class="button-action">
-        <div class="icon--button">
-          <astar-icon-unequip />
-        </div>
-        <span class="text--button">{{ $t('unequip') }}</span>
+    <astar-button
+      v-if="isEquipped"
+      :width="buttonWidth"
+      :height="buttonHeight"
+      class="button-action"
+      @click="handleUnequip()"
+    >
+      <div class="icon--button">
+        <astar-icon-unequip />
       </div>
-      <div v-else class="button-action">
-        <div class="icon--button">
-          <astar-icon-equip />
-        </div>
-        <span class="text--button">{{ $t('equip') }}</span>
+      <span class="text--button">{{ $t('unequip') }}</span>
+    </astar-button>
+
+    <astar-button
+      :disabled="isDisabled"
+      :width="buttonWidth"
+      :height="buttonHeight"
+      class="button-action"
+      @click="handleEquip()"
+    >
+      <div class="icon--button">
+        <astar-icon-equip />
       </div>
+      <span class="text--button">{{ $t('equip') }}</span>
     </astar-button>
     <a href="https://astar.subscan.io/" target="_blank" rel="noopener noreferrer">
       <astar-button :width="buttonWidth" :height="buttonHeight" class="button-action">
@@ -49,7 +60,15 @@ export default defineComponent({
       type: Boolean,
       required: true,
     },
+    isDisabled: {
+      type: Boolean,
+      required: true,
+    },
     handleEquip: {
+      type: Function,
+      required: true,
+    },
+    handleUnequip: {
       type: Function,
       required: true,
     },

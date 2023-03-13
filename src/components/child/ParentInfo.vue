@@ -6,7 +6,7 @@
     <div v-if="equippedParentNft" class="box-nft--info">
       <span v-if="!isLoading && !isLoadingItem">{{ $t('child.equippedInventory') }}</span>
       <div class="row--nft-img-buttons">
-        <div class="box--nft-img">
+        <div class="box--nft-img" @click="navigateToParent">
           <img
             v-for="(part, index) in parts"
             :key="`part-${index}`"
@@ -28,10 +28,12 @@
           </div>
           <div class="buttons--lg-screen">
             <action-buttons
+              :is-disabled="!slotVacant"
               :button-width="buttonWidth"
               :button-height="48"
-              :is-equipped="!!equippedParentNft"
+              :is-equipped="equippedParentNft"
               :handle-equip="handleEquip"
+              :handle-unequip="handleUnequip"
               :is-ready="!isLoadingItem && !isLoading"
             />
           </div>
@@ -39,23 +41,34 @@
       </div>
     </div>
     <div v-else class="box-nft--info">
-      <span v-if="!isLoading && !isLoadingItem">{{ $t('child.unequippedInventory') }}</span>
+      <div v-if="!isLoading && !isLoadingItem">
+        <span v-if="!slotVacant" class="text--description">
+          {{ $t('child.parentNotVacant') }}
+        </span>
+        <span v-else class="text--description">
+          {{ $t('child.unequippedInventory') }}
+        </span>
+      </div>
       <div class="buttons--lg-screen">
         <action-buttons
+          :is-disabled="!slotVacant"
           :button-width="buttonWidth"
           :button-height="48"
           :is-equipped="equippedParentNft"
           :handle-equip="handleEquip"
+          :handle-unequip="handleUnequip"
           :is-ready="!isLoadingItem && !isLoading"
         />
       </div>
     </div>
     <div class="buttons--phone-screen">
       <action-buttons
+        :is-disabled="!slotVacant"
         :is-equipped="equippedParentNft"
         :button-width="buttonWidth"
         :button-height="48"
         :handle-equip="handleEquip"
+        :handle-unequip="handleUnequip"
         :is-loading-item="isLoadingItem"
         :is-ready="!isLoadingItem && !isLoading"
       />
@@ -66,9 +79,10 @@
 import { getShortenAddress } from '@astar-network/astar-sdk-core';
 import ActionButtons from 'src/components/child/ActionButtons.vue';
 import { useBreakpoints, useNft } from 'src/hooks';
-import { ExtendedAsset, Id } from 'src/modules/nft';
+import { ExtendedAsset, IBasePart, Id } from 'src/modules/nft';
+import { networkParam, Path } from 'src/router/routes';
 import { computed, defineComponent, ref, watch } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
 enum InventoryTab {
   inventory = 'Inventory',
@@ -93,27 +107,32 @@ export default defineComponent({
     },
   },
   setup(props) {
+    const { width, screenSize } = useBreakpoints();
     const route = useRoute();
+    const router = useRouter();
     const childId = route.query.childId?.toString() ?? '';
     const parentId = route.query.parentId?.toString() ?? '';
-    const itemPreview = ref<[Id, (ExtendedAsset | null)[]]>();
-    const isLoadingItem = ref<boolean>(false);
 
     const { parts, unequip, equip, getChildrenToEquipPreview, isLoading } = useNft(
       Number(parentId)
     );
 
-    const { width, screenSize } = useBreakpoints();
+    const itemPreview = ref<[Id, (ExtendedAsset | null)[]]>();
+    const isLoadingItem = ref<boolean>(false);
     const selectedTab = ref<InventoryTab>(InventoryTab.inventory);
-    const setSelectedTab = (isAttribute: boolean): void => {
-      if (isAttribute) {
-        selectedTab.value = InventoryTab.inventory;
-      } else {
-        selectedTab.value = InventoryTab.equipped;
-      }
-    };
 
-    const buttonWidth = computed<number>(() => (width.value > screenSize.xl ? 170 : 142));
+    const setSelectedTab = (isAttribute: boolean): void => {
+      selectedTab.value = isAttribute ? InventoryTab.inventory : InventoryTab.equipped;
+    };
+    const buttonWidth = computed<number>(() => {
+      const widthTwoButtons = width.value > screenSize.xl ? 170 : 142;
+      const widthThreeButtons = width.value > screenSize.xl ? 124 : 102;
+      return equippedParentNft ? widthThreeButtons : widthTwoButtons;
+    });
+
+    const slotVacant = computed<IBasePart | undefined>(() => {
+      return parts.value.find((it) => it.partType === 'Slot' && !it.childId);
+    });
 
     const equippedParentNft = computed<boolean>(() => {
       if (parts.value) {
@@ -127,32 +146,34 @@ export default defineComponent({
     });
 
     const setItemPreview = async (): Promise<void> => {
-      if (!equippedParentNft.value && !isLoading.value) {
+      if (!isLoading.value && slotVacant.value) {
         isLoadingItem.value = true;
         const preview = await getChildrenToEquipPreview(Number(parentId));
-        if (!preview) return;
-        const p = Array.from(preview).find((it) => it[0].u64 === Number(childId));
-        itemPreview.value = p;
+        if (!preview) throw Error(`there are no equitable child Nfts with parentId:${parentId}`);
+        itemPreview.value = Array.from(preview).find((it) => it[0].u64 === Number(childId));
         isLoadingItem.value = false;
       }
     };
 
-    watch([equippedParentNft, isLoading], setItemPreview, { immediate: true });
-
-    const handleEquip = async () => {
-      if (equippedParentNft.value) {
-        const part = parts.value.find((it) => it.childId === Number(childId));
-        await unequip(Number(part?.id));
-      } else {
-        const p = itemPreview.value;
-        if (!p) return;
-        // Memo: find a way to select the position (such as right or left hand) from UI
-        const slotLocation = parts.value.find((it) => it.partType === 'Slot' && !it.childId);
-        const slotId = Number(slotLocation?.id);
-        await equip(slotId, p[0], p[1]);
-      }
+    const handleUnequip = async (): Promise<void> => {
+      const part = parts.value.find((it) => it.childId === Number(childId));
+      await unequip(Number(part?.id));
     };
 
+    const handleEquip = async (): Promise<void> => {
+      if (!itemPreview.value || !slotVacant.value) return;
+      // Todo: find a way to select the position (such as right or left hand) from UI
+      const slotId = Number(slotVacant.value.id);
+      await equip(slotId, itemPreview.value[0], itemPreview.value[1]);
+    };
+
+    const navigateToParent = (): void => {
+      const base = networkParam + Path.Parent;
+      const url = `${base}?parentId=${parentId}`;
+      router.push(url);
+    };
+
+    watch([equippedParentNft, isLoading], setItemPreview, { immediate: true });
     return {
       selectedTab,
       InventoryTab,
@@ -162,9 +183,12 @@ export default defineComponent({
       parentId,
       isLoadingItem,
       isLoading,
+      slotVacant,
+      handleUnequip,
       handleEquip,
       setSelectedTab,
       getShortenAddress,
+      navigateToParent,
     };
   },
 });

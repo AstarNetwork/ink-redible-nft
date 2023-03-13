@@ -93,6 +93,7 @@ export default {
   child: {
     equippedInventory: 'This NFT is currently equipped',
     unequippedInventory: 'This NFT is currently unequipped and in inventory',
+    parentNotVacant: 'Parent NFT for this item is fully equipped',
     parentNft: 'Parent NFT #{id}',
   },
 };

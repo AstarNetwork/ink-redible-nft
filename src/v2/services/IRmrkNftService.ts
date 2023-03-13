@@ -1,5 +1,5 @@
 import { EquipCallParam, UnequipCallParam } from 'src/v2/repositories/IRmrkNftRepository';
-import { ParentInventory } from './../../modules/nft/index';
+import { ParentInventory } from 'src/modules/nft';
 
 export interface IRmrkNftService {
   equip(param: EquipCallParam): Promise<void>;
