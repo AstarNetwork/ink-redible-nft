@@ -9,10 +9,14 @@
           lg:tw-py-12 lg:tw-overflow-y-auto
           tw-overflow-x-hidden
           focus:tw-outline-none
+          box--main
         "
       >
         <div class="wrapper--components">
           <slot />
+        </div>
+        <div class="wrapper--footer">
+          <app-footer />
         </div>
       </main>
     </div>
@@ -23,17 +27,14 @@
 import { defineComponent } from 'vue';
 import { useGasPrice } from 'src/hooks';
 import PortalHeader from 'src/components/header/Header.vue';
+import AppFooter from 'src/components/common/Footer.vue';
 
 export default defineComponent({
   components: {
     PortalHeader,
+    AppFooter,
   },
   setup() {
-    const isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-    isDark
-      ? document.documentElement.classList.add('dark')
-      : document.documentElement.classList.remove('dark');
-
     const isFetchGas = true;
     useGasPrice(isFetchGas);
 
@@ -48,5 +49,16 @@ export default defineComponent({
   @media (min-width: $lg) {
     padding: 0 40px;
   }
+}
+
+// Memo: makes footer on the bottom of the page
+.box--main {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.wrapper--footer {
+  margin-top: auto;
 }
 </style>
