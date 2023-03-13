@@ -9,7 +9,7 @@
           :src="part.metadataUri"
         />
         <div v-if="p.length === 0" class="row--no-images">
-          <span class="text--lg">No images for token ID: {{ parentId }}</span>
+          <span class="text--lg"> No images for token ID: {{ parentId }} </span>
         </div>
       </div>
 
@@ -43,7 +43,8 @@
           ranking-all="2222"
           rarity="34.19"
           :dummy-items="dummyItems"
-          :dummy-specifics="dummySpecifics"
+          :token-id="parentId"
+          :contract-address="baseContractAddress"
         />
         <inventory
           :token-id="Number(parentId)"
@@ -67,8 +68,10 @@ export default defineComponent({
   components: { NftIntroduction, Attributes, Inventory },
   setup() {
     const route = useRoute();
-    const parentId = computed<string>(() => route.query.parentId as string);
-    const { parts, isLoading, getChildrenToEquipPreview } = useNft(Number(parentId.value));
+    const parentId = String(route.query.parentId);
+    const { parts, isLoading, getChildrenToEquipPreview, baseContractAddress } = useNft(
+      Number(parentId)
+    );
     const p = computed<IBasePart[]>(() => parts.value as IBasePart[]);
 
     const reload = (): void => {
@@ -92,19 +95,13 @@ export default defineComponent({
       { description: 'Signature', value: 'YES', changeRate: 30 },
     ];
 
-    const dummySpecifics = {
-      contract: 'Axjio5fSDjfdsliZxNxNGhGhsdaZsifdslAbcCb02',
-      tokenId: '555',
-      chain: 'ASTAR',
-    };
-
     return {
       dummyNft,
       dummyItems,
-      dummySpecifics,
       isLoading,
       p,
       parentId,
+      baseContractAddress,
       getChildrenToEquipPreview,
       reload,
     };

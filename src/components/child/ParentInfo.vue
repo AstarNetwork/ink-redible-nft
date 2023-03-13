@@ -108,10 +108,10 @@ export default defineComponent({
   },
   setup(props) {
     const { width, screenSize } = useBreakpoints();
-    const route = useRoute();
     const router = useRouter();
-    const childId = route.query.childId?.toString() ?? '';
-    const parentId = route.query.parentId?.toString() ?? '';
+    const route = useRoute();
+    const childId = String(route.query.childId);
+    const parentId = String(route.query.parentId);
 
     const { parts, unequip, equip, getChildrenToEquipPreview, isLoading } = useNft(
       Number(parentId)
@@ -124,6 +124,7 @@ export default defineComponent({
     const setSelectedTab = (isAttribute: boolean): void => {
       selectedTab.value = isAttribute ? InventoryTab.inventory : InventoryTab.equipped;
     };
+
     const buttonWidth = computed<number>(() => {
       const widthTwoButtons = width.value > screenSize.xl ? 170 : 142;
       const widthThreeButtons = width.value > screenSize.xl ? 124 : 102;

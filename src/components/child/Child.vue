@@ -28,7 +28,11 @@
         />
       </div>
       <div class="wrapper--nft-option">
-        <attributes :dummy-specifics="dummySpecifics" :dummy-items="dummyItems" />
+        <attributes
+          :dummy-items="dummyItems"
+          :token-id="childId"
+          :contract-address="contractAddress"
+        />
         <parent-info
           :collection="dummyParentNft.collection"
           :description="dummyParentNft.description"
@@ -52,32 +56,15 @@ export default defineComponent({
   components: { NftIntroduction, Attributes, ParentInfo, Nft },
   setup() {
     const route = useRoute();
-    const contractAddress = route.query.contractAddress?.toString() ?? '';
-    const childId = route.query.childId?.toString() ?? '';
+    const contractAddress = String(route.query.contractAddress);
+    const childId = String(route.query.childId);
     const { isFetching, childDetail } = useChildNft(childId);
 
     const reload = (): void => {
       window.location.reload();
     };
 
-    const dummyNft = computed(() => {
-      return {
-        id: '10',
-        collection: 'Starmap',
-        description:
-          "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-        img: 'https://astar.network/_nuxt/reading-astar.87a786d8.svg',
-        isValid: true,
-      };
-    });
-
     const dummyItems = [{ description: 'Background', value: 'AAA', changeRate: 20 }];
-
-    const dummySpecifics = {
-      contract: 'Axjio5fSDjfdsliZxNxNGhGhsdaZsifdslAbcCb02',
-      tokenId: '10',
-      chain: 'ASTAR',
-    };
 
     const dummyParentNft = computed(() => {
       return {
@@ -91,9 +78,7 @@ export default defineComponent({
     });
 
     return {
-      dummyNft,
       dummyItems,
-      dummySpecifics,
       dummyParentNft,
       contractAddress,
       childId,
