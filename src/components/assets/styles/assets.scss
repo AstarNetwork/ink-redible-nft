@@ -14,9 +14,10 @@
     padding-top: 80px;
   }
 
-  @media (min-height: 800px) {
+  @media (min-height: 900px) {
     padding-top: 0px;
-    height: calc(100vh - 96px);
+    margin-top: 40px;
+    height: calc(100vh - 250px);
   }
 }
 

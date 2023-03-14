@@ -12,4 +12,5 @@ export const socialUrl = {
   reddit: 'https://www.reddit.com/r/AstarNetwork/',
   forum: 'https://forum.astar.network/',
   youtube: 'https://www.youtube.com/c/AstarNetwork',
+  landing: 'https://astar.network/',
 };
