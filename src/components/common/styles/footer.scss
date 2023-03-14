@@ -20,6 +20,11 @@
     justify-content: space-between;
     align-items: flex-end;
     width: 100%;
+  }
+}
+
+.box--footer-nft {
+  @media (min-width: $md) {
     max-width: 800px;
   }
   @media (min-width: $lg) {
@@ -27,6 +32,12 @@
   }
   @media (min-width: $xl) {
     max-width: 1026px;
+  }
+}
+
+.box--footer-assets {
+  @media (min-width: $md) {
+    padding: 0 108px;
   }
 }
 

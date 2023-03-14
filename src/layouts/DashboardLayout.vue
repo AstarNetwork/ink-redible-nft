@@ -47,7 +47,7 @@ export default defineComponent({
 .wrapper--components {
   padding: 0 8px;
   @media (min-width: $lg) {
-    padding: 0 40px;
+    padding: 0 108px;
   }
 }
 
