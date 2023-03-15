@@ -73,10 +73,9 @@ export default defineComponent({
 }
 
 .iconbase {
-  color: $gray-3 !important;
   width: rem(22);
   height: rem(22);
-  color: $gray-4 !important;
+  color: $gray-4;
 }
 
 .m-btn--account {

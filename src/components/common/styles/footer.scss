@@ -4,10 +4,7 @@
   display: flex;
   justify-content: center;
   margin-top: 66px !important;
-  margin-bottom: 30px;
-  @media (min-width: $lg) {
-    margin-bottom: 0px;
-  }
+  padding-bottom: 24px;
 }
 
 .box--footer {
@@ -37,7 +34,7 @@
 
 .box--footer-assets {
   @media (min-width: $md) {
-    padding: 0 108px;
+    padding: 0 96px;
   }
 }
 

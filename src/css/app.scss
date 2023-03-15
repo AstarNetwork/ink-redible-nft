@@ -17,14 +17,7 @@ body {
   overflow: hide;
 }
 
-
 main {
-  background-image: url('src/assets/img/stars.svg');
-  background-size: cover;
-  // background-color: #081029;
-  background-color: #000000;
-  backdrop-filter: blur(50px);
-  -webkit-backdrop-filter: blur(50px);
   overflow: hide;
   -ms-overflow-style: none;
   scrollbar-width: none;
@@ -33,7 +26,6 @@ main {
 main::-webkit-scrollbar {
   display: none;
 }
-
 
 .screen--phone {
   @media (min-width: $sm) {
