@@ -13,15 +13,13 @@
     </div>
 
     <div class="row--name">
-      <span class="text--name"> Token ID: {{ id }} </span>
+      <span class="text--collection">Collection </span>
       <div v-if="true">
         <astar-icon-valid />
       </div>
     </div>
-    <div>
-      <span class="text--description">
-        Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-      </span>
+    <div class="row--name-info">
+      <span class="text--description"> Token ID: {{ id }} </span>
     </div>
   </div>
 </template>

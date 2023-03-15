@@ -5,7 +5,7 @@
   display: flex;
   flex-direction: column;
   background: #131c34;
-  padding: 36px 16px;
+  padding: 24px 16px;
   margin-left: -16px;
   margin-right: -16px;
   width: 100vw;
@@ -29,7 +29,7 @@
 .row--name {
   border-bottom: 1px solid $gray-3;
   width: 100%;
-  padding-bottom: 28px;
+  padding-bottom: 24px;
   display: flex;
   column-gap: 8px;
 }
@@ -42,7 +42,8 @@
   margin-bottom: 24px;
 
   @media (min-width: $md) {
-    padding-top: 44px;
+    padding-top: 0px;
+    margin-bottom: 0px;
   }
 }
 

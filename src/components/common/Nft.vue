@@ -54,5 +54,11 @@ export default defineComponent({
 
 .q-carousel {
   background-color: transparent;
+  height: 320px;
+  width: 320px;
+  @media (min-width: $md) {
+    height: 100%;
+    width: 100%;
+  }
 }
 </style>

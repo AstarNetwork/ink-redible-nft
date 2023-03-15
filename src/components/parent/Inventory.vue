@@ -21,7 +21,12 @@
           @click="navigateToChildFromInventory(Number(k.u64), String(v[0]?.partsAddress))"
         >
           <div class="box--nft-img">
-            <img :src="v[0]?.gatewayUrl" :alt="String(v[0]?.id)" class="img--item" />
+            <img
+              :src="v[0]?.gatewayUrl"
+              :alt="String(v[0]?.id)"
+              class="img--item"
+              :class="checkIsEquipped(Number(v[0]?.id)) && 'img--item--equipped'"
+            />
           </div>
           <span class="text--name">{{ v[0]?.id }}</span>
         </div>
@@ -117,6 +122,10 @@ export default defineComponent({
       router.push(url);
     };
 
+    const checkIsEquipped = (childId: number): boolean => {
+      return equipped.value.some((it) => it.childId === childId);
+    };
+
     watchEffect(setAcceptableEquipments);
 
     return {
@@ -132,6 +141,7 @@ export default defineComponent({
       isSlotEquipped,
       navigateToChildFromInventory,
       navigateToChildFromEquipped,
+      checkIsEquipped,
     };
   },
 });

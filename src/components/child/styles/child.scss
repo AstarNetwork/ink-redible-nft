@@ -15,19 +15,23 @@
 .img--nft-big {
   margin: 0 8px;
   height: auto;
-  max-height: 520px;
-  width: 358px;
+  width: 320px;
+  height: 320px;
   border-radius: 16px;
-  margin-bottom: 32px;
   background: $img-background;
+  @media (min-width: $md) {
+    width: 500px;
+    height: 500px;
+  }
 }
 
 .buttons {
   display: flex;
   column-gap: 16px;
   margin-bottom: 40px;
+  margin-top: 40px;
   @media (min-width: $md) {
-    padding-top: 64px;
+    margin-bottom: 60px;
   }
 }
 
