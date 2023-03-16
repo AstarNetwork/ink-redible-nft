@@ -241,7 +241,7 @@ export const getEquippableChildren = async (
     const result = new Map<Id, (ExtendedAsset | null)[]>();
 
     if (children.value) {
-      for (let child of children.value) {
+      for (let child of children.value.unwrap()) {
         const partsAddress = child[0].toString();
         const partsContract = new Contract(partsAddress, senderAddress, api);
         const childTokenId = IdBuilder.U64(child[1].u64 ?? 0);
@@ -249,13 +249,15 @@ export const getEquippableChildren = async (
 
         if (assetIds.value.ok) {
           const assetsToAdd: ExtendedAsset[] = [];
-          for (let id of assetIds.value.unwrap()) {
+          for (let id of assetIds.value.unwrap().unwrap()) {
             const asset = await partsContract.query['multiAsset::getAsset'](id);
             if (asset.value) {
               assetsToAdd.push({
                 ...asset.value,
                 id,
-                gatewayUrl: sanitizeIpfsUrl(hex2ascii(asset.value.assetUri.toString())),
+                gatewayUrl: sanitizeIpfsUrl(
+                  hex2ascii(asset?.value?.unwrap()?.assetUri?.toString() ?? '')
+                ),
                 partsAddress,
               } as ExtendedAsset);
             }

@@ -22,9 +22,10 @@ export const useChildNft = (partTokenId: string) => {
     () => String(providerEndpoints[Number(currentNetworkIdx.value)].baseContractAddress![0]) || ''
   );
 
-  const partsAddress = computed<string>(() =>
-    String(providerEndpoints[Number(currentNetworkIdx.value)].partsAddress)
-  );
+  // const partsAddress = computed<string>(() =>
+  //   String(providerEndpoints[Number(currentNetworkIdx.value)].baseContractAddress[0])
+  // );
+  const partsAddress = '';
 
   const setChildDetail = async (): Promise<void> => {
     try {
@@ -32,7 +33,7 @@ export const useChildNft = (partTokenId: string) => {
       const { description, image, name } = await fetchChildDetails({
         api: $api!,
         baseContractAddress: baseContractAddress.value,
-        partsAddress: partsAddress.value,
+        partsAddress: partsAddress,
         walletAddress: SAMPLE_WALLET_ADDRESS,
         partTokenId,
       });

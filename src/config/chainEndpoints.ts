@@ -20,7 +20,6 @@ export interface ChainProvider {
   // Memo: using `require` occurs error in `yarn test`
   defaultLogo: string;
   baseContractAddress?: string[];
-  partsAddress?: string;
 }
 
 export enum endpointKey {
@@ -101,8 +100,13 @@ export const providerEndpoints: ChainProvider[] = [
     faucetEndpoint: 'https://us-central1-facuet-bot.cloudfunctions.net/app/shibuya',
     defaultLogo:
       'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/chain/shibuya.png?raw=true',
-    baseContractAddress: ['aEa8Jx4noRvq1gs79yd5THenLuBiqbNFnvWXkNRPj7ADdqp'],
-    partsAddress: 'XxLjz535ZFcWDb2kn3gBYvNAyiTZvaBrJBmkP5hUnRPSAcE',
+    baseContractAddress: [
+      'Wcg8cuKcJgQGm15tZ5F14JXuWehm1Q67K92jfbTpKPrPm6S',
+      'adDDmXkrVUhcFNy74zJm9CohrvDCbBixhvLCzrrmzo5HG3U',
+      'WDkMQy5AgSXfByPW23szAFYrxtXbNUA7umL49YbTZysfa9w',
+      'XMAfed8ZvqDUQzoy8NuU715vhKs6rRckSYwSWuqQsM8ZWGv',
+      'bMsPywwU4m9F9ZZ48cSffEyGeYJ66A5N3PGDv76Yogpp7zX',
+    ],
   },
   {
     networkAlias: 'development',

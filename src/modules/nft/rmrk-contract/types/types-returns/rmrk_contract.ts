@@ -1,6 +1,8 @@
 import type BN from 'bn.js';
 import type { ReturnNumber } from '@727-ventures/typechain-types';
 
+export type AccountId = string | number[];
+
 export interface Id {
   u8?: number;
   u16?: number;
@@ -43,35 +45,9 @@ export class IdBuilder {
   }
 }
 
-export type AccountId = string | number[];
-
-export type Key = string | number[];
-
-export type Asset = {
-  equippableGroupId: number;
-  assetUri: Array<number>;
-  partIds: Array<number>;
-};
-
-export type Part = {
-  partType: PartType;
-  z: number;
-  equippable: Array<AccountId>;
-  partUri: Array<number>;
-  isEquippableByAll: boolean;
-};
-
-export enum PartType {
-  none = 'None',
-  slot = 'Slot',
-  fixed = 'Fixed',
+export enum LangError {
+  couldNotReadInput = 'CouldNotReadInput',
 }
-
-export type Equipment = {
-  assetId: number;
-  childAssetId: number;
-  childNft: [AccountId, Id];
-};
 
 export interface PSP34Error {
   custom?: Array<number>;
@@ -185,6 +161,32 @@ export enum RmrkError {
 export enum ReentrancyGuardError {
   reentrantCall = 'ReentrantCall',
 }
+
+export type Asset = {
+  equippableGroupId: number;
+  assetUri: Array<number>;
+  partIds: Array<number>;
+};
+
+export type Part = {
+  partType: PartType;
+  z: number;
+  equippable: Array<AccountId>;
+  partUri: Array<number>;
+  isEquippableByAll: boolean;
+};
+
+export enum PartType {
+  none = 'None',
+  slot = 'Slot',
+  fixed = 'Fixed',
+}
+
+export type Equipment = {
+  assetId: number;
+  childAssetId: number;
+  childNft: [AccountId, Id];
+};
 
 export type Token = {
   id: number;

@@ -32,7 +32,7 @@ export const useNft = (tokenId: number) => {
   const baseContractAddress =
     String(providerEndpoints[Number(currentNetworkIdx.value)].baseContractAddress![0]) || '';
 
-  const partsAddress = String(providerEndpoints[Number(currentNetworkIdx.value)].partsAddress);
+  const partsAddress = ''; // String(providerEndpoints[Number(currentNetworkIdx.value)].partsAddress);
 
   const rmrkNftService = container.get<IRmrkNftService>(Symbols.RmrkNftService) || '';
 
@@ -58,14 +58,17 @@ export const useNft = (tokenId: number) => {
       }
 
       result = await Promise.all(
-        assets.value.unwrap().map(async (x) => {
-          const data = await contract.query.getAssetAndEquippableData(id, x);
-          const tmp = data.value.unwrap();
-          return {
-            ...tmp,
-            proxiedAssetUri: sanitizeIpfsUrl(hex2ascii(tmp.assetUri.toString() ?? '')),
-          };
-        })
+        assets.value
+          .unwrap()
+          .unwrap()
+          .map(async (x) => {
+            const data = await contract.query.getAssetAndEquippableData(id, x);
+            const tmp = data.value.unwrap().unwrap();
+            return {
+              ...tmp,
+              proxiedAssetUri: sanitizeIpfsUrl(hex2ascii(tmp.assetUri.toString() ?? '')),
+            };
+          })
       );
     } else {
       throw '$api is not defined';

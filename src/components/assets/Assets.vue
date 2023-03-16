@@ -39,6 +39,9 @@ export default defineComponent({
           // address: currentAccount.value,
           address: sampleWalletAddress,
         });
+        await store.dispatch('assets/getInventory', {
+          address: currentAccount.value,
+        });
       },
       { immediate: true }
     );

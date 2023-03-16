@@ -3,6 +3,7 @@ import { ParentInventory, queryParentInventories } from 'src/modules/nft';
 import { Guard } from 'src/v2/common';
 import { IEventAggregator } from 'src/v2/messaging';
 import {
+  ContractInventory,
   EquipCallParam,
   IRmrkNftRepository,
   UnequipCallParam,
@@ -53,5 +54,11 @@ export class RmrkNftService implements IRmrkNftService {
       console.error(error);
       return [];
     }
+  }
+
+  public async getInventory(ownerAddress: string): Promise<ContractInventory[]> {
+    Guard.ThrowIfUndefined('ownerAddress', ownerAddress);
+
+    return await this.rmrkNftRepository.getInventory(ownerAddress);
   }
 }

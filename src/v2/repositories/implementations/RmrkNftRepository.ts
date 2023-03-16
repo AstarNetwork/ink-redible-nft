@@ -4,7 +4,11 @@ import { inject, injectable } from 'inversify';
 import { unequipSlot } from 'src/modules/nft';
 import { equipSlot } from 'src/modules/nft/read-token';
 import { IApi } from 'src/v2/integration';
-import { IRmrkNftRepository, UnequipCallParam } from 'src/v2/repositories/IRmrkNftRepository';
+import {
+  ContractInventory,
+  IRmrkNftRepository,
+  UnequipCallParam,
+} from 'src/v2/repositories/IRmrkNftRepository';
 import { Symbols } from 'src/v2/symbols';
 import { EquipCallParam } from './../IRmrkNftRepository';
 
@@ -52,5 +56,26 @@ export class RmrkNftRepository implements IRmrkNftRepository {
       api,
     });
     return transaction;
+  }
+
+  public async getInventory(ownerAddress: string): Promise<ContractInventory[]> {
+    return [
+      {
+        contractAddress: 'Wcg8cuKcJgQGm15tZ5F14JXuWehm1Q67K92jfbTpKPrPm6S',
+        tokenId: 1,
+      },
+      {
+        contractAddress: 'Wcg8cuKcJgQGm15tZ5F14JXuWehm1Q67K92jfbTpKPrPm6S',
+        tokenId: 2,
+      },
+      {
+        contractAddress: 'adDDmXkrVUhcFNy74zJm9CohrvDCbBixhvLCzrrmzo5HG3U',
+        tokenId: 1,
+      },
+      {
+        contractAddress: 'adDDmXkrVUhcFNy74zJm9CohrvDCbBixhvLCzrrmzo5HG3U',
+        tokenId: 2,
+      },
+    ];
   }
 }

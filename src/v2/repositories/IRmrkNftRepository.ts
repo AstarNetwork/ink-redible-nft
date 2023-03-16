@@ -20,11 +20,19 @@ export interface UnequipCallParam {
   senderAddress: string;
 }
 
+export interface ContractInventory {
+  contractAddress: string;
+  tokenId: number;
+}
+
 export interface IRmrkNftRepository {
   getEquipCallData(
     param: EquipCallParam
   ): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>>;
+
   getUnequipCallData(
     param: UnequipCallParam
   ): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>>;
+
+  getInventory(ownerAddress: string): Promise<ContractInventory[]>;
 }

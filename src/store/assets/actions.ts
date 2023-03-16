@@ -15,6 +15,15 @@ const actions: ActionTree<State, StateInterface> = {
       console.error(error);
     }
   },
+  async getInventory({ commit }, { address }: { address: string }): Promise<void> {
+    try {
+      const service = container.get<IRmrkNftService>(Symbols.RmrkNftService);
+      const inventories = await service.getInventory(address);
+      commit('setInventory', inventories);
+    } catch (error) {
+      console.error(error);
+    }
+  },
 };
 
 export default actions;

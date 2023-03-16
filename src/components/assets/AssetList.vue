@@ -6,15 +6,15 @@
         {{ address }}
       </span>
     </div>
-    <div v-if="parentInventories">
+    <div v-if="inventory">
       <div class="container--item">
         <div
-          v-for="(item, index) in parentInventories"
+          v-for="(item, index) in inventory"
           :key="index"
           class="card--item"
-          @click="navigateToParent(item.id)"
+          @click="navigateToParent(item.contractAddress[0])"
         >
-          <parent-card :id="Number(item.id)" />
+          <parent-card :id="Number(item.tokenId)" :contract-address="item.contractAddress" />
         </div>
       </div>
     </div>
@@ -23,11 +23,10 @@
     </div>
 
     <!-- Memo: temporary example -->
-    <div v-if="isShibuya" class="container--example">
+    <!-- <div v-if="isShibuya" class="container--example">
       <div>
         <p class="text--xl">Fetching NFTs example</p>
-        <p class="text--lg">Base Contract Address: {{ baseContractAddress }}</p>
-        <p class="text--lg">Parts Address: {{ partsAddress }}</p>
+        <p class="text--lg">Available contracts: {{ availableContracts }}</p>
       </div>
 
       <div>
@@ -74,23 +73,24 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 <script lang="ts">
-import { useAccount, useBreakpoints, useNft, useNetworkInfo } from 'src/hooks';
+import { useAccount, useBreakpoints, useNft, useNft2, useNetworkInfo } from 'src/hooks';
 import { defineComponent, computed, watchEffect } from 'vue';
 import { getShortenAddress } from '@astar-network/astar-sdk-core';
-import { IBasePart, ParentInventory } from 'src/modules/nft';
+import { IBasePart } from 'src/modules/nft';
 import { endpointKey } from 'src/config/chainEndpoints';
-import AcceptedEquipment from 'src/components/assets/AcceptedEquipment.vue';
+// import AcceptedEquipment from 'src/components/assets/AcceptedEquipment.vue';
 import ParentCard from 'src/components/assets/ParentCard.vue';
 import { useStore } from 'src/store';
 import { networkParam, Path } from 'src/router/routes';
 import { useRouter } from 'vue-router';
+import { ContractInventory } from 'src/v2/repositories/IRmrkNftRepository';
 
 export default defineComponent({
-  components: { AcceptedEquipment, ParentCard },
+  components: { ParentCard },
   setup() {
     const { width, screenSize } = useBreakpoints();
     const { currentAccount, currentAccountName } = useAccount();
@@ -102,14 +102,12 @@ export default defineComponent({
     const isShibuya = computed(() => currentNetworkIdx.value === endpointKey.SHIBUYA);
     const router = useRouter();
     const store = useStore();
-    const parentInventories = computed<ParentInventory[]>(
-      () => store.getters['assets/getParentInventories']
-    );
+    const inventory = computed<ContractInventory[]>(() => store.getters['assets/getInventory']);
 
     // Todo: get from url
     const tokenId = 1;
-    const { parts, unequip, equip, getChildrenToEquipPreview, baseContractAddress, partsAddress } =
-      useNft(tokenId);
+    const { parts, unequip, equip, getChildrenToEquipPreview } = useNft(tokenId);
+    const { availableContracts } = useNft2();
     const isSlotEquipped = (part: IBasePart): boolean =>
       !!part.metadataUri && !!part.equippable && part.equippable.length > 0;
 
@@ -140,10 +138,9 @@ export default defineComponent({
       address,
       dummyList,
       parts,
-      baseContractAddress,
-      partsAddress,
+      availableContracts,
       tokenId,
-      parentInventories,
+      inventory,
       isShibuya,
       isSlotEquipped,
       isSlot,
