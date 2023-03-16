@@ -30,6 +30,12 @@
           </div>
           <span class="text--name">{{ v[0]?.id }}</span>
         </div>
+        <div class="box--nft-img">
+          <div class="img--plus" @click="setShowModalAddChildren(true)">
+            <span class="text--plus">+</span>
+            <span class="text--add">{{ $t('add') }}</span>
+          </div>
+        </div>
       </div>
     </div>
     <div v-else class="wrapper--items">
@@ -46,6 +52,11 @@
         </div>
       </div>
     </div>
+    <modal-add-children
+      v-if="showModalAddChildren"
+      :set-is-open="setShowModalAddChildren"
+      :show="showModalAddChildren"
+    />
   </div>
 </template>
 <script lang="ts">
@@ -56,6 +67,7 @@ import { ExtendedAsset, IBasePart, Id } from 'src/modules/nft';
 import { networkParam, Path } from 'src/router/routes';
 import { computed, defineComponent, PropType, ref, watchEffect } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import ModalAddChildren from 'src/components/parent/ModalAddChildren.vue';
 
 enum InventoryTab {
   inventory = 'Inventory',
@@ -63,7 +75,7 @@ enum InventoryTab {
 }
 
 export default defineComponent({
-  components: { ModeTabs },
+  components: { ModeTabs, ModalAddChildren },
   props: {
     parts: {
       type: Object as PropType<IBasePart[]>,
@@ -88,6 +100,11 @@ export default defineComponent({
 
     const { width, screenSize } = useBreakpoints();
     const gearHeight = computed<string>(() => (width.value > screenSize.md ? '100px' : '48px'));
+
+    const showModalAddChildren = ref<boolean>(false);
+    const setShowModalAddChildren = (isOpen: boolean): void => {
+      showModalAddChildren.value = isOpen;
+    };
 
     const setAcceptableEquipments = async (): Promise<void> => {
       isLoadingInventory.value = true;
@@ -135,6 +152,7 @@ export default defineComponent({
       acceptableEquipments,
       isLoadingInventory,
       gearHeight,
+      showModalAddChildren,
       setSelectedTab,
       getShortenAddress,
       isSlot,
@@ -142,6 +160,7 @@ export default defineComponent({
       navigateToChildFromInventory,
       navigateToChildFromEquipped,
       checkIsEquipped,
+      setShowModalAddChildren,
     };
   },
 });

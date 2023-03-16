@@ -90,6 +90,11 @@ export default {
       rarity: 'Rarity',
     },
   },
+  parentPage: {
+    modals: {
+      addChildren: 'Add Children NFT',
+    },
+  },
   child: {
     equippedInventory: 'This NFT is currently equipped',
     unequippedInventory: 'This NFT is currently unequipped and in inventory',
