@@ -4,10 +4,10 @@
   width: 100%;
   background: hsl(225, 44%, 14%);
   border-radius: 16px;
-  padding: 20px 16px;
+  padding: 16px;
   display: flex;
   flex-direction: column;
-  row-gap: 16px;
+  row-gap: 8px;
   margin-bottom: 24px;
 
   @media (min-width: $sm) {
@@ -21,7 +21,7 @@
 
   @media (min-width: $lg) {
     width: 470px;
-    margin-left: 16px;
+    margin-left: 12px;
     padding: 28px 24px;
   }
 }

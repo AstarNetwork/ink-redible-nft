@@ -9,14 +9,17 @@
   justify-content: center;
   align-items: center;
   width: 100%;
-
+  margin-left: -8px;
   @media (min-width: $sm) {
     padding-top: 80px;
   }
 
-  @media (min-height: 800px) {
-    padding-top: 0px;
-    height: calc(100vh - 96px);
+  @media (min-height: 900px) and (min-width: $lg) {
+    margin-left: -96px;
+    padding-top: 100px;
+    position: absolute;
+    // Memo: 96px: header, 106px: footer
+    height: calc(100vh - 96px - 106px);
   }
 }
 

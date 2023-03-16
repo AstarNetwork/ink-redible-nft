@@ -2,23 +2,47 @@
 
 .image-container--parent {
   position: relative;
-  height: 230px;
+  height: 160px;
+  border: 1px solid #081029;
+  border-radius: 6px;
+  @media (min-width: $md) {
+    height: 210px;
+  }
 }
 
 .image--parent {
   position: absolute;
   left: 0px;
   top: 0px;
+  height: 160px;
+  @media (min-width: $md) {
+    height: 210px;
+  }
 }
 
 .row--name {
   display: flex;
   column-gap: 10px;
-  margin-bottom: 8px;
+  margin: 16px 0;
 }
 
-.text--name {
+.text--collection {
   font-weight: 600;
   font-size: 14px;
   color: #b1b7c1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.text--description {
+  font-weight: 600;
+  font-size: 14px;
+  color: $gray-1;
+}
+
+.row--name-info {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }

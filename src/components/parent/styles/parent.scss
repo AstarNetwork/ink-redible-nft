@@ -20,19 +20,27 @@
   border-radius: 16px;
   margin-bottom: 32px;
   background: $img-background;
+  @media (min-width: $md) {
+    width: 500px;
+    height: 500px;
+  }
 }
 
 .image-container--parent {
   position: relative;
   height: auto;
-  width: 358px;
-  height: 350px;
+  height: 320px;
+  width: 320px;
   display: flex;
   justify-content: center;
   align-items: center;
   background: $img-background;
   border-radius: 16px;
   padding-left: 56px;
+  @media (min-width: $md) {
+    width: 500px;
+    height: 500px;
+  }
 }
 
 .row--no-images {
@@ -41,16 +49,21 @@
 
 .image--parent {
   position: absolute;
-  max-height: 350px;
-  width: 100%;
+  height: 320px;
+  width: 320px;
+  @media (min-width: $md) {
+    width: 500px;
+    height: 500px;
+  }
 }
 
 .buttons {
   display: flex;
   column-gap: 16px;
   margin-bottom: 40px;
+  margin-top: 40px;
   @media (min-width: $md) {
-    padding-top: 64px;
+    margin-bottom: 60px;
   }
 }
 
