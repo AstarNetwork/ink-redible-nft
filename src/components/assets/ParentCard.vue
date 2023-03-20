@@ -1,11 +1,11 @@
 <template>
   <div v-if="!isLoading">
-    <div class="image-container--parent">
+    <div v-if="assets.length > 0" class="image-container--parent">
       <img
-        v-for="(part, index) in assets"
+        v-for="(part, index) in assets[0].parts"
         :key="`part-${index}`"
         class="image--parent"
-        :src="part.assetUri"
+        :src="part.partUri"
       />
       <div v-if="assets.length === 0">
         <span class="text--lg">No images for token ID: {{ id }}</span>
@@ -51,7 +51,7 @@ export default defineComponent({
     const loadData = async (): Promise<void> => {
       isLoading.value = true;
       assets.value = await getToken(props.contractAddress, props.id);
-      // TODO this can be optimized to fetch collection data only once per contract.
+      // TODO this can be optimized to fetch collection metadata only once per contract.
       collectionMetadata.value = await getCollectionMetadata(props.contractAddress);
       tokenMetadata.value = await getTokenMetadata(props.contractAddress, props.id);
       isLoading.value = false;

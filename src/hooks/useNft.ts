@@ -95,13 +95,15 @@ export const useNft = (tokenId: number) => {
   const equip = async (
     slot: string | number,
     childTokenId: Id,
-    assets: (ExtendedAsset | null)[] | undefined
+    assets: (ExtendedAsset | null)[] | undefined,
+    baseAddress: string,
+    equippableAddress: string
   ): Promise<void> => {
     console.log('slot', slot); // 12
     console.log('childTokenId', childTokenId); // {u64: 1}
     console.log('assets', assets);
     // TODO see how to handle this
-    const parentAssetToEquip = '2';
+    const parentAssetToEquip = '1';
     if (slot) {
       // TODO determine asset to equip
       // Assumption. Asset 0 is preview, asset 1 goes to lowest slot number, asset 2 to next one and so on....
@@ -110,11 +112,11 @@ export const useNft = (tokenId: number) => {
       const assetId = assets ? assets[assetIndex]?.id.toString() : '1';
 
       await rmrkNftService.equip({
-        parentContractAddress: baseContractAddress,
+        parentContractAddress: baseAddress,
         tokenId: { u64: tokenId },
         assetId: parentAssetToEquip,
         slot: Number(slot.toString()),
-        childContractAddress: partsAddress,
+        childContractAddress: equippableAddress,
         childTokenId: childTokenId,
         childAssetId: assetId ?? '1',
         senderAddress: currentAccount.value,

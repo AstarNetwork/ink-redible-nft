@@ -5,7 +5,7 @@
         v-for="(asset, index) in assets"
         :key="index"
         :name="index"
-        :img-src="asset.proxiedAssetUri"
+        :img-src="sanitizeIpfsUrl(asset.assetUri)"
       />
     </q-carousel>
   </div>
@@ -19,7 +19,8 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import { isValidAddressPolkadotAddress } from '@astar-network/astar-sdk-core';
-import { useNft, AssetExtended } from 'src/hooks';
+import { Asset, useNft2 } from 'src/hooks';
+import { sanitizeIpfsUrl } from 'src/modules/nft/ipfs';
 
 export default defineComponent({
   props: {
@@ -33,19 +34,19 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { getToken } = useNft(0);
+    const { getToken } = useNft2();
     const isValidContractAddress = isValidAddressPolkadotAddress(props.contractAddress);
     const isValidTokenId = !!props.tokenId;
-    const assets = ref<AssetExtended[]>([]);
+    const assets = ref<Asset[]>([]);
     const displayedAsset = ref(0);
 
     const loadToken = async (): Promise<void> => {
-      assets.value = await getToken(props.contractAddress, props.tokenId);
+      assets.value = await getToken(props.contractAddress, parseInt(props.tokenId));
     };
 
     loadToken();
 
-    return { isValidContractAddress, isValidTokenId, assets, displayedAsset };
+    return { isValidContractAddress, isValidTokenId, assets, displayedAsset, sanitizeIpfsUrl };
   },
 });
 </script>

@@ -34,10 +34,8 @@ export default defineComponent({
       [currentAccount, currentNetworkIdx],
       async () => {
         if (!currentAccount.value) return;
-        const sampleWalletAddress = 'XLoLJBQoMPHMLXYhdFobSpH5GujRoUH8d1sUtaEtoBG7zaS';
         await store.dispatch('assets/getParentInventories', {
-          // address: currentAccount.value,
-          address: sampleWalletAddress,
+          address: currentAccount.value,
         });
         await store.dispatch('assets/getInventory', {
           address: currentAccount.value,

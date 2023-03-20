@@ -8,7 +8,7 @@ import { sanitizeIpfsUrl } from 'src/modules/nft/ipfs';
 import { hex2ascii } from 'src/modules/nft/read-token';
 import { useNetworkInfo } from 'src/hooks/useNetworkInfo';
 import { providerEndpoints } from 'src/config/chainEndpoints';
-import { Metadata } from 'src/modules/nft';
+import { Metadata, ExtendedAsset, getEquippableChildren, Id } from 'src/modules/nft';
 import axios from 'axios';
 
 export interface Asset {
@@ -16,6 +16,7 @@ export interface Asset {
   assetUri: string;
   parts: Part[];
   id: number;
+  contractAddress: string;
 }
 
 export interface Part {
@@ -25,6 +26,7 @@ export interface Part {
   partUri: string;
   isEquippableByAll: boolean;
   children: Asset[];
+  equippable: string[];
 }
 
 export const useNft2 = () => {
@@ -60,6 +62,7 @@ export const useNft2 = () => {
             assetUri: sanitizeIpfsUrl(hex2ascii(assetValue?.assetUri?.toString() ?? '')),
             parts: [],
             id: assetId,
+            contractAddress,
           } as Asset;
 
           const partsToAdd: Part[] = [];
@@ -73,6 +76,7 @@ export const useNft2 = () => {
                 z: partValue.z,
                 isEquippableByAll: partValue.isEquippableByAll,
                 partUri: sanitizeIpfsUrl(hex2ascii(partValue.partUri.toString() ?? '')),
+                equippable: partValue.equippable,
               } as Part;
 
               // Equipment
@@ -84,6 +88,11 @@ export const useNft2 = () => {
                     equipmentValue?.childNft[0].toString(),
                     equipmentValue.childNft[1].u64
                   );
+
+                  // Add child url to parent to make rendering easier. Take first child for now.
+                  if (partToAdd.children.length > 0) {
+                    partToAdd.partUri = partToAdd.children[0].assetUri;
+                  }
                 }
               }
 
@@ -91,9 +100,7 @@ export const useNft2 = () => {
             }
           }
 
-          const filteredAndSortedParts = partsToAdd
-            //.filter((x) => x.partType === "Fixed")
-            .sort((x, y) => (x?.z ?? 0) - (y?.z ?? 0));
+          const filteredAndSortedParts = partsToAdd.sort((x, y) => (x?.z ?? 0) - (y?.z ?? 0));
           uiAsset.parts.push(...filteredAndSortedParts);
 
           result.push(uiAsset);
@@ -131,7 +138,16 @@ export const useNft2 = () => {
         const response = await axios.get<Metadata>(
           sanitizeIpfsUrl(metadataUri + (tokenId ? `/${tokenId}.json` : ''))
         );
-        console.log(response.data);
+
+        // I messed up a collection img on Starduster metadata and I can't fix it because deplpoyed wrong contract version :(
+        // TODO fix with new contract deployment.
+        if (
+          contractAddress === 'Wcg8cuKcJgQGm15tZ5F14JXuWehm1Q67K92jfbTpKPrPm6S' &&
+          metadataKey === 'collection_metadata'
+        ) {
+          response.data.mediaUri =
+            'ipfs://bafkreibd4o62fa2a66k5taavb2ce72uzlernucen7eosv5v7achnd2kiha';
+        }
 
         return response.data;
       }
@@ -140,10 +156,29 @@ export const useNft2 = () => {
     return undefined;
   };
 
+  const getChildrenToEquipPreview = async (
+    contractAddress: string,
+    tokenId: number
+  ): Promise<Map<Id, (ExtendedAsset | null)[]> | null> => {
+    if (!contractAddress || !tokenId) {
+      return null;
+    }
+
+    const children = await getEquippableChildren(
+      contractAddress,
+      tokenId,
+      $api!,
+      currentAccount.value
+    );
+
+    return children;
+  };
+
   return {
     getToken,
     getCollectionMetadata,
     getTokenMetadata,
+    getChildrenToEquipPreview,
     availableContracts,
     tokenAssets,
   };

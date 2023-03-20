@@ -12,7 +12,7 @@
           v-for="(item, index) in inventory"
           :key="index"
           class="card--item"
-          @click="navigateToParent(item.contractAddress[0])"
+          @click="navigateToParent(item.contractAddress, item.tokenId.toString())"
         >
           <parent-card :id="Number(item.tokenId)" :contract-address="item.contractAddress" />
         </div>
@@ -21,68 +21,13 @@
     <div v-else>
       <span>Your wallet does't have any items</span>
     </div>
-
-    <!-- Memo: temporary example -->
-    <!-- <div v-if="isShibuya" class="container--example">
-      <div>
-        <p class="text--xl">Fetching NFTs example</p>
-        <p class="text--lg">Available contracts: {{ availableContracts }}</p>
-      </div>
-
-      <div>
-        <p class="text--lg">Token ID: #{{ tokenId }}</p>
-      </div>
-      <div>
-        <div class="image-container">
-          <img
-            v-for="(part, index) in parts"
-            :key="`part-${index}`"
-            class="image"
-            :src="part.metadataUri"
-          />
-        </div>
-      </div>
-      <div v-if="parts.length > 0" class="container--item">
-        <div v-for="(item, index) in parts" :key="index" class="card--item">
-          <div v-if="item.metadataUri">
-            <img :src="item.metadataUri" :alt="String(item.id)" class="item--img" />
-            <div class="row--name">
-              <span class="text--name">
-                {{ item.id }}
-              </span>
-            </div>
-            <div>
-              <astar-button
-                v-if="isSlot(item) && isSlotEquipped(item)"
-                :width="80"
-                :height="30"
-                @click="unequip(item.id)"
-              >
-                Unequip
-              </astar-button>
-            </div>
-          </div>
-          <div v-else>
-            <accepted-equipment
-              v-if="isSlot(item) && !isSlotEquipped(item)"
-              :token-id="tokenId"
-              :slot-id="Number(item.id)"
-              :get-children="getChildrenToEquipPreview"
-              :equip="equip"
-            />
-          </div>
-        </div>
-      </div>
-    </div> -->
   </div>
 </template>
 <script lang="ts">
-import { useAccount, useBreakpoints, useNft, useNft2, useNetworkInfo } from 'src/hooks';
+import { useAccount, useBreakpoints, useNft2, useNetworkInfo } from 'src/hooks';
 import { defineComponent, computed, watchEffect } from 'vue';
 import { getShortenAddress } from '@astar-network/astar-sdk-core';
 import { IBasePart } from 'src/modules/nft';
-import { endpointKey } from 'src/config/chainEndpoints';
-// import AcceptedEquipment from 'src/components/assets/AcceptedEquipment.vue';
 import ParentCard from 'src/components/assets/ParentCard.vue';
 import { useStore } from 'src/store';
 import { networkParam, Path } from 'src/router/routes';
@@ -99,36 +44,15 @@ export default defineComponent({
       return getShortenAddress(currentAccount.value, place);
     });
     const { currentNetworkIdx } = useNetworkInfo();
-    const isShibuya = computed(() => currentNetworkIdx.value === endpointKey.SHIBUYA);
     const router = useRouter();
     const store = useStore();
     const inventory = computed<ContractInventory[]>(() => store.getters['assets/getInventory']);
-
-    // Todo: get from url
-    const tokenId = 1;
-    const { parts, unequip, equip, getChildrenToEquipPreview } = useNft(tokenId);
     const { availableContracts } = useNft2();
-    const isSlotEquipped = (part: IBasePart): boolean =>
-      !!part.metadataUri && !!part.equippable && part.equippable.length > 0;
 
     const isSlot = (part: IBasePart): boolean => part.partType === 'Slot';
-    watchEffect(() => {
-      console.log('parts', parts.value);
-    });
-
-    const dummyItem = {
-      id: 1,
-      name: 'The Reborn Nebula',
-      description: 'description',
-      img: 'https://astar.network/_nuxt/reading-astar.87a786d8.svg',
-      isValid: true,
-    };
-
-    const dummyList = [dummyItem, dummyItem, dummyItem, dummyItem];
-
-    const navigateToParent = (id: string): void => {
+    const navigateToParent = (contractAddress: string, id: string): void => {
       const base = networkParam + Path.Parent;
-      const url = `${base}?parentId=${id}`;
+      const url = `${base}?contractAddress=${contractAddress}&parentId=${id}`;
       router.push(url);
     };
 
@@ -136,17 +60,9 @@ export default defineComponent({
       currentAccount,
       currentAccountName,
       address,
-      dummyList,
-      parts,
       availableContracts,
-      tokenId,
       inventory,
-      isShibuya,
-      isSlotEquipped,
       isSlot,
-      unequip,
-      equip,
-      getChildrenToEquipPreview,
       navigateToParent,
     };
   },

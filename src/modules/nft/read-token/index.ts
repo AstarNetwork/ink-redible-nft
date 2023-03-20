@@ -73,7 +73,7 @@ export const readNft = async (
 
     if (result.isOk) {
       // TODO there should be a better way. Maybe TypeChain
-      const assetIds = JSON.parse(output?.toString() ?? '').ok as number[];
+      const assetIds = JSON.parse(output?.toString() ?? '').ok.ok as number[];
       if (!assetIds) {
         console.info(`AssetIds for tokenId ${id} is undefined`);
         return [];

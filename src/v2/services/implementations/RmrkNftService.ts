@@ -45,7 +45,7 @@ export class RmrkNftService implements IRmrkNftService {
     }
   }
 
-  public async fetchParentInventories(walletAddress: string): Promise<ParentInventory[]> {
+  public async fetchParentInventories(walletAddress: string): Promise<ContractInventory[]> {
     Guard.ThrowIfUndefined('walletAddress', walletAddress);
     try {
       const inventories = await queryParentInventories(walletAddress);

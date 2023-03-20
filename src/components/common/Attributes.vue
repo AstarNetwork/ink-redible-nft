@@ -9,7 +9,7 @@
       />
     </div>
     <div class="wrapper--items">
-      <div v-if="ranking" class="container--ranking">
+      <!-- <div v-if="ranking" class="container--ranking">
         <div class="column--ranking">
           <span class="text--ranking">{{ $t('assets.attributes.ranking') }}</span>
           <div class="row--ranking">
@@ -21,16 +21,20 @@
           <span class="text--ranking">{{ $t('assets.attributes.rarity') }}</span>
           <span class="text--ranking-value">{{ rarity }}</span>
         </div>
-      </div>
+      </div> -->
       <div v-if="selectedTab === AttributeTab.attributes">
-        <div v-if="dummyItems" class="wrapper--items">
-          <div v-for="item in dummyItems" :key="item.description" class="container--item">
-            <span class="text--attributes-value">{{ item.description }}</span>
-            <span class="text--attributes-value">{{ item.value }}</span>
+        <div v-if="metadata" class="wrapper--items">
+          <div
+            v-for="[key, value] in Object.entries(metadata.properties)"
+            :key="key.toString()"
+            class="container--item"
+          >
+            <span class="text--attributes-value">{{ key }}</span>
+            <span class="text--attributes-value">{{ value.value }}</span>
             <div class="column--change-rate">
-              <span class="text--attributes-value">
+              <!-- <span class="text--attributes-value">
                 {{ item.changeRate > 0 ? `+ ${item.changeRate}%` : `${item.changeRate}%` }}
-              </span>
+              </span> -->
             </div>
           </div>
         </div>
@@ -103,6 +107,8 @@ import { getShortenAddress } from '@astar-network/astar-sdk-core';
 import { useNetworkInfo } from 'src/hooks';
 import { astarChain } from 'src/config/chain';
 import { providerEndpoints } from 'src/config/chainEndpoints';
+import { Metadata } from 'src/modules/nft';
+import { metadata } from '@polkadot/types/interfaces/essentials';
 
 enum AttributeTab {
   attributes = 'Attributes',
@@ -127,8 +133,8 @@ export default defineComponent({
       required: false,
       default: '',
     },
-    dummyItems: {
-      type: Object as PropType<any[]>,
+    metadata: {
+      type: Object as PropType<Metadata | undefined>,
       required: true,
     },
     contractAddress: {

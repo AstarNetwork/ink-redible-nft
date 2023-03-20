@@ -20,24 +20,24 @@
 
       <div class="wrapper-nft-introduction">
         <nft-introduction
-          :name="childDetail.name"
-          :description="childDetail.description"
-          :img="dummyParentNft.img"
-          :collection="dummyParentNft.collection"
+          :collection-metadata="collectionMetadata"
+          :token-metadata="tokenMetadata"
           :is-valid="true"
         />
       </div>
       <div class="wrapper--nft-option">
         <attributes
-          :dummy-items="dummyItems"
+          :metadata="tokenMetadata"
           :token-id="childId"
           :contract-address="contractAddress"
         />
         <parent-info
-          :collection="dummyParentNft.collection"
-          :description="dummyParentNft.description"
-          :img="dummyParentNft.img"
-          :is-valid="dummyParentNft.isValid"
+          :collection="parentTokenMetadata?.name ?? ''"
+          :description="parentTokenMetadata?.description ?? ''"
+          :img="sanitizeIpfsUrl(parentTokenMetadata?.image)"
+          :is-valid="true"
+          :parent-contract-address="parentContractAddress"
+          :child-contract-address="contractAddress"
         />
       </div>
     </div>
@@ -48,8 +48,10 @@ import ParentInfo from 'src/components/child/ParentInfo.vue';
 import Attributes from 'src/components/common/Attributes.vue';
 import Nft from 'src/components/common/Nft.vue';
 import NftIntroduction from 'src/components/common/NftIntroduction.vue';
-import { useChildNft } from 'src/hooks';
-import { computed, defineComponent } from 'vue';
+import { useChildNft, useNft2 } from 'src/hooks';
+import { Metadata } from 'src/modules/nft';
+import { sanitizeIpfsUrl } from 'src/modules/nft/ipfs';
+import { defineComponent, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 export default defineComponent({
@@ -57,30 +59,38 @@ export default defineComponent({
   setup() {
     const route = useRoute();
     const contractAddress = String(route.query.contractAddress);
+    const parentContractAddress = String(route.query.parentContractAddress);
     const childId = String(route.query.childId);
-    const { isFetching, childDetail } = useChildNft(childId);
+    const parentId = String(route.query.childId);
+    const { isFetching, childDetail } = useChildNft(
+      parentContractAddress,
+      contractAddress,
+      childId
+    );
+    const { getCollectionMetadata, getTokenMetadata } = useNft2();
+    const collectionMetadata = ref<Metadata | undefined>();
+    const tokenMetadata = ref<Metadata | undefined>();
+    const parentTokenMetadata = ref<Metadata | undefined>();
 
     const reload = (): void => {
       window.location.reload();
     };
 
-    const dummyItems = [{ description: 'Background', value: 'AAA', changeRate: 20 }];
+    const loadData = async (): Promise<void> => {
+      collectionMetadata.value = await getCollectionMetadata(contractAddress);
+      tokenMetadata.value = await getTokenMetadata(contractAddress, parseInt(childId));
+      parentTokenMetadata.value = await getTokenMetadata(parentContractAddress, parseInt(parentId));
+    };
 
-    const dummyParentNft = computed(() => {
-      return {
-        id: '555',
-        collection: 'Starmap',
-        description:
-          "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-        img: require('../../assets/img/parent-example.svg'),
-        isValid: true,
-      };
-    });
+    loadData();
 
     return {
-      dummyItems,
-      dummyParentNft,
+      sanitizeIpfsUrl,
+      collectionMetadata,
+      tokenMetadata,
+      parentTokenMetadata,
       contractAddress,
+      parentContractAddress,
       childId,
       isFetching,
       childDetail,
