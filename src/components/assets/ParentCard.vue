@@ -1,13 +1,13 @@
 <template>
   <div v-if="!isLoading">
-    <div v-if="assets.length > 0" class="image-container--parent">
+    <div v-if="token && token.assets.length > 0" class="image-container--parent">
       <img
-        v-for="(part, index) in assets[0].parts"
+        v-for="(part, index) in token.assets[0].parts"
         :key="`part-${index}`"
         class="image--parent"
         :src="part.partUri"
       />
-      <div v-if="assets.length === 0">
+      <div v-if="token.assets.length === 0">
         <span class="text--lg">No images for token ID: {{ id }}</span>
       </div>
     </div>
@@ -21,13 +21,15 @@
       </div>
     </div>
     <div class="row--name-info">
-      <span class="text--description"> {{ tokenMetadata ? tokenMetadata.name : 'Unknown' }} </span>
+      <span class="text--description">
+        {{ token?.metadata ? token.metadata.name : 'Unknown' }}
+      </span>
     </div>
   </div>
 </template>
 <script lang="ts">
 import { defineComponent, ref, computed } from 'vue';
-import { Asset, useNft2 } from 'src/hooks';
+import { Asset, useToken } from 'src/hooks';
 import { Metadata } from 'src/v2/models';
 import { useStore } from 'src/store';
 
@@ -44,25 +46,12 @@ export default defineComponent({
   },
   setup(props) {
     const store = useStore();
-    const isLoading = ref<boolean>(false);
-    const assets = ref<Asset[]>([]);
     const collectionMetadata = computed<Metadata | undefined>(() =>
       store.getters['assets/getCollectionMetadata'](props.contractAddress)
     );
-    const tokenMetadata = ref<Metadata>();
-    const { getToken, getTokenMetadata } = useNft2();
+    const { token, isLoading } = useToken(props.contractAddress, props.id.toString());
 
-    const loadData = async (): Promise<void> => {
-      isLoading.value = true;
-      assets.value = await getToken(props.contractAddress, props.id);
-      // TODO this can be optimized to fetch collection metadata only once per contract.
-      tokenMetadata.value = await getTokenMetadata(props.contractAddress, props.id);
-      isLoading.value = false;
-    };
-
-    loadData();
-
-    return { assets, isLoading, collectionMetadata, tokenMetadata };
+    return { token, isLoading, collectionMetadata };
   },
 });
 </script>

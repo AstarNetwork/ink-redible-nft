@@ -78,11 +78,12 @@
 <script lang="ts">
 import { getShortenAddress } from '@astar-network/astar-sdk-core';
 import ActionButtons from 'src/components/child/ActionButtons.vue';
-import { Part, useBreakpoints, useNft, useNft2 } from 'src/hooks';
+import { useBreakpoints, useNft, useNft2, useToken, useAccount } from 'src/hooks';
 import { ExtendedAsset, IBasePart, Id } from 'src/modules/nft';
 import { networkParam, Path } from 'src/router/routes';
 import { computed, defineComponent, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { useStore } from 'src/store';
 
 enum InventoryTab {
   inventory = 'Inventory',
@@ -116,14 +117,16 @@ export default defineComponent({
   },
   setup(props) {
     const { width, screenSize } = useBreakpoints();
+    const store = useStore();
     const router = useRouter();
     const route = useRoute();
+    const account = useAccount();
     const childId = String(route.query.childId);
     const parentId = String(route.query.parentId);
-    const parts = ref<Part[]>([]);
+    const parts = computed(() => token.value?.assets[0].parts ?? []);
 
     const { unequip, equip, isLoading } = useNft(Number(parentId));
-
+    const { token, fetchToken } = useToken(props.parentContractAddress, parentId);
     const { getToken, getChildrenToEquipPreview } = useNft2();
 
     const itemPreview = ref<[Id, (ExtendedAsset | null)[]]>();
@@ -131,10 +134,7 @@ export default defineComponent({
     const selectedTab = ref<InventoryTab>(InventoryTab.inventory);
 
     const loadParentToken = async (): Promise<void> => {
-      const assets = await getToken(props.parentContractAddress, parseInt(parentId));
-      if (assets.length > 0) {
-        parts.value = assets[0].parts;
-      }
+      await fetchToken(true);
     };
 
     loadParentToken();

@@ -2,7 +2,7 @@ import { SubmittableExtrinsic } from '@polkadot/api/types';
 import { ISubmittableResult } from '@polkadot/types/types';
 import axios from 'axios';
 import { inject, injectable } from 'inversify';
-import { unequipSlot } from 'src/modules/nft';
+import { queryParentInventories, unequipSlot } from 'src/modules/nft';
 import { sanitizeIpfsUrl } from 'src/modules/nft/ipfs';
 import { equipSlot, hex2ascii } from 'src/modules/nft/read-token';
 import Contract from 'src/modules/nft/rmrk-contract/types/contracts/rmrk_contract';
@@ -65,6 +65,7 @@ export class RmrkNftRepository implements IRmrkNftRepository {
   }
 
   public async getInventory(ownerAddress: string): Promise<ContractInventory[]> {
+    // return await queryParentInventories(ownerAddress);
     return [
       {
         contractAddress: 'Wcg8cuKcJgQGm15tZ5F14JXuWehm1Q67K92jfbTpKPrPm6S',

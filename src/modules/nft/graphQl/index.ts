@@ -3,13 +3,17 @@ import { ParentInventory } from 'src/modules/nft';
 import { ContractInventory } from 'src/v2/repositories';
 
 interface OwnerByIdQuery {
-  ownerById?: {
-    tokens: Token[];
-  };
+  ownerContractTokens: OwnerContractToken[];
 }
 
-interface Token {
+interface OwnerContractToken {
   id: string;
+  contractToken: ContractToken;
+}
+
+interface ContractToken {
+  contract: { id: string };
+  token: { id: number };
 }
 
 const graphQlServer = 'https://squid.subsquid.io/sqd-nft-viewer/v/v1/graphql';
@@ -21,10 +25,15 @@ export const queryParentInventories = async (
     const graphQLClient = new GraphQLClient(graphQlServer);
     const query = gql`
       query InventoryQuery($id: String!) {
-        ownerById(id: $id) {
+        ownerContractTokens(where: { owner: { id_eq: $id } }) {
           id
-          tokens {
-            id
+          contractToken {
+            contract {
+              id
+            }
+            token {
+              id
+            }
           }
         }
       }
@@ -36,11 +45,13 @@ export const queryParentInventories = async (
     }
 
     const result: ContractInventory[] = [];
-    for (const token in data.ownerById?.tokens) {
-      const t = token as unknown as Token;
-      if (t) {
-        const splitted = t.id.split('-');
-        result.push({ contractAddress: splitted[0], tokenId: parseInt(splitted[1]) });
+    for (let i = 0; i < data.ownerContractTokens.length; i++) {
+      const token = data.ownerContractTokens[i] as unknown as OwnerContractToken;
+      if (token) {
+        result.push({
+          contractAddress: token.contractToken.contract.id,
+          tokenId: token.contractToken.token.id,
+        });
       }
     }
 

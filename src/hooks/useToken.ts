@@ -12,9 +12,9 @@ export const useToken = (contractAddress: string, tokenId: string) => {
   );
   const isLoading = ref<boolean>(false);
 
-  const loadData = async (): Promise<void> => {
+  const fetchToken = async (forceFetch = false): Promise<void> => {
     isLoading.value = true;
-    if (!token.value) {
+    if (!token.value || forceFetch) {
       await store.dispatch('assets/getToken', {
         contractAddress,
         userAddress: account.currentAccount.value,
@@ -28,7 +28,7 @@ export const useToken = (contractAddress: string, tokenId: string) => {
     [account.currentAccount],
     () => {
       if (account.currentAccount) {
-        loadData();
+        fetchToken();
       }
     },
     { immediate: true }
@@ -37,5 +37,6 @@ export const useToken = (contractAddress: string, tokenId: string) => {
   return {
     token,
     isLoading,
+    fetchToken,
   };
 };
