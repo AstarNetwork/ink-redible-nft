@@ -7,8 +7,9 @@ import { sanitizeIpfsUrl } from 'src/modules/nft/ipfs';
 import { equipSlot, hex2ascii } from 'src/modules/nft/read-token';
 import Contract from 'src/modules/nft/rmrk-contract/types/contracts/rmrk_contract';
 import { IdBuilder } from 'src/modules/nft/rmrk-contract/types/types-arguments/rmrk_contract';
+import { PartType } from 'src/modules/nft/rmrk-contract/types/types-returns/rmrk_contract';
 import { IApi } from 'src/v2/integration';
-import { Metadata } from 'src/v2/models';
+import { Metadata, Part, TokenAsset } from 'src/v2/models';
 import {
   ContractInventory,
   IRmrkNftRepository,
@@ -105,6 +106,77 @@ export class RmrkNftRepository implements IRmrkNftRepository {
     tokenId: number
   ): Promise<Metadata | undefined> {
     return await this.getMetadata(contractAddress, callerAddress, 'baseUri', tokenId);
+  }
+
+  public async getTokenAssets(
+    contractAddress: string,
+    callerAddress: string,
+    tokenId: number
+  ): Promise<TokenAsset[]> {
+    const result: TokenAsset[] = [];
+    const api = await this.api.getApi();
+
+    const contract = new Contract(contractAddress, callerAddress, api);
+    const id = { u64: tokenId };
+    const acceptedTokenAssets = (await contract.query.getAcceptedTokenAssets(id)).value.unwrap();
+    const assetIds = acceptedTokenAssets.unwrap();
+
+    for (const assetId of assetIds) {
+      const asset = await contract.query['multiAsset::getAsset'](assetId);
+      const assetValue = asset.value.unwrap();
+      if (assetValue) {
+        const uiAsset = {
+          equippableGroupId: assetValue?.equippableGroupId,
+          assetUri: sanitizeIpfsUrl(hex2ascii(assetValue?.assetUri?.toString() ?? '')),
+          parts: [],
+          id: assetId,
+          contractAddress,
+        } as TokenAsset;
+
+        const partsToAdd: Part[] = [];
+        for (const partId of assetValue.partIds) {
+          const part = await contract.query['base::getPart'](partId);
+          const partValue = part.value.unwrap();
+          if (partValue) {
+            const partToAdd = {
+              id: partId,
+              partType: partValue.partType,
+              z: partValue.z,
+              isEquippableByAll: partValue.isEquippableByAll,
+              partUri: sanitizeIpfsUrl(hex2ascii(partValue.partUri.toString() ?? '')),
+              equippable: partValue.equippable,
+            } as Part;
+
+            // Equipment
+            if (partToAdd.partType === PartType.slot) {
+              const equipment = await contract.query.getEquipment(id, partToAdd.id);
+              const equipmentValue = equipment.value.ok ? equipment.value.unwrap() : null;
+              if (equipmentValue?.childNft[0] && equipmentValue?.childNft[1]?.u64) {
+                partToAdd.children = await this.getTokenAssets(
+                  equipmentValue?.childNft[0].toString(),
+                  callerAddress,
+                  equipmentValue.childNft[1].u64
+                );
+
+                // Add child url to parent to make rendering easier. Take first child for now.
+                if (partToAdd.children.length > 0) {
+                  partToAdd.partUri = partToAdd.children[0].assetUri;
+                }
+              }
+            }
+
+            partsToAdd.push(partToAdd);
+          }
+        }
+
+        const filteredAndSortedParts = partsToAdd.sort((x, y) => (x?.z ?? 0) - (y?.z ?? 0));
+        uiAsset.parts.push(...filteredAndSortedParts);
+
+        result.push(uiAsset);
+      }
+    }
+
+    return result;
   }
 
   private async getMetadata(

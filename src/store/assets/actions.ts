@@ -1,6 +1,6 @@
 import { IRmrkNftService } from 'src/v2/services/IRmrkNftService';
 import { StateInterface } from 'src/store';
-import { AssetsStateInterface as State, Contract } from 'src/store/assets/state';
+import { AssetsStateInterface as State, Contract, OwnedToken } from 'src/store/assets/state';
 import { ActionTree } from 'vuex';
 import { container } from 'src/v2/common';
 import { Symbols } from 'src/v2/symbols';
@@ -45,6 +45,30 @@ const actions: ActionTree<State, StateInterface> = {
       } catch (error) {
         console.error(error);
       }
+    }
+  },
+  async getToken(
+    { commit },
+    {
+      contractAddress,
+      userAddress,
+      tokenId,
+    }: { contractAddress: string; userAddress: string; tokenId: number }
+  ): Promise<void> {
+    try {
+      const nftRepo = container.get<IRmrkNftRepository>(Symbols.RmrkNftRepository);
+      const [assets, metadata] = await Promise.all([
+        nftRepo.getTokenAssets(contractAddress, userAddress, tokenId),
+        nftRepo.getTokenMetadata(contractAddress, userAddress, tokenId),
+      ]);
+      commit('setToken', {
+        contractAddress,
+        id: tokenId.toString(),
+        assets,
+        metadata,
+      } as OwnedToken);
+    } catch (error) {
+      console.error(error);
     }
   },
 };

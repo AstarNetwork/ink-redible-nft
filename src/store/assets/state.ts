@@ -1,11 +1,13 @@
 import { Asset } from 'src/hooks';
-import { Metadata, ParentInventory } from 'src/modules/nft';
+import { ParentInventory } from 'src/modules/nft';
+import { Metadata } from 'src/v2/models';
 import { ContractInventory } from 'src/v2/repositories';
 
 export interface OwnedToken {
   id: string;
   contractAddress: string;
   assets: Asset[];
+  metadata: Metadata | undefined;
 }
 
 export interface Contract {

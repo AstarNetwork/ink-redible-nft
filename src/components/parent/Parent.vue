@@ -1,14 +1,14 @@
 <template>
   <div v-if="!isLoading" class="wrapper--parent">
     <div class="container--parent">
-      <div v-if="assets.length > 0" class="image-container--parent">
+      <div v-if="token && token.assets.length > 0" class="image-container--parent">
         <img
-          v-for="(part, index) in assets[0].parts.filter((x) => x.partUri)"
+          v-for="(part, index) in token.assets[0].parts.filter((x) => x.partUri)"
           :key="`part-${index}`"
           class="image--parent"
           :src="part.partUri"
         />
-        <div v-if="assets.length === 0" class="row--no-images">
+        <div v-if="token.assets.length === 0" class="row--no-images">
           <span class="text--lg"> No images for token ID: {{ parentId }} </span>
         </div>
       </div>
@@ -28,10 +28,10 @@
         </astar-button>
       </div>
 
-      <div v-if="collectionMetadata && tokenMetadata" class="wrapper-nft-introduction">
+      <div v-if="collectionMetadata && token?.metadata" class="wrapper-nft-introduction">
         <nft-introduction
           :collection-metadata="collectionMetadata"
-          :token-metadata="tokenMetadata"
+          :token-metadata="token.metadata"
           :is-valid="true"
         />
       </div>
@@ -40,14 +40,14 @@
           ranking="1678"
           ranking-all="2222"
           rarity="34.19"
-          :metadata="tokenMetadata"
+          :metadata="token?.metadata"
           :token-id="parentId"
           :contract-address="contractAddress"
         />
         <inventory
           :token-id="Number(parentId)"
           :contract-address="contractAddress"
-          :parts="assets[0].parts"
+          :parts="token?.assets[0].parts"
           :get-children="getChildren"
         />
       </div>
@@ -55,12 +55,12 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, ref, computed } from 'vue';
+import { defineComponent, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import NftIntroduction from 'src/components/common/NftIntroduction.vue';
 import Attributes from 'src/components/common/Attributes.vue';
 import Inventory from 'src/components/parent/Inventory.vue';
-import { useNft2, Asset } from 'src/hooks';
+import { useNft2, useToken } from 'src/hooks';
 import { Metadata } from 'src/modules/nft';
 import { useStore } from 'src/store';
 
@@ -70,26 +70,14 @@ export default defineComponent({
     // TODO refactor this component is very similar to ParentCard, at least regarding NFT rendering,
     // there should be only one component which displays NFT.
     const store = useStore();
-    const isLoading = ref<boolean>(false);
-    const assets = ref<Asset[]>([]);
-    const collectionMetadata = computed<Metadata | undefined>(() =>
-      store.getters['assets/getCollectionMetadata'](contractAddress)
-    );
-    const tokenMetadata = ref<Metadata | undefined>();
     const route = useRoute();
     const parentId = String(route.query.parentId);
     const contractAddress = String(route.query.contractAddress);
-    const { getToken, getTokenMetadata, getChildrenToEquipPreview } = useNft2();
-
-    const loadData = async (): Promise<void> => {
-      isLoading.value = true;
-      assets.value = await getToken(contractAddress, parseInt(parentId));
-      // TODO this can be optimized to fetch collection metadata only once per contract.
-      tokenMetadata.value = await getTokenMetadata(contractAddress, parseInt(parentId));
-      isLoading.value = false;
-    };
-
-    loadData();
+    const { token, isLoading } = useToken(contractAddress, parentId);
+    const collectionMetadata = computed<Metadata | undefined>(() =>
+      store.getters['assets/getCollectionMetadata'](contractAddress)
+    );
+    const { getChildrenToEquipPreview } = useNft2();
 
     const reload = (): void => {
       window.location.reload();
@@ -101,11 +89,10 @@ export default defineComponent({
 
     return {
       isLoading,
-      assets,
+      token,
       parentId,
       contractAddress,
       collectionMetadata,
-      tokenMetadata,
       getChildren,
       reload,
     };

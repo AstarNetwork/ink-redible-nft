@@ -99,8 +99,6 @@ export default defineComponent({
       isLoadingInventory.value = false;
     };
 
-    console.log('parts', props.parts);
-
     const setSelectedTab = (isAttribute: boolean): void => {
       if (isAttribute) {
         selectedTab.value = InventoryTab.inventory;
