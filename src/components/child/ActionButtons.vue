@@ -14,6 +14,7 @@
     </astar-button>
 
     <astar-button
+      v-if="!isEquipped"
       :disabled="isDisabled"
       :width="buttonWidth"
       :height="buttonHeight"

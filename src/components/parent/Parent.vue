@@ -55,34 +55,36 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import NftIntroduction from 'src/components/common/NftIntroduction.vue';
 import Attributes from 'src/components/common/Attributes.vue';
 import Inventory from 'src/components/parent/Inventory.vue';
 import { useNft2, Asset } from 'src/hooks';
 import { Metadata } from 'src/modules/nft';
+import { useStore } from 'src/store';
 
 export default defineComponent({
   components: { NftIntroduction, Attributes, Inventory },
   setup() {
-    // TODO refactor this component is very similar to ParetnCard, at least regarding NFT rendering,
+    // TODO refactor this component is very similar to ParentCard, at least regarding NFT rendering,
     // there should be only one component which displays NFT.
+    const store = useStore();
     const isLoading = ref<boolean>(false);
     const assets = ref<Asset[]>([]);
-    const collectionMetadata = ref<Metadata | undefined>();
+    const collectionMetadata = computed<Metadata | undefined>(() =>
+      store.getters['assets/getCollectionMetadata'](contractAddress)
+    );
     const tokenMetadata = ref<Metadata | undefined>();
     const route = useRoute();
     const parentId = String(route.query.parentId);
     const contractAddress = String(route.query.contractAddress);
-    const { getToken, getCollectionMetadata, getTokenMetadata, getChildrenToEquipPreview } =
-      useNft2();
+    const { getToken, getTokenMetadata, getChildrenToEquipPreview } = useNft2();
 
     const loadData = async (): Promise<void> => {
       isLoading.value = true;
       assets.value = await getToken(contractAddress, parseInt(parentId));
       // TODO this can be optimized to fetch collection metadata only once per contract.
-      collectionMetadata.value = await getCollectionMetadata(contractAddress);
       tokenMetadata.value = await getTokenMetadata(contractAddress, parseInt(parentId));
       isLoading.value = false;
     };

@@ -1,9 +1,11 @@
 import { IRmrkNftService } from 'src/v2/services/IRmrkNftService';
 import { StateInterface } from 'src/store';
-import { AssetsStateInterface as State } from 'src/store/assets/state';
+import { AssetsStateInterface as State, Contract } from 'src/store/assets/state';
 import { ActionTree } from 'vuex';
 import { container } from 'src/v2/common';
 import { Symbols } from 'src/v2/symbols';
+import { IRmrkNftRepository } from 'src/v2/repositories';
+import { sanitizeIpfsUrl } from 'src/modules/nft/ipfs';
 
 const actions: ActionTree<State, StateInterface> = {
   async getParentInventories({ commit }, { address }: { address: string }): Promise<void> {
@@ -22,6 +24,27 @@ const actions: ActionTree<State, StateInterface> = {
       commit('setInventory', inventories);
     } catch (error) {
       console.error(error);
+    }
+  },
+
+  async getContract(
+    { commit, state },
+    { contractAddress, userAddress }: { contractAddress: string; userAddress: string }
+  ): Promise<void> {
+    if (!state.collections.find((x) => x.address === contractAddress)) {
+      try {
+        const nftRepo = container.get<IRmrkNftRepository>(Symbols.RmrkNftRepository);
+        const metadata = await nftRepo.getCollectionMetadata(contractAddress, userAddress);
+        const sanitizedMetadata = metadata
+          ? { ...metadata, mediaUri: sanitizeIpfsUrl(metadata.mediaUri) }
+          : metadata;
+        commit('setCollection', {
+          address: contractAddress,
+          metadata: sanitizedMetadata,
+        } as Contract);
+      } catch (error) {
+        console.error(error);
+      }
     }
   },
 };

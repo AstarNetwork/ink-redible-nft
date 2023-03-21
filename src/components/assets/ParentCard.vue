@@ -26,9 +26,10 @@
   </div>
 </template>
 <script lang="ts">
+import { defineComponent, ref, computed } from 'vue';
 import { Asset, useNft2 } from 'src/hooks';
-import { Metadata } from 'src/modules/nft';
-import { defineComponent, ref } from 'vue';
+import { Metadata } from 'src/v2/models';
+import { useStore } from 'src/store';
 
 export default defineComponent({
   props: {
@@ -42,17 +43,19 @@ export default defineComponent({
     },
   },
   setup(props) {
+    const store = useStore();
     const isLoading = ref<boolean>(false);
     const assets = ref<Asset[]>([]);
-    const collectionMetadata = ref<Metadata>();
+    const collectionMetadata = computed<Metadata | undefined>(() =>
+      store.getters['assets/getCollectionMetadata'](props.contractAddress)
+    );
     const tokenMetadata = ref<Metadata>();
-    const { getToken, getCollectionMetadata, getTokenMetadata } = useNft2();
+    const { getToken, getTokenMetadata } = useNft2();
 
     const loadData = async (): Promise<void> => {
       isLoading.value = true;
       assets.value = await getToken(props.contractAddress, props.id);
       // TODO this can be optimized to fetch collection metadata only once per contract.
-      collectionMetadata.value = await getCollectionMetadata(props.contractAddress);
       tokenMetadata.value = await getTokenMetadata(props.contractAddress, props.id);
       isLoading.value = false;
     };

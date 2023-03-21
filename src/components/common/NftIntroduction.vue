@@ -5,11 +5,7 @@
     </div>
     <div class="box--title-description">
       <div class="row--title">
-        <img
-          :src="sanitizeIpfsUrl(collectionMetadata?.mediaUri)"
-          :alt="collectionMetadata?.name"
-          class="img--nft"
-        />
+        <img :src="collectionMetadata?.mediaUri" :alt="collectionMetadata?.name" class="img--nft" />
         <div class="column--nft-title">
           <div>
             <span class="text--label">{{ $t('collection') }}</span>
@@ -30,7 +26,6 @@
 </template>
 <script lang="ts">
 import { Metadata } from 'src/modules/nft';
-import { sanitizeIpfsUrl } from 'src/modules/nft/ipfs';
 import { defineComponent, PropType } from 'vue';
 
 export default defineComponent({
@@ -49,9 +44,7 @@ export default defineComponent({
       default: false,
     },
   },
-  setup() {
-    return { sanitizeIpfsUrl };
-  },
+  setup() {},
 });
 </script>
 

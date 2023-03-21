@@ -44,6 +44,8 @@
   </div>
 </template>
 <script lang="ts">
+import { defineComponent, ref, computed } from 'vue';
+import { useRoute } from 'vue-router';
 import ParentInfo from 'src/components/child/ParentInfo.vue';
 import Attributes from 'src/components/common/Attributes.vue';
 import Nft from 'src/components/common/Nft.vue';
@@ -51,13 +53,13 @@ import NftIntroduction from 'src/components/common/NftIntroduction.vue';
 import { useChildNft, useNft2 } from 'src/hooks';
 import { Metadata } from 'src/modules/nft';
 import { sanitizeIpfsUrl } from 'src/modules/nft/ipfs';
-import { defineComponent, ref } from 'vue';
-import { useRoute } from 'vue-router';
+import { useStore } from 'src/store';
 
 export default defineComponent({
   components: { NftIntroduction, Attributes, ParentInfo, Nft },
   setup() {
     const route = useRoute();
+    const store = useStore();
     const contractAddress = String(route.query.contractAddress);
     const parentContractAddress = String(route.query.parentContractAddress);
     const childId = String(route.query.childId);
@@ -67,8 +69,10 @@ export default defineComponent({
       contractAddress,
       childId
     );
-    const { getCollectionMetadata, getTokenMetadata } = useNft2();
-    const collectionMetadata = ref<Metadata | undefined>();
+    const { getTokenMetadata } = useNft2();
+    const collectionMetadata = computed<Metadata | undefined>(() =>
+      store.getters['assets/getCollectionMetadata'](contractAddress)
+    );
     const tokenMetadata = ref<Metadata | undefined>();
     const parentTokenMetadata = ref<Metadata | undefined>();
 
@@ -77,7 +81,6 @@ export default defineComponent({
     };
 
     const loadData = async (): Promise<void> => {
-      collectionMetadata.value = await getCollectionMetadata(contractAddress);
       tokenMetadata.value = await getTokenMetadata(contractAddress, parseInt(childId));
       parentTokenMetadata.value = await getTokenMetadata(parentContractAddress, parseInt(parentId));
     };

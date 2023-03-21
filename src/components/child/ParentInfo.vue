@@ -77,9 +77,8 @@
 </template>
 <script lang="ts">
 import { getShortenAddress } from '@astar-network/astar-sdk-core';
-import { load } from 'mime';
 import ActionButtons from 'src/components/child/ActionButtons.vue';
-import { Asset, Part, useBreakpoints, useNft, useNft2 } from 'src/hooks';
+import { Part, useBreakpoints, useNft, useNft2 } from 'src/hooks';
 import { ExtendedAsset, IBasePart, Id } from 'src/modules/nft';
 import { networkParam, Path } from 'src/router/routes';
 import { computed, defineComponent, ref, watch } from 'vue';
@@ -160,7 +159,11 @@ export default defineComponent({
     const equippedParentNft = computed<boolean>(() => {
       if (parts.value) {
         for (const part of parts.value) {
-          if (part.children?.length > 0 && part.children[0].id === Number(childId)) {
+          if (
+            part.children?.length > 0 &&
+            part.equippable.includes(props.childContractAddress) &&
+            part.children[0].id === Number(childId)
+          ) {
             return true;
           }
         }
@@ -205,7 +208,7 @@ export default defineComponent({
 
     const navigateToParent = (): void => {
       const base = networkParam + Path.Parent;
-      const url = `${base}?parentId=${parentId}`;
+      const url = `${base}?parentId=${parentId}&contractAddress=${props.parentContractAddress}`;
       router.push(url);
     };
 

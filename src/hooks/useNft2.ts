@@ -111,15 +111,11 @@ export const useNft2 = () => {
     return result;
   };
 
-  const getCollectionMetadata = async (contractAddress: string): Promise<Metadata | undefined> => {
-    return getMetadata(contractAddress, 'collection_metadata');
-  };
-
   const getTokenMetadata = async (
     contractAddress: string,
     tokenId: number
   ): Promise<Metadata | undefined> => {
-    return getMetadata(contractAddress, 'baseUri', tokenId);
+    return await getMetadata(contractAddress, 'baseUri', tokenId);
   };
 
   const getMetadata = async (
@@ -176,7 +172,6 @@ export const useNft2 = () => {
 
   return {
     getToken,
-    getCollectionMetadata,
     getTokenMetadata,
     getChildrenToEquipPreview,
     availableContracts,

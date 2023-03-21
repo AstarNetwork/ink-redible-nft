@@ -1,6 +1,7 @@
 import { SubmittableExtrinsic } from '@polkadot/api/types';
 import { ISubmittableResult } from '@polkadot/types/types';
 import { Id } from 'src/modules/nft';
+import { Metadata } from '../models';
 
 export interface EquipCallParam {
   parentContractAddress: string;
@@ -35,4 +36,15 @@ export interface IRmrkNftRepository {
   ): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>>;
 
   getInventory(ownerAddress: string): Promise<ContractInventory[]>;
+
+  getCollectionMetadata(
+    contractAddress: string,
+    callerAddress: string
+  ): Promise<Metadata | undefined>;
+
+  getTokenMetadata(
+    contractAddress: string,
+    callerAddress: string,
+    tokenId: number
+  ): Promise<Metadata | undefined>;
 }
