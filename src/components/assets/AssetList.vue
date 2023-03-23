@@ -25,7 +25,7 @@
 </template>
 <script lang="ts">
 import { useAccount, useBreakpoints, useNft2, useNetworkInfo } from 'src/hooks';
-import { defineComponent, computed, watchEffect } from 'vue';
+import { defineComponent, computed } from 'vue';
 import { getShortenAddress } from '@astar-network/astar-sdk-core';
 import { IBasePart } from 'src/modules/nft';
 import ParentCard from 'src/components/assets/ParentCard.vue';

@@ -52,7 +52,7 @@ import ParentInfo from 'src/components/child/ParentInfo.vue';
 import Attributes from 'src/components/common/Attributes.vue';
 import Nft from 'src/components/common/Nft.vue';
 import NftIntroduction from 'src/components/common/NftIntroduction.vue';
-import { useChildNft, useToken } from 'src/hooks';
+import { useChildNft, useToken, useAccount } from 'src/hooks';
 import { Metadata } from 'src/modules/nft';
 import { sanitizeIpfsUrl } from 'src/modules/nft/ipfs';
 import { useStore } from 'src/store';
@@ -62,10 +62,11 @@ export default defineComponent({
   setup() {
     const route = useRoute();
     const store = useStore();
+    const account = useAccount();
     const contractAddress = String(route.query.contractAddress);
     const parentContractAddress = String(route.query.parentContractAddress);
     const childId = String(route.query.childId);
-    const parentId = String(route.query.childId);
+    const parentId = String(route.query.parentId);
     const childToken = useToken(contractAddress, childId);
     const parentToken = useToken(parentContractAddress, parentId);
     const childTokenMetadata = computed(() => childToken.token.value?.metadata);
@@ -78,6 +79,15 @@ export default defineComponent({
     const collectionMetadata = computed<Metadata | undefined>(() =>
       store.getters['assets/getCollectionMetadata'](contractAddress)
     );
+
+    // Child tokens are owned by contract, not users, and it can happen that child collection metadata
+    // is not loaded to vuex.
+    if (!collectionMetadata.value) {
+      store.dispatch('assets/getContract', {
+        contractAddress,
+        userAddress: account.currentAccount.value,
+      });
+    }
 
     const reload = (): void => {
       window.location.reload();

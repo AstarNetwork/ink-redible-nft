@@ -9,12 +9,6 @@
       />
     </q-carousel>
   </div>
-  <img
-    v-else
-    src="https://qph.cf2.quoracdn.net/main-qimg-ca529ccb08880f1f9a206a364e42ae62-lq"
-    alt="nft-logo"
-    class="img--nft-big"
-  />
 </template>
 <script lang="ts">
 import { defineComponent, ref } from 'vue';

@@ -147,9 +147,11 @@ export default defineComponent({
     });
 
     const slotVacant = computed<IBasePart | undefined>(() => {
-      return parts.value.find(
+      const partFound = parts.value.find(
         (it) => it.partType === 'Slot' && it.equippable.includes(props.childContractAddress)
       );
+
+      return partFound;
     });
 
     const equippedParentNft = computed<boolean>(() => {

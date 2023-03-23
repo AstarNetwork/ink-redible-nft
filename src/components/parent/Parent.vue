@@ -84,8 +84,8 @@ export default defineComponent({
       window.location.reload();
     };
 
-    const getChildren = () => {
-      return getChildrenToEquipPreview(contractAddress, parseInt(parentId));
+    const getChildren = async () => {
+      return await getChildrenToEquipPreview(contractAddress, parseInt(parentId));
     };
 
     return {

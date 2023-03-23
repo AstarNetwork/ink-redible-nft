@@ -123,6 +123,7 @@ export const providerEndpoints: ChainProvider[] = [
     faucetEndpoint: '',
     defaultLogo:
       'https://github.com/AstarNetwork/astar-apps/blob/main/src/assets/img/chain/shibuya.png?raw=true',
+    baseContractAddress: ['5GwLspTnciq9VqY5a2JHBRSXK6EhPv8Q8BBZy43MYwKK8X9p'],
   },
   {
     networkAlias: 'custom-node',
