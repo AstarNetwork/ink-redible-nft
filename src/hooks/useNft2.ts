@@ -135,16 +135,6 @@ export const useNft2 = () => {
           sanitizeIpfsUrl(metadataUri + (tokenId ? `/${tokenId}.json` : ''))
         );
 
-        // I messed up a collection img on Starduster metadata and I can't fix it because deplpoyed wrong contract version :(
-        // TODO fix with new contract deployment.
-        if (
-          contractAddress === 'Wcg8cuKcJgQGm15tZ5F14JXuWehm1Q67K92jfbTpKPrPm6S' &&
-          metadataKey === 'collection_metadata'
-        ) {
-          response.data.mediaUri =
-            'ipfs://bafkreibd4o62fa2a66k5taavb2ce72uzlernucen7eosv5v7achnd2kiha';
-        }
-
         return response.data;
       }
     }
