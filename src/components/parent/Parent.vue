@@ -45,9 +45,10 @@
           :contract-address="contractAddress"
         />
         <inventory
+          v-if="token"
           :token-id="Number(parentId)"
           :contract-address="contractAddress"
-          :parts="token?.assets[0].parts"
+          :parts="token.assets[0].parts"
           :get-children="getChildren"
         />
       </div>

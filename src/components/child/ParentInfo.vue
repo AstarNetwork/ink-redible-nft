@@ -83,7 +83,6 @@ import { ExtendedAsset, IBasePart, Id } from 'src/modules/nft';
 import { networkParam, Path } from 'src/router/routes';
 import { computed, defineComponent, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { useStore } from 'src/store';
 
 enum InventoryTab {
   inventory = 'Inventory',
@@ -117,17 +116,15 @@ export default defineComponent({
   },
   setup(props) {
     const { width, screenSize } = useBreakpoints();
-    const store = useStore();
     const router = useRouter();
     const route = useRoute();
-    const account = useAccount();
     const childId = String(route.query.childId);
     const parentId = String(route.query.parentId);
     const parts = computed(() => token.value?.assets[0].parts ?? []);
 
     const { unequip, equip, isLoading } = useNft(Number(parentId));
     const { token, fetchToken } = useToken(props.parentContractAddress, parentId);
-    const { getToken, getChildrenToEquipPreview } = useNft2();
+    const { getChildrenToEquipPreview } = useNft2();
 
     const itemPreview = ref<[Id, (ExtendedAsset | null)[]]>();
     const isLoadingItem = ref<boolean>(false);
@@ -150,7 +147,6 @@ export default defineComponent({
     });
 
     const slotVacant = computed<IBasePart | undefined>(() => {
-      // return parts.value.find((it) => it.partType === 'Slot' && !it.childId);
       return parts.value.find(
         (it) => it.partType === 'Slot' && it.equippable.includes(props.childContractAddress)
       );
