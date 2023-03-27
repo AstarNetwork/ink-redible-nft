@@ -80,15 +80,6 @@ export default defineComponent({
       store.getters['assets/getCollectionMetadata'](contractAddress)
     );
 
-    // Child tokens are owned by contract, not users, and it can happen that child collection metadata
-    // is not loaded to vuex.
-    if (!collectionMetadata.value) {
-      store.dispatch('assets/getContract', {
-        contractAddress,
-        userAddress: account.currentAccount.value,
-      });
-    }
-
     const reload = (): void => {
       window.location.reload();
     };

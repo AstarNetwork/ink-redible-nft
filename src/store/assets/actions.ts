@@ -19,11 +19,14 @@ const actions: ActionTree<State, StateInterface> = {
   },
   async getInventory({ commit }, { address }: { address: string }): Promise<void> {
     try {
+      commit('general/setLoading', true, { root: true });
       const service = container.get<IRmrkNftService>(Symbols.RmrkNftService);
       const inventories = await service.getInventory(address);
       commit('setInventory', inventories);
     } catch (error) {
       console.error(error);
+    } finally {
+      commit('general/setLoading', false, { root: true });
     }
   },
 
@@ -56,6 +59,7 @@ const actions: ActionTree<State, StateInterface> = {
     }: { contractAddress: string; userAddress: string; tokenId: number }
   ): Promise<void> {
     try {
+      commit('general/setLoading', true, { root: true });
       const nftRepo = container.get<IRmrkNftRepository>(Symbols.RmrkNftRepository);
       const [assets, metadata] = await Promise.all([
         nftRepo.getTokenAssets(contractAddress, userAddress, tokenId),
@@ -69,6 +73,8 @@ const actions: ActionTree<State, StateInterface> = {
       } as OwnedToken);
     } catch (error) {
       console.error(error);
+    } finally {
+      commit('general/setLoading', false, { root: true });
     }
   },
 };

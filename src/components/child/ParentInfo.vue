@@ -134,8 +134,6 @@ export default defineComponent({
       await fetchToken(true);
     };
 
-    loadParentToken();
-
     const setSelectedTab = (isAttribute: boolean): void => {
       selectedTab.value = isAttribute ? InventoryTab.inventory : InventoryTab.equipped;
     };
@@ -188,6 +186,7 @@ export default defineComponent({
       );
       await unequip(props.parentContractAddress, Number(part?.id));
       await loadParentToken();
+      navigateToParent();
     };
 
     const handleEquip = async (): Promise<void> => {
@@ -202,6 +201,7 @@ export default defineComponent({
         props.childContractAddress
       );
       await loadParentToken();
+      navigateToParent();
     };
 
     const navigateToParent = (): void => {
