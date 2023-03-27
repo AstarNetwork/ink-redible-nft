@@ -32,8 +32,6 @@ import { defineComponent, ref, computed, watch } from 'vue';
 import { useToken } from 'src/hooks';
 import { Metadata } from 'src/v2/models';
 import { useStore } from 'src/store';
-import { ContractInventory } from 'src/v2/repositories';
-import { PartType } from 'src/modules/nft/rmrk-contract/types/types-returns/rmrk_contract';
 
 export default defineComponent({
   props: {

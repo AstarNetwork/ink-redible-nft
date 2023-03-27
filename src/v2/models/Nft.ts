@@ -34,3 +34,8 @@ export interface Part {
   children: TokenAsset[];
   equippable: string[];
 }
+
+export interface AddressIdPair {
+  contractAddress: string;
+  tokenId: string;
+}

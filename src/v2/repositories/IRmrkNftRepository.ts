@@ -1,11 +1,7 @@
 import { SubmittableExtrinsic } from '@polkadot/api/types';
 import { ISubmittableResult } from '@polkadot/types/types';
 import { Id } from 'src/modules/nft';
-import {
-  AccountId,
-  Id as TokenId,
-} from 'src/modules/nft/rmrk-contract/types/types-returns/rmrk_contract';
-import { Metadata, TokenAsset } from '../models';
+import { AddressIdPair, Metadata, TokenAsset } from '../models';
 
 export interface EquipCallParam {
   parentContractAddress: string;
@@ -63,5 +59,5 @@ export interface IRmrkNftRepository {
     contractAddress: string,
     callerAddress: string,
     tokenId: number
-  ): Promise<[AccountId, TokenId][]>;
+  ): Promise<AddressIdPair[]>;
 }

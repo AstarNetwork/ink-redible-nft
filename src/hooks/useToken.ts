@@ -5,6 +5,7 @@ import { OwnedToken } from 'src/store/assets/state';
 import { ContractInventory, IRmrkNftRepository } from 'src/v2/repositories';
 import { container } from 'src/v2/common';
 import { Symbols } from 'src/v2/symbols';
+import { AddressIdPair } from 'src/v2/models';
 
 // TODO remove useNft and useNft2
 export const useToken = (contractAddress: string, tokenId: string) => {
@@ -33,17 +34,11 @@ export const useToken = (contractAddress: string, tokenId: string) => {
       isLoading.value = true;
       const childInventory: ContractInventory[] = [];
       try {
-        const rmrkRepo = container.get<IRmrkNftRepository>(Symbols.RmrkNftRepository);
-        const children = await rmrkRepo.getAcceptedChildren(
-          contractAddress,
-          account.currentAccount.value,
-          parseInt(tokenId)
-        );
-
+        const children = await getAcceptedChildren();
         children.forEach((child) => {
           childInventory.push({
-            contractAddress: child[0].toString(),
-            tokenId: parseInt(child[1].u64?.toString() ?? '-1'), // TODO fix, this will fail in case of big number
+            contractAddress: child.contractAddress,
+            tokenId: parseInt(child.tokenId),
             parent: { contractAddress: contractAddress, tokenId: parseInt(tokenId) },
           });
         });
@@ -61,6 +56,17 @@ export const useToken = (contractAddress: string, tokenId: string) => {
     }
   };
 
+  const getAcceptedChildren = async (): Promise<AddressIdPair[]> => {
+    const rmrkRepo = container.get<IRmrkNftRepository>(Symbols.RmrkNftRepository);
+    const children = await rmrkRepo.getAcceptedChildren(
+      contractAddress,
+      account.currentAccount.value,
+      parseInt(tokenId)
+    );
+
+    return children;
+  };
+
   watch(
     [account.currentAccount],
     () => {
@@ -76,5 +82,6 @@ export const useToken = (contractAddress: string, tokenId: string) => {
     isLoading,
     fetchToken,
     fetchChildren,
+    getAcceptedChildren,
   };
 };

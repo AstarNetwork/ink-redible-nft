@@ -7,13 +7,9 @@ import { sanitizeIpfsUrl } from 'src/modules/nft/ipfs';
 import { equipSlot, hex2ascii } from 'src/modules/nft/read-token';
 import Contract from 'src/modules/nft/rmrk-contract/types/contracts/rmrk_contract';
 import { IdBuilder } from 'src/modules/nft/rmrk-contract/types/types-arguments/rmrk_contract';
-import {
-  AccountId,
-  Id,
-  PartType,
-} from 'src/modules/nft/rmrk-contract/types/types-returns/rmrk_contract';
+import { PartType } from 'src/modules/nft/rmrk-contract/types/types-returns/rmrk_contract';
 import { IApi } from 'src/v2/integration';
-import { Metadata, Part, TokenAsset } from 'src/v2/models';
+import { AddressIdPair, Metadata, Part, TokenAsset } from 'src/v2/models';
 import {
   ContractInventory,
   IRmrkNftRepository,
@@ -99,14 +95,19 @@ export class RmrkNftRepository implements IRmrkNftRepository {
     contractAddress: string,
     callerAddress: string,
     tokenId: number
-  ): Promise<[AccountId, Id][]> {
+  ): Promise<AddressIdPair[]> {
     const api = await this.api.getApi();
     const contract = new Contract(contractAddress, callerAddress, api);
 
     const children = await (
       await contract.query.getAcceptedChildren({ u64: tokenId })
     ).value.unwrap();
-    return children;
+    return children.map((x) => {
+      return {
+        contractAddress: x[0].toString(),
+        tokenId: x[1].u64?.toString(),
+      } as AddressIdPair;
+    });
   }
 
   public async getTokenAssets(

@@ -49,7 +49,7 @@
           :token-id="Number(parentId)"
           :contract-address="contractAddress"
           :asset="token.assets[0]"
-          :get-children="getChildren"
+          :get-children="getAcceptedChildren"
         />
       </div>
     </div>
@@ -61,7 +61,7 @@ import { useRoute } from 'vue-router';
 import NftIntroduction from 'src/components/common/NftIntroduction.vue';
 import Attributes from 'src/components/common/Attributes.vue';
 import Inventory from 'src/components/parent/Inventory.vue';
-import { useNft2, useToken } from 'src/hooks';
+import { useToken } from 'src/hooks';
 import { Metadata } from 'src/modules/nft';
 import { useStore } from 'src/store';
 
@@ -78,14 +78,10 @@ export default defineComponent({
     const collectionMetadata = computed<Metadata | undefined>(() =>
       store.getters['assets/getCollectionMetadata'](contractAddress)
     );
-    const { getChildrenToEquipPreview } = useNft2();
+    const { getAcceptedChildren } = useToken(contractAddress, parentId);
 
     const reload = (): void => {
       window.location.reload();
-    };
-
-    const getChildren = async () => {
-      return await getChildrenToEquipPreview(contractAddress, parseInt(parentId));
     };
 
     return {
@@ -94,7 +90,7 @@ export default defineComponent({
       parentId,
       contractAddress,
       collectionMetadata,
-      getChildren,
+      getAcceptedChildren,
       reload,
     };
   },
