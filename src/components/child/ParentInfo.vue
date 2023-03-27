@@ -78,7 +78,7 @@
 <script lang="ts">
 import { getShortenAddress } from '@astar-network/astar-sdk-core';
 import ActionButtons from 'src/components/child/ActionButtons.vue';
-import { useBreakpoints, useNft, useNft2, useToken, useAccount } from 'src/hooks';
+import { useBreakpoints, useNft, useNft2, useToken } from 'src/hooks';
 import { ExtendedAsset, IBasePart, Id } from 'src/modules/nft';
 import { networkParam, Path } from 'src/router/routes';
 import { computed, defineComponent, ref, watch } from 'vue';
@@ -120,11 +120,11 @@ export default defineComponent({
     const route = useRoute();
     const childId = String(route.query.childId);
     const parentId = String(route.query.parentId);
-    const parts = computed(() => token.value?.assets[0].parts ?? []);
 
     const { unequip, equip, isLoading } = useNft(Number(parentId));
     const { token, fetchToken } = useToken(props.parentContractAddress, parentId);
     const { getChildrenToEquipPreview } = useNft2();
+    const parts = computed(() => token.value?.assets[0].parts ?? []);
 
     const itemPreview = ref<[Id, (ExtendedAsset | null)[]]>();
     const isLoadingItem = ref<boolean>(false);
@@ -160,7 +160,7 @@ export default defineComponent({
           if (
             part.children?.length > 0 &&
             part.equippable.includes(props.childContractAddress) &&
-            part.children[0].id === Number(childId)
+            part.children[0].tokenId === childId
           ) {
             return true;
           }
@@ -184,9 +184,9 @@ export default defineComponent({
 
     const handleUnequip = async (): Promise<void> => {
       const part = parts.value.find(
-        (it) => it.children?.length > 0 && it.children[0].id === Number(childId)
+        (it) => it.children?.length > 0 && it.children[0].tokenId === childId
       );
-      await unequip(Number(part?.id));
+      await unequip(props.parentContractAddress, Number(part?.id));
       await loadParentToken();
     };
 

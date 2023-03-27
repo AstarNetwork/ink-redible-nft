@@ -77,11 +77,11 @@ export const useNft = (tokenId: number) => {
     return result;
   };
 
-  const unequip = async (slot?: string | number): Promise<void> => {
+  const unequip = async (contractAddress: string, slot?: string | number): Promise<void> => {
     console.log('unequipping', slot); //13
     if (slot) {
       await rmrkNftService.unequip({
-        contractAddress: baseContractAddress,
+        contractAddress,
         tokenId,
         slotId: slot.toString(),
         senderAddress: currentAccount.value,

@@ -3,7 +3,8 @@ import { Metadata } from 'src/v2/models';
 import { ContractInventory } from 'src/v2/repositories';
 import { GetterTree } from 'vuex';
 import { StateInterface } from '../index';
-import state, { AssetsStateInterface as State, OwnedToken } from './state';
+import { AssetsStateInterface as State, OwnedToken } from './state';
+
 export interface AssetsGetters {
   // TODO remove getParentInv...
   getParentInventories(state: State): ParentInventory[];

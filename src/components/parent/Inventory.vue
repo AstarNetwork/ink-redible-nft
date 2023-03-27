@@ -54,6 +54,7 @@ import ModeTabs from 'src/components/common/ModeTabs.vue';
 import { useBreakpoints, Part } from 'src/hooks';
 import { ExtendedAsset, IBasePart, Id } from 'src/modules/nft';
 import { networkParam, Path } from 'src/router/routes';
+import { TokenAsset } from 'src/v2/models';
 import { computed, defineComponent, PropType, ref, watchEffect } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
@@ -65,8 +66,8 @@ enum InventoryTab {
 export default defineComponent({
   components: { ModeTabs },
   props: {
-    parts: {
-      type: Object as PropType<Part[]>,
+    asset: {
+      type: Object as PropType<TokenAsset>,
       required: true,
     },
     getChildren: {
@@ -110,12 +111,14 @@ export default defineComponent({
     const isSlotEquipped = (part: IBasePart): boolean => !!part.partUri && isSlot(part);
     const isSlot = (part: IBasePart): boolean => part.partType === 'Slot';
 
-    const equipped = computed<IBasePart[]>(() => props.parts.filter((it) => isSlotEquipped(it)));
+    const equipped = computed<IBasePart[]>(() =>
+      props.asset.parts.filter((it) => isSlotEquipped(it))
+    );
 
     const navigateToChildFromEquipped = (id: number): void => {
       const base = networkParam + Path.Child;
-      const part = props.parts.find((it) => it.id === id);
-      const url = `${base}?childId=${part?.children[0].id}&parentId=${parentId}&contractAddress=${part?.children[0].contractAddress}&parentContractAddress=${props.contractAddress}`;
+      const part = props.asset.parts.find((it) => it.id === id);
+      const url = `${base}?childId=${part?.children[0].tokenId}&parentId=${parentId}&contractAddress=${part?.children[0].contractAddress}&parentContractAddress=${props.contractAddress}`;
       router.push(url);
     };
 

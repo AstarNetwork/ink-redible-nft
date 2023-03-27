@@ -48,7 +48,7 @@
           v-if="token"
           :token-id="Number(parentId)"
           :contract-address="contractAddress"
-          :parts="token.assets[0].parts"
+          :asset="token.assets[0]"
           :get-children="getChildren"
         />
       </div>

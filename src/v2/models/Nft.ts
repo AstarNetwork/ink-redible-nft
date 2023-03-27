@@ -22,6 +22,7 @@ export interface TokenAsset {
   parts: Part[];
   id: number;
   contractAddress: string;
+  tokenId: string;
 }
 
 export interface Part {

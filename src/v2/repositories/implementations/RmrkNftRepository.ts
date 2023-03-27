@@ -2,7 +2,7 @@ import { SubmittableExtrinsic } from '@polkadot/api/types';
 import { ISubmittableResult } from '@polkadot/types/types';
 import axios from 'axios';
 import { inject, injectable } from 'inversify';
-import { unequipSlot } from 'src/modules/nft';
+import { queryParentInventories, unequipSlot } from 'src/modules/nft';
 import { sanitizeIpfsUrl } from 'src/modules/nft/ipfs';
 import { equipSlot, hex2ascii } from 'src/modules/nft/read-token';
 import Contract from 'src/modules/nft/rmrk-contract/types/contracts/rmrk_contract';
@@ -65,41 +65,15 @@ export class RmrkNftRepository implements IRmrkNftRepository {
   }
 
   public async getInventory(ownerAddress: string): Promise<ContractInventory[]> {
-    // return await queryParentInventories(ownerAddress);
+    return await queryParentInventories(ownerAddress);
+
+    // for local test only
     // return [
     //   {
-    //     contractAddress: 'Wcg8cuKcJgQGm15tZ5F14JXuWehm1Q67K92jfbTpKPrPm6S',
-    //     tokenId: 1,
-    //   },
-    //   {
-    //     contractAddress: 'Wcg8cuKcJgQGm15tZ5F14JXuWehm1Q67K92jfbTpKPrPm6S',
-    //     tokenId: 2,
-    //   },
-    //   {
-    //     contractAddress: 'adDDmXkrVUhcFNy74zJm9CohrvDCbBixhvLCzrrmzo5HG3U',
-    //     tokenId: 1,
-    //   },
-    //   {
-    //     contractAddress: 'adDDmXkrVUhcFNy74zJm9CohrvDCbBixhvLCzrrmzo5HG3U',
-    //     tokenId: 2,
-    //   },
-    //   {
-    //     contractAddress: 'XMAfed8ZvqDUQzoy8NuU715vhKs6rRckSYwSWuqQsM8ZWGv',
-    //     tokenId: 5,
-    //   },
-    //   {
-    //     contractAddress: 'bMsPywwU4m9F9ZZ48cSffEyGeYJ66A5N3PGDv76Yogpp7zX',
+    //     contractAddress: 'ZpJd27qjg3VNk5gTSeMSVii8p4VLMBjy67mBvWDQWRRsZzm',
     //     tokenId: 5,
     //   },
     // ];
-
-    // local
-    return [
-      {
-        contractAddress: '5EqxxiwyjqfS6UUHnZbh6n7at6hYX4i4nFrQ5NvXet2bo7hS',
-        tokenId: 5,
-      },
-    ];
   }
 
   public async getCollectionMetadata(
@@ -139,6 +113,7 @@ export class RmrkNftRepository implements IRmrkNftRepository {
           assetUri: sanitizeIpfsUrl(hex2ascii(assetValue?.assetUri?.toString() ?? '')),
           parts: [],
           id: assetId,
+          tokenId: tokenId.toString(),
           contractAddress,
         } as TokenAsset;
 

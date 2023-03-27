@@ -362,12 +362,12 @@ export const fetchChildDetails = async ({
         gasLimit: getGasLimit(contract.api),
         storageDepositLimit: null,
       },
-      collectionId?.toHuman(),
+      JSON.parse(collectionId?.toString() ?? '').ok,
       'baseUri'
     );
 
     const metadataJsonUri = `${sanitizeIpfsUrl(
-      baseUri?.toHuman()?.toString()
+      hex2ascii(JSON.parse(baseUri?.toString() ?? '').ok)
     )}/${partTokenId}.json`;
     const metadataJson = await axios.get(metadataJsonUri);
     const { description, image, name } = metadataJson.data;
