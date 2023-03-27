@@ -13,7 +13,7 @@ interface OwnerContractToken {
 
 interface ContractToken {
   contract: { id: string };
-  token: { id: number };
+  token: { id: string };
 }
 
 const graphQlServer = 'https://squid.subsquid.io/sqd-nft-viewer/v/v1/graphql';
@@ -50,7 +50,7 @@ export const queryParentInventories = async (
       if (token) {
         result.push({
           contractAddress: token.contractToken.contract.id,
-          tokenId: token.contractToken.token.id,
+          tokenId: parseInt(token.contractToken.token.id),
         });
       }
     }

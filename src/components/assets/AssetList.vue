@@ -24,7 +24,7 @@
   </div>
 </template>
 <script lang="ts">
-import { useAccount, useBreakpoints, useNft2, useNetworkInfo } from 'src/hooks';
+import { useAccount, useBreakpoints, useNft2 } from 'src/hooks';
 import { defineComponent, computed } from 'vue';
 import { getShortenAddress } from '@astar-network/astar-sdk-core';
 import { IBasePart } from 'src/modules/nft';
@@ -43,17 +43,29 @@ export default defineComponent({
       const place = width.value > screenSize.md ? 0 : 15;
       return getShortenAddress(currentAccount.value, place);
     });
-    const { currentNetworkIdx } = useNetworkInfo();
     const router = useRouter();
     const store = useStore();
     const inventory = computed<ContractInventory[]>(() => store.getters['assets/getInventory']);
     const { availableContracts } = useNft2();
 
     const isSlot = (part: IBasePart): boolean => part.partType === 'Slot';
-    const navigateToParent = (contractAddress: string, id: string): void => {
-      const base = networkParam + Path.Parent;
-      const url = `${base}?contractAddress=${contractAddress}&parentId=${id}`;
-      router.push(url);
+    const navigate = (contractAddress: string, id: string): void => {
+      const item = inventory.value.find(
+        (x) => x.contractAddress === contractAddress && x.tokenId === parseInt(id)
+      );
+      if (item) {
+        if (item.parent) {
+          const base = networkParam + Path.Child;
+          const url = `${base}?contractAddress=${contractAddress}&parentContractAddress=${item.parent.contractAddress}&parentId=${item.parent.tokenId}&childId=${id}`;
+          router.push(url);
+        } else {
+          const base = networkParam + Path.Parent;
+          const url = `${base}?contractAddress=${contractAddress}&parentId=${id}`;
+          router.push(url);
+        }
+      } else {
+        console.error(`No inventory item found for contract ${contractAddress} and token id ${id}`);
+      }
     };
 
     return {
@@ -63,7 +75,7 @@ export default defineComponent({
       availableContracts,
       inventory,
       isSlot,
-      navigateToParent,
+      navigateToParent: navigate,
     };
   },
 });

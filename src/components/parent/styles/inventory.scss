@@ -11,6 +11,7 @@
   overflow: scroll;
   -ms-overflow-style: none;
   scrollbar-width: none;
+  overflow-y: scroll;
 
   @media (min-width: $md) {
     width: 100%;

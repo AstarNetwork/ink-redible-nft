@@ -28,10 +28,12 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, ref, computed } from 'vue';
-import { Asset, useToken } from 'src/hooks';
+import { defineComponent, ref, computed, watch } from 'vue';
+import { useToken } from 'src/hooks';
 import { Metadata } from 'src/v2/models';
 import { useStore } from 'src/store';
+import { ContractInventory } from 'src/v2/repositories';
+import { PartType } from 'src/modules/nft/rmrk-contract/types/types-returns/rmrk_contract';
 
 export default defineComponent({
   props: {
@@ -49,7 +51,14 @@ export default defineComponent({
     const collectionMetadata = computed<Metadata | undefined>(() =>
       store.getters['assets/getCollectionMetadata'](props.contractAddress)
     );
-    const { token, isLoading } = useToken(props.contractAddress, props.id.toString());
+    const { token, isLoading, fetchChildren } = useToken(
+      props.contractAddress,
+      props.id.toString()
+    );
+
+    watch([token], () => {
+      fetchChildren();
+    });
 
     return { token, isLoading, collectionMetadata };
   },
