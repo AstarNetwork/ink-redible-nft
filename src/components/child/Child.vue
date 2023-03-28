@@ -4,12 +4,7 @@
       <nft :contract-address="contractAddress" :token-id="childId" />
 
       <div class="buttons">
-        <astar-button :width="130" :height="48">
-          <div class="row--button">
-            <astar-icon-share />
-            <span> {{ $t('share') }} </span>
-          </div>
-        </astar-button>
+        <share-button />
         <astar-button :width="130" :height="48" @click="reload">
           <div class="row--button">
             <astar-icon-refresh />
@@ -52,6 +47,7 @@ import { defineComponent, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import ParentInfo from 'src/components/child/ParentInfo.vue';
 import Attributes from 'src/components/common/Attributes.vue';
+import ShareButton from '../common/ShareButton.vue';
 import Nft from 'src/components/common/Nft.vue';
 import NftIntroduction from 'src/components/common/NftIntroduction.vue';
 import { useChildNft, useToken } from 'src/hooks';
@@ -60,7 +56,7 @@ import { sanitizeIpfsUrl } from 'src/modules/nft/ipfs';
 import { useStore } from 'src/store';
 
 export default defineComponent({
-  components: { NftIntroduction, Attributes, ParentInfo, Nft },
+  components: { NftIntroduction, Attributes, ParentInfo, Nft, ShareButton },
   setup() {
     const route = useRoute();
     const store = useStore();

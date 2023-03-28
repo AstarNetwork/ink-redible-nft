@@ -14,12 +14,7 @@
       </div>
 
       <div class="buttons">
-        <astar-button :width="130" :height="48">
-          <div class="row--button">
-            <astar-icon-share />
-            <span> {{ $t('share') }} </span>
-          </div>
-        </astar-button>
+        <share-button />
         <astar-button :width="130" :height="48" @click="reload">
           <div class="row--button">
             <astar-icon-refresh />
@@ -61,12 +56,13 @@ import { useRoute } from 'vue-router';
 import NftIntroduction from 'src/components/common/NftIntroduction.vue';
 import Attributes from 'src/components/common/Attributes.vue';
 import Inventory from 'src/components/parent/Inventory.vue';
+import ShareButton from '../common/ShareButton.vue';
 import { useToken } from 'src/hooks';
 import { Metadata } from 'src/modules/nft';
 import { useStore } from 'src/store';
 
 export default defineComponent({
-  components: { NftIntroduction, Attributes, Inventory },
+  components: { NftIntroduction, Attributes, Inventory, ShareButton },
   setup() {
     // TODO refactor this component is very similar to ParentCard, at least regarding NFT rendering,
     // there should be only one component which displays NFT.
