@@ -6,7 +6,7 @@
         {{ address }}
       </span>
     </div>
-    <div v-if="inventory">
+    <div v-if="inventory && inventory.length > 0">
       <div class="container--item">
         <div
           v-for="(item, index) in inventory"
@@ -19,7 +19,7 @@
       </div>
     </div>
     <div v-else>
-      <span>Your wallet does't have any items</span>
+      <span>Your wallet does't have any NFTs.</span>
     </div>
   </div>
 </template>

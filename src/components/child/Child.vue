@@ -34,12 +34,14 @@
           :contract-address="contractAddress"
         />
         <parent-info
-          :collection="parentTokenMetadata?.name ?? ''"
-          :description="parentTokenMetadata?.description ?? ''"
+          :collection-name="parentCollectionMetadata?.name ?? ''"
+          :token-name="parentTokenMetadata?.name ?? ''"
           :img="sanitizeIpfsUrl(parentTokenMetadata?.image)"
           :is-valid="true"
           :parent-contract-address="parentContractAddress"
           :child-contract-address="contractAddress"
+          :parent-token-id="parentId"
+          :child-token-id="childId"
         />
       </div>
     </div>
@@ -52,7 +54,7 @@ import ParentInfo from 'src/components/child/ParentInfo.vue';
 import Attributes from 'src/components/common/Attributes.vue';
 import Nft from 'src/components/common/Nft.vue';
 import NftIntroduction from 'src/components/common/NftIntroduction.vue';
-import { useChildNft, useToken, useAccount } from 'src/hooks';
+import { useChildNft, useToken } from 'src/hooks';
 import { Metadata } from 'src/modules/nft';
 import { sanitizeIpfsUrl } from 'src/modules/nft/ipfs';
 import { useStore } from 'src/store';
@@ -62,7 +64,6 @@ export default defineComponent({
   setup() {
     const route = useRoute();
     const store = useStore();
-    const account = useAccount();
     const contractAddress = String(route.query.contractAddress);
     const parentContractAddress = String(route.query.parentContractAddress);
     const childId = String(route.query.childId);
@@ -79,6 +80,9 @@ export default defineComponent({
     const collectionMetadata = computed<Metadata | undefined>(() =>
       store.getters['assets/getCollectionMetadata'](contractAddress)
     );
+    const parentCollectionMetadata = computed<Metadata | undefined>(() =>
+      store.getters['assets/getCollectionMetadata'](parentContractAddress)
+    );
 
     const reload = (): void => {
       window.location.reload();
@@ -87,10 +91,12 @@ export default defineComponent({
     return {
       sanitizeIpfsUrl,
       collectionMetadata,
+      parentCollectionMetadata,
       parentTokenMetadata,
       childTokenMetadata,
       contractAddress,
       parentContractAddress,
+      parentId,
       childId,
       isFetching,
       childDetail,

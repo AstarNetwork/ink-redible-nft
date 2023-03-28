@@ -28,7 +28,7 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, ref, computed, watch } from 'vue';
+import { defineComponent, computed, watch } from 'vue';
 import { useToken } from 'src/hooks';
 import { Metadata } from 'src/v2/models';
 import { useStore } from 'src/store';
