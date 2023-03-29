@@ -40,7 +40,6 @@
 import { getShortenAddress } from '@astar-network/astar-sdk-core';
 import ModeTabs from 'src/components/common/ModeTabs.vue';
 import { useBreakpoints } from 'src/hooks';
-import { IBasePart } from 'src/modules/nft';
 import { networkParam, Path } from 'src/router/routes';
 import { AddressIdPair, TokenAsset, Part } from 'src/v2/models';
 import { computed, defineComponent, PropType, ref, watchEffect } from 'vue';

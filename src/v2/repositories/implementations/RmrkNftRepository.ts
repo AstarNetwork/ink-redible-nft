@@ -4,7 +4,6 @@ import axios from 'axios';
 import { inject, injectable } from 'inversify';
 import { queryParentInventories } from 'src/modules/nft';
 import { sanitizeIpfsUrl } from 'src/modules/nft/ipfs';
-import { hex2ascii } from 'src/modules/nft/read-token';
 import Contract from 'src/modules/nft/rmrk-contract/types/contracts/rmrk_contract';
 import { IdBuilder } from 'src/modules/nft/rmrk-contract/types/types-arguments/rmrk_contract';
 import { PartType } from 'src/modules/nft/rmrk-contract/types/types-returns/rmrk_contract';
@@ -139,7 +138,7 @@ export class RmrkNftRepository extends SmartContractRepository implements IRmrkN
       if (assetValue) {
         const uiAsset = {
           equippableGroupId: assetValue?.equippableGroupId,
-          assetUri: sanitizeIpfsUrl(hex2ascii(assetValue?.assetUri?.toString() ?? '')),
+          assetUri: sanitizeIpfsUrl(this.hex2ascii(assetValue?.assetUri?.toString() ?? '')),
           parts: [],
           id: assetId,
           tokenId: tokenId.toString(),
@@ -156,7 +155,7 @@ export class RmrkNftRepository extends SmartContractRepository implements IRmrkN
               partType: partValue.partType,
               z: partValue.z,
               isEquippableByAll: partValue.isEquippableByAll,
-              partUri: sanitizeIpfsUrl(hex2ascii(partValue.partUri.toString() ?? '')),
+              partUri: sanitizeIpfsUrl(this.hex2ascii(partValue.partUri.toString() ?? '')),
               equippable: partValue.equippable,
             } as Part;
 
@@ -205,7 +204,7 @@ export class RmrkNftRepository extends SmartContractRepository implements IRmrkN
     const collectionMetadataUri = await contract.query.getAttribute(id, metadataKey);
 
     if (collectionMetadataUri && collectionMetadataUri.value.ok) {
-      const metadataUri = hex2ascii(collectionMetadataUri.value.unwrap()?.toString() ?? '');
+      const metadataUri = this.hex2ascii(collectionMetadataUri.value.unwrap()?.toString() ?? '');
       const response = await axios.get<Metadata>(
         sanitizeIpfsUrl(metadataUri + (tokenId ? `/${tokenId}.json` : ''))
       );
@@ -214,5 +213,18 @@ export class RmrkNftRepository extends SmartContractRepository implements IRmrkN
     }
 
     return undefined;
+  }
+
+  private hex2ascii(hex: string): string {
+    if (!hex) {
+      return '';
+    }
+
+    let result = '';
+    hex = hex.replace('0x', '');
+    for (let i = 0; i < hex.length; i += 2) {
+      result += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
+    }
+    return result;
   }
 }

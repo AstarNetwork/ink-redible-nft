@@ -79,8 +79,9 @@
 import { getShortenAddress } from '@astar-network/astar-sdk-core';
 import ActionButtons from 'src/components/child/ActionButtons.vue';
 import { useBreakpoints, useToken } from 'src/hooks';
-import { ExtendedAsset, IBasePart, Id } from 'src/modules/nft';
+import { ExtendedAsset, Id } from 'src/modules/nft';
 import { networkParam, Path } from 'src/router/routes';
+import { Part } from 'src/v2/models';
 import { computed, defineComponent, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 
@@ -153,7 +154,7 @@ export default defineComponent({
       return equippedParentNft ? widthThreeButtons : widthTwoButtons;
     });
 
-    const slotVacant = computed<IBasePart | undefined>(() => {
+    const slotVacant = computed<Part | undefined>(() => {
       const partFound = parts.value.find(
         (it) => it.partType === 'Slot' && it.equippable.includes(props.childContractAddress)
       );
