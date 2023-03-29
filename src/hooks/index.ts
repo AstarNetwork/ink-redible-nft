@@ -10,7 +10,5 @@ export * from './useGasPrice';
 export * from './useNetworkInfo';
 export * from './useAppRouter';
 export * from './wallet/useWalletIcon';
-export * from './useNft';
-export * from './useNft2';
 export * from './useChildNft';
 export * from './useToken';
