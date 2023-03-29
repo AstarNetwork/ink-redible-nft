@@ -202,32 +202,32 @@ export const readNft = async (
   }
 };
 
-export const unequipSlot = async ({
-  contractAddress,
-  tokenId,
-  slotId,
-  api,
-  senderAddress,
-}: UnequipSlot): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> => {
-  const { initialGasLimit, contract } = getRmrkContract({ api, address: contractAddress });
+// export const unequipSlot = async ({
+//   contractAddress,
+//   tokenId,
+//   slotId,
+//   api,
+//   senderAddress,
+// }: UnequipSlot): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> => {
+//   const { initialGasLimit, contract } = getRmrkContract({ api, address: contractAddress });
 
-  const { gasRequired } = await contract.query['equippable::unequip'](
-    senderAddress,
-    { gasLimit: initialGasLimit },
-    { u64: tokenId },
-    slotId
-  );
+//   const { gasRequired } = await contract.query['equippable::unequip'](
+//     senderAddress,
+//     { gasLimit: initialGasLimit },
+//     { u64: tokenId },
+//     slotId
+//   );
 
-  const transaction = contract.tx['equippable::unequip'](
-    {
-      gasLimit: getGas(contract, gasRequired),
-    },
-    { u64: tokenId },
-    slotId
-  );
+//   const transaction = contract.tx['equippable::unequip'](
+//     {
+//       gasLimit: getGas(contract, gasRequired),
+//     },
+//     { u64: tokenId },
+//     slotId
+//   );
 
-  return transaction;
-};
+//   return transaction;
+// };
 
 export const getEquippableChildren = async (
   contractAddress: string,
@@ -294,40 +294,40 @@ const getGas = (contract: ContractPromise, gasRequired: WeightV2): WeightV2 => {
   });
 };
 
-export const equipSlot = async ({
-  parentContractAddress,
-  tokenId,
-  assetId,
-  slot,
-  childContractAddress,
-  childTokenId,
-  childAssetId,
-  api,
-  senderAddress,
-}: EquipSlot): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> => {
-  const { initialGasLimit, contract } = getRmrkContract({ api, address: parentContractAddress });
-  const { gasRequired } = await contract.query['equippable::equip'](
-    senderAddress,
-    { gasLimit: initialGasLimit },
-    IdBuilder.U64(tokenId.u64 ?? 0),
-    assetId,
-    slot,
-    [childContractAddress, IdBuilder.U64(childTokenId.u64 ?? 0)],
-    childAssetId
-  );
+// export const equipSlot = async ({
+//   parentContractAddress,
+//   tokenId,
+//   assetId,
+//   slot,
+//   childContractAddress,
+//   childTokenId,
+//   childAssetId,
+//   api,
+//   senderAddress,
+// }: EquipSlot): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> => {
+//   const { initialGasLimit, contract } = getRmrkContract({ api, address: parentContractAddress });
+//   const { gasRequired } = await contract.query['equippable::equip'](
+//     senderAddress,
+//     { gasLimit: initialGasLimit },
+//     IdBuilder.U64(tokenId.u64 ?? 0),
+//     assetId,
+//     slot,
+//     [childContractAddress, IdBuilder.U64(childTokenId.u64 ?? 0)],
+//     childAssetId
+//   );
 
-  const transaction = contract.tx['equippable::equip'](
-    {
-      gasLimit: getGas(contract, gasRequired),
-    },
-    IdBuilder.U64(tokenId.u64 ?? 0),
-    assetId,
-    slot,
-    [childContractAddress, IdBuilder.U64(childTokenId.u64 ?? 0)],
-    childAssetId
-  );
-  return transaction;
-};
+//   const transaction = contract.tx['equippable::equip'](
+//     {
+//       gasLimit: getGas(contract, gasRequired),
+//     },
+//     IdBuilder.U64(tokenId.u64 ?? 0),
+//     assetId,
+//     slot,
+//     [childContractAddress, IdBuilder.U64(childTokenId.u64 ?? 0)],
+//     childAssetId
+//   );
+//   return transaction;
+// };
 
 export const fetchChildDetails = async ({
   api,

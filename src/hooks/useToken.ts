@@ -67,6 +67,8 @@ export const useToken = (contractAddress: string, tokenId: string) => {
     return children;
   };
 
+  const equip = async (childTokenId: string): Promise<void> => {};
+
   watch(
     [account.currentAccount],
     () => {

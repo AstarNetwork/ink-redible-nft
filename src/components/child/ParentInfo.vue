@@ -193,7 +193,10 @@ export default defineComponent({
     };
     const handleUnequip = async (): Promise<void> => {
       const part = parts.value.find(
-        (it) => it.children?.length > 0 && it.children[0].tokenId === props.childTokenId
+        (it) =>
+          it.children?.length > 0 &&
+          it.children[0].tokenId === props.childTokenId &&
+          it.children[0].contractAddress === props.childContractAddress
       );
       await unequip(props.parentContractAddress, Number(part?.id));
       await loadParentToken();
