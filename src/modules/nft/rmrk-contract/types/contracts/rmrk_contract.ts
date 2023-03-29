@@ -14,12 +14,12 @@ import EventsClass from '../events/rmrk_contract';
 export default class Contract {
   readonly query: QueryMethods;
   readonly buildExtrinsic: BuildExtrinsicMethods;
-  // readonly tx: TxSignAndSendMethods;
-  // readonly methods: MixedMethods;
+  // readonly tx : TxSignAndSendMethods;
+  // readonly methods : MixedMethods;
   // readonly events: EventsClass;
 
   readonly address: string;
-  // readonly signer: KeyringPair;
+  // readonly signer : KeyringPair;
 
   private nativeContract: ContractPromise;
   private nativeAPI: ApiPromise;
@@ -76,8 +76,8 @@ export default class Contract {
    * await contract.withSigner(signerBob).transfer(signerAlice.address, 100);
    * ```
    */
-  // withSigner(signer: KeyringPair): Contract {
-  //   return new Contract(this.address, signer, this.nativeAPI);
+  // withSigner(signer : KeyringPair) : Contract {
+  // 	return new Contract(this.address, signer, this.nativeAPI);
   // }
 
   /**
@@ -86,8 +86,8 @@ export default class Contract {
    * @param address - The address of the contract.
    * @returns New instance of the contract class to interact with new contract.
    */
-  // withAddress(address: string): Contract {
-  //   return new Contract(address, this.signer, this.nativeAPI);
+  // withAddress(address : string) : Contract {
+  // 	return new Contract(address, this.signer, this.nativeAPI);
   // }
 
   /**
@@ -96,7 +96,7 @@ export default class Contract {
    * @param api - The API instance to use for queries.
    * @returns New instance of the contract class to interact with new API.
    */
-  // withAPI(api: ApiPromise): Contract {
-  //   return new Contract(this.address, this.signer, api);
+  // withAPI(api : ApiPromise) : Contract {
+  // 	return new Contract(this.address, this.signer, api);
   // }
 }

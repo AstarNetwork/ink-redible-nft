@@ -1,25 +1,20 @@
 <template>
   <div v-if="!isLoading" class="wrapper--parent">
     <div class="container--parent">
-      <div class="image-container--parent">
+      <div v-if="token && token.assets.length > 0" class="image-container--parent">
         <img
-          v-for="(part, index) in p"
+          v-for="(part, index) in token.assets[0].parts.filter((x) => x.partUri)"
           :key="`part-${index}`"
           class="image--parent"
-          :src="part.metadataUri"
+          :src="part.partUri"
         />
-        <div v-if="p.length === 0" class="row--no-images">
+        <div v-if="token.assets.length === 0" class="row--no-images">
           <span class="text--lg"> No images for token ID: {{ parentId }} </span>
         </div>
       </div>
 
       <div class="buttons">
-        <astar-button :width="130" :height="48">
-          <div class="row--button">
-            <astar-icon-share />
-            <span> {{ $t('share') }} </span>
-          </div>
-        </astar-button>
+        <share-button />
         <astar-button :width="130" :height="48" @click="reload">
           <div class="row--button">
             <astar-icon-refresh />
@@ -28,13 +23,11 @@
         </astar-button>
       </div>
 
-      <div class="wrapper-nft-introduction">
+      <div v-if="collectionMetadata && token?.metadata" class="wrapper-nft-introduction">
         <nft-introduction
-          :name="parentId"
-          :collection="dummyNft.collection"
-          :description="dummyNft.description"
-          :img="dummyNft.img"
-          :is-valid="dummyNft.isValid"
+          :collection-metadata="collectionMetadata"
+          :token-metadata="token.metadata"
+          :is-valid="true"
         />
       </div>
       <div class="wrapper--nft-option">
@@ -42,67 +35,58 @@
           ranking="1678"
           ranking-all="2222"
           rarity="34.19"
-          :dummy-items="dummyItems"
+          :metadata="token?.metadata"
           :token-id="parentId"
-          :contract-address="baseContractAddress"
+          :contract-address="contractAddress"
         />
         <inventory
+          v-if="token"
           :token-id="Number(parentId)"
-          :parts="p"
-          :get-children="getChildrenToEquipPreview"
+          :contract-address="contractAddress"
+          :asset="token.assets[0]"
+          :get-children="getAcceptedChildren"
         />
       </div>
     </div>
   </div>
 </template>
 <script lang="ts">
-import { computed, defineComponent } from 'vue';
+import { defineComponent, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import NftIntroduction from 'src/components/common/NftIntroduction.vue';
 import Attributes from 'src/components/common/Attributes.vue';
 import Inventory from 'src/components/parent/Inventory.vue';
-import { useNft } from 'src/hooks';
-import { IBasePart } from 'src/modules/nft';
+import ShareButton from '../common/ShareButton.vue';
+import { useToken } from 'src/hooks';
+import { Metadata } from 'src/modules/nft';
+import { useStore } from 'src/store';
 
 export default defineComponent({
-  components: { NftIntroduction, Attributes, Inventory },
+  components: { NftIntroduction, Attributes, Inventory, ShareButton },
   setup() {
+    // TODO refactor this component is very similar to ParentCard, at least regarding NFT rendering,
+    // there should be only one component which displays NFT.
+    const store = useStore();
     const route = useRoute();
     const parentId = String(route.query.parentId);
-    const { parts, isLoading, getChildrenToEquipPreview, baseContractAddress } = useNft(
-      Number(parentId)
+    const contractAddress = String(route.query.contractAddress);
+    const { token, isLoading } = useToken(contractAddress, parentId);
+    const collectionMetadata = computed<Metadata | undefined>(() =>
+      store.getters['assets/getCollectionMetadata'](contractAddress)
     );
-    const p = computed<IBasePart[]>(() => parts.value as IBasePart[]);
+    const { getAcceptedChildren } = useToken(contractAddress, parentId);
 
     const reload = (): void => {
       window.location.reload();
     };
 
-    const dummyNft = computed(() => {
-      return {
-        id: '555',
-        collection: 'Starmap',
-        description:
-          "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-        img: require('../../assets/img/parent-example.svg'),
-        isValid: true,
-      };
-    });
-
-    const dummyItems = [
-      { description: 'Background', value: 'AAA', changeRate: 20 },
-      { description: 'Eyes', value: 'BBB', changeRate: 0 },
-      { description: 'Signature', value: 'YES', changeRate: 30 },
-    ];
-
     return {
-      dummyNft,
-      dummyItems,
       isLoading,
-      p,
+      token,
       parentId,
-      baseContractAddress,
-      getChildrenToEquipPreview,
+      contractAddress,
+      collectionMetadata,
+      getAcceptedChildren,
       reload,
     };
   },

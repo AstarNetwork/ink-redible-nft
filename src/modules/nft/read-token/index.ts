@@ -73,7 +73,7 @@ export const readNft = async (
 
     if (result.isOk) {
       // TODO there should be a better way. Maybe TypeChain
-      const assetIds = JSON.parse(output?.toString() ?? '').ok as number[];
+      const assetIds = JSON.parse(output?.toString() ?? '').ok.ok as number[];
       if (!assetIds) {
         console.info(`AssetIds for tokenId ${id} is undefined`);
         return [];
@@ -241,7 +241,7 @@ export const getEquippableChildren = async (
     const result = new Map<Id, (ExtendedAsset | null)[]>();
 
     if (children.value) {
-      for (let child of children.value) {
+      for (let child of children.value.unwrap()) {
         const partsAddress = child[0].toString();
         const partsContract = new Contract(partsAddress, senderAddress, api);
         const childTokenId = IdBuilder.U64(child[1].u64 ?? 0);
@@ -249,13 +249,15 @@ export const getEquippableChildren = async (
 
         if (assetIds.value.ok) {
           const assetsToAdd: ExtendedAsset[] = [];
-          for (let id of assetIds.value.unwrap()) {
+          for (let id of assetIds.value.unwrap().unwrap()) {
             const asset = await partsContract.query['multiAsset::getAsset'](id);
             if (asset.value) {
               assetsToAdd.push({
                 ...asset.value,
                 id,
-                gatewayUrl: sanitizeIpfsUrl(hex2ascii(asset.value.assetUri.toString())),
+                gatewayUrl: sanitizeIpfsUrl(
+                  hex2ascii(asset?.value?.unwrap()?.assetUri?.toString() ?? '')
+                ),
                 partsAddress,
               } as ExtendedAsset);
             }
@@ -360,12 +362,12 @@ export const fetchChildDetails = async ({
         gasLimit: getGasLimit(contract.api),
         storageDepositLimit: null,
       },
-      collectionId?.toHuman(),
+      JSON.parse(collectionId?.toString() ?? '').ok,
       'baseUri'
     );
 
     const metadataJsonUri = `${sanitizeIpfsUrl(
-      baseUri?.toHuman()?.toString()
+      hex2ascii(JSON.parse(baseUri?.toString() ?? '').ok)
     )}/${partTokenId}.json`;
     const metadataJson = await axios.get(metadataJsonUri);
     const { description, image, name } = metadataJson.data;

@@ -32,7 +32,7 @@ export const useNft = (tokenId: number) => {
   const baseContractAddress =
     String(providerEndpoints[Number(currentNetworkIdx.value)].baseContractAddress![0]) || '';
 
-  const partsAddress = String(providerEndpoints[Number(currentNetworkIdx.value)].partsAddress);
+  const partsAddress = ''; // String(providerEndpoints[Number(currentNetworkIdx.value)].partsAddress);
 
   const rmrkNftService = container.get<IRmrkNftService>(Symbols.RmrkNftService) || '';
 
@@ -58,14 +58,17 @@ export const useNft = (tokenId: number) => {
       }
 
       result = await Promise.all(
-        assets.value.unwrap().map(async (x) => {
-          const data = await contract.query.getAssetAndEquippableData(id, x);
-          const tmp = data.value.unwrap();
-          return {
-            ...tmp,
-            proxiedAssetUri: sanitizeIpfsUrl(hex2ascii(tmp.assetUri.toString() ?? '')),
-          };
-        })
+        assets.value
+          .unwrap()
+          .unwrap()
+          .map(async (x) => {
+            const data = await contract.query.getAssetAndEquippableData(id, x);
+            const tmp = data.value.unwrap().unwrap();
+            return {
+              ...tmp,
+              proxiedAssetUri: sanitizeIpfsUrl(hex2ascii(tmp.assetUri.toString() ?? '')),
+            };
+          })
       );
     } else {
       throw '$api is not defined';
@@ -74,11 +77,11 @@ export const useNft = (tokenId: number) => {
     return result;
   };
 
-  const unequip = async (slot?: string | number): Promise<void> => {
+  const unequip = async (contractAddress: string, slot?: string | number): Promise<void> => {
     console.log('unequipping', slot); //13
     if (slot) {
       await rmrkNftService.unequip({
-        contractAddress: baseContractAddress,
+        contractAddress,
         tokenId,
         slotId: slot.toString(),
         senderAddress: currentAccount.value,
@@ -92,13 +95,15 @@ export const useNft = (tokenId: number) => {
   const equip = async (
     slot: string | number,
     childTokenId: Id,
-    assets: (ExtendedAsset | null)[] | undefined
+    assets: (ExtendedAsset | null)[] | undefined,
+    baseAddress: string,
+    equippableAddress: string
   ): Promise<void> => {
     console.log('slot', slot); // 12
     console.log('childTokenId', childTokenId); // {u64: 1}
     console.log('assets', assets);
     // TODO see how to handle this
-    const parentAssetToEquip = '2';
+    const parentAssetToEquip = '1';
     if (slot) {
       // TODO determine asset to equip
       // Assumption. Asset 0 is preview, asset 1 goes to lowest slot number, asset 2 to next one and so on....
@@ -107,11 +112,11 @@ export const useNft = (tokenId: number) => {
       const assetId = assets ? assets[assetIndex]?.id.toString() : '1';
 
       await rmrkNftService.equip({
-        parentContractAddress: baseContractAddress,
+        parentContractAddress: baseAddress,
         tokenId: { u64: tokenId },
         assetId: parentAssetToEquip,
         slot: Number(slot.toString()),
-        childContractAddress: partsAddress,
+        childContractAddress: equippableAddress,
         childTokenId: childTokenId,
         childAssetId: assetId ?? '1',
         senderAddress: currentAccount.value,

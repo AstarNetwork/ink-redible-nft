@@ -1,10 +1,11 @@
-import { SAMPLE_WALLET_ADDRESS } from './../modules/nft/index';
+// import { SAMPLE_WALLET_ADDRESS } from './../modules/nft/index';
 import { $api } from 'src/boot/api';
 import { providerEndpoints } from 'src/config/chainEndpoints';
 import { ref, watch, computed } from 'vue';
 
 import { useNetworkInfo } from 'src/hooks/useNetworkInfo';
 import { ChildDetail, fetchChildDetails } from 'src/modules/nft';
+import { useAccount } from './useAccount';
 
 const initialChildDetail = {
   description: '',
@@ -12,9 +13,9 @@ const initialChildDetail = {
   name: '',
 };
 
-export const useChildNft = (partTokenId: string) => {
+export const useChildNft = (parentAddress: string, childAddress: string, partTokenId: string) => {
   const { currentNetworkIdx } = useNetworkInfo();
-
+  const { currentAccount } = useAccount();
   const isFetching = ref<boolean>(true);
   const childDetail = ref<ChildDetail>(initialChildDetail);
 
@@ -22,18 +23,19 @@ export const useChildNft = (partTokenId: string) => {
     () => String(providerEndpoints[Number(currentNetworkIdx.value)].baseContractAddress![0]) || ''
   );
 
-  const partsAddress = computed<string>(() =>
-    String(providerEndpoints[Number(currentNetworkIdx.value)].partsAddress)
-  );
+  // const partsAddress = computed<string>(() =>
+  //   String(providerEndpoints[Number(currentNetworkIdx.value)].baseContractAddress[0])
+  // );
+  // const partsAddress = '';
 
   const setChildDetail = async (): Promise<void> => {
     try {
       isFetching.value = true;
       const { description, image, name } = await fetchChildDetails({
         api: $api!,
-        baseContractAddress: baseContractAddress.value,
-        partsAddress: partsAddress.value,
-        walletAddress: SAMPLE_WALLET_ADDRESS,
+        baseContractAddress: parentAddress,
+        partsAddress: childAddress,
+        walletAddress: currentAccount.value,
         partTokenId,
       });
       childDetail.value = {
@@ -48,7 +50,7 @@ export const useChildNft = (partTokenId: string) => {
     }
   };
 
-  watch([baseContractAddress, partsAddress], setChildDetail, { immediate: true });
+  watch([baseContractAddress], setChildDetail, { immediate: true });
 
   return {
     isFetching,

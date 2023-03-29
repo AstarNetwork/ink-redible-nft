@@ -1,25 +1,20 @@
 <template>
-  <div v-if="isValidContractAddress && isValidTokenId" class="img--nft-big">
+  <div v-if="isValidContractAddress && isValidTokenId && token" class="img--nft-big">
     <q-carousel v-model="displayedAsset" animated arrows navigation infinite>
       <q-carousel-slide
-        v-for="(asset, index) in assets"
+        v-for="(asset, index) in token.assets"
         :key="index"
         :name="index"
-        :img-src="asset.proxiedAssetUri"
+        :img-src="sanitizeIpfsUrl(asset.assetUri)"
       />
     </q-carousel>
   </div>
-  <img
-    v-else
-    src="https://qph.cf2.quoracdn.net/main-qimg-ca529ccb08880f1f9a206a364e42ae62-lq"
-    alt="nft-logo"
-    class="img--nft-big"
-  />
 </template>
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import { isValidAddressPolkadotAddress } from '@astar-network/astar-sdk-core';
-import { useNft, AssetExtended } from 'src/hooks';
+import { useToken } from 'src/hooks';
+import { sanitizeIpfsUrl } from 'src/modules/nft/ipfs';
 
 export default defineComponent({
   props: {
@@ -33,19 +28,12 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { getToken } = useNft(0);
+    const { token } = useToken(props.contractAddress, props.tokenId);
     const isValidContractAddress = isValidAddressPolkadotAddress(props.contractAddress);
     const isValidTokenId = !!props.tokenId;
-    const assets = ref<AssetExtended[]>([]);
     const displayedAsset = ref(0);
 
-    const loadToken = async (): Promise<void> => {
-      assets.value = await getToken(props.contractAddress, props.tokenId);
-    };
-
-    loadToken();
-
-    return { isValidContractAddress, isValidTokenId, assets, displayedAsset };
+    return { isValidContractAddress, isValidTokenId, token, displayedAsset, sanitizeIpfsUrl };
   },
 });
 </script>

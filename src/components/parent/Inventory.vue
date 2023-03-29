@@ -14,37 +14,25 @@
         <q-spinner-gears color="primary" :size="gearHeight" />
       </div>
       <div v-else class="wrapper--items">
-        <div
-          v-for="[k, v] in acceptableEquipments"
-          :key="Number(k.u64)"
-          class="card--item"
-          @click="navigateToChildFromInventory(Number(k.u64), String(v[0]?.partsAddress))"
-        >
-          <div class="box--nft-img">
-            <img
-              :src="v[0]?.gatewayUrl"
-              :alt="String(v[0]?.id)"
-              class="img--item"
-              :class="checkIsEquipped(Number(v[0]?.id)) && 'img--item--equipped'"
-            />
-          </div>
-          <span class="text--name">{{ v[0]?.id }}</span>
-        </div>
+        <inventory-item
+          v-for="(item, index) in acceptableEquipments"
+          :key="index"
+          :contract-address="item.contractAddress"
+          :token-id="item.tokenId"
+          :navigate-to-child-page="navigateToChildPage"
+          :is-equipped="checkIsEquipped(item)"
+        />
       </div>
     </div>
     <div v-else class="wrapper--items">
-      <div
+      <inventory-item
         v-for="(item, index) in equipped"
         :key="index"
-        @click="navigateToChildFromEquipped(Number(item.id))"
-      >
-        <div v-if="!isSlot(item) || isSlotEquipped(item)" class="card--item">
-          <div class="box--nft-img">
-            <img :src="item.metadataUri" :alt="String(item.id)" class="img--item" />
-          </div>
-          <span class="text--name">{{ item.id }}</span>
-        </div>
-      </div>
+        :contract-address="item.children[0].contractAddress"
+        :token-id="item.children[0].tokenId"
+        :navigate-to-child-page="navigateToChildPage"
+        :is-equipped="true"
+      />
     </div>
   </div>
 </template>
@@ -52,10 +40,12 @@
 import { getShortenAddress } from '@astar-network/astar-sdk-core';
 import ModeTabs from 'src/components/common/ModeTabs.vue';
 import { useBreakpoints } from 'src/hooks';
-import { ExtendedAsset, IBasePart, Id } from 'src/modules/nft';
+import { IBasePart } from 'src/modules/nft';
 import { networkParam, Path } from 'src/router/routes';
+import { AddressIdPair, TokenAsset, Part } from 'src/v2/models';
 import { computed, defineComponent, PropType, ref, watchEffect } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import InventoryItem from './InventoryItem.vue';
 
 enum InventoryTab {
   inventory = 'Inventory',
@@ -63,10 +53,10 @@ enum InventoryTab {
 }
 
 export default defineComponent({
-  components: { ModeTabs },
+  components: { ModeTabs, InventoryItem },
   props: {
-    parts: {
-      type: Object as PropType<IBasePart[]>,
+    asset: {
+      type: Object as PropType<TokenAsset>,
       required: true,
     },
     getChildren: {
@@ -77,10 +67,14 @@ export default defineComponent({
       type: Number,
       required: true,
     },
+    contractAddress: {
+      type: String,
+      required: true,
+    },
   },
   setup(props) {
     const selectedTab = ref<InventoryTab>(InventoryTab.inventory);
-    const acceptableEquipments = ref<Map<Id, (ExtendedAsset | null)[]>>();
+    const acceptableEquipments = ref<AddressIdPair[]>();
     const router = useRouter();
     const route = useRoute();
     const parentId = route.query.parentId?.toString() ?? '';
@@ -103,27 +97,23 @@ export default defineComponent({
       }
     };
 
-    const isSlotEquipped = (part: IBasePart): boolean =>
-      !!part.metadataUri && !!part.equippable && part.equippable.length > 0;
-    const isSlot = (part: IBasePart): boolean => part.partType === 'Slot';
+    const isSlotEquipped = (part: Part): boolean => !!part.partUri && isSlot(part);
+    const isSlot = (part: Part): boolean => part.partType === 'Slot';
 
-    const equipped = computed<IBasePart[]>(() => props.parts.filter((it) => isSlotEquipped(it)));
+    const equipped = computed<Part[]>(() => props.asset.parts.filter((it) => isSlotEquipped(it)));
 
-    const navigateToChildFromEquipped = (id: number): void => {
+    const navigateToChildPage = (childContractAddress: string, childTokenId: string) => {
       const base = networkParam + Path.Child;
-      const part = props.parts.find((it) => it.id === id);
-      const url = `${base}?childId=${part?.childId}&parentId=${parentId}&contractAddress=${part?.childTokenAddress}`;
+      const url = `${base}?childId=${childTokenId}&parentId=${parentId}&contractAddress=${childContractAddress}&parentContractAddress=${props.contractAddress}`;
       router.push(url);
     };
 
-    const navigateToChildFromInventory = (childId: number, partsAddress: string): void => {
-      const base = networkParam + Path.Child;
-      const url = `${base}?childId=${childId}&parentId=${parentId}&contractAddress=${partsAddress}`;
-      router.push(url);
-    };
-
-    const checkIsEquipped = (childId: number): boolean => {
-      return equipped.value.some((it) => it.childId === childId);
+    const checkIsEquipped = (child: AddressIdPair): boolean => {
+      return equipped.value.some((it) =>
+        it.children.some(
+          (x) => x.tokenId === child.tokenId && x.contractAddress === child.contractAddress
+        )
+      );
     };
 
     watchEffect(setAcceptableEquipments);
@@ -139,8 +129,7 @@ export default defineComponent({
       getShortenAddress,
       isSlot,
       isSlotEquipped,
-      navigateToChildFromInventory,
-      navigateToChildFromEquipped,
+      navigateToChildPage,
       checkIsEquipped,
     };
   },

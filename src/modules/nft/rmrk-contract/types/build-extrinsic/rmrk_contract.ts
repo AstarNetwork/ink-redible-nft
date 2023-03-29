@@ -16,35 +16,6 @@ export default class Methods {
     this.__apiPromise = apiPromise;
   }
   /**
-   * balanceOf
-   *
-   * @param { ArgumentTypes.AccountId } owner,
-   */
-  balanceOf(owner: ArgumentTypes.AccountId, __options: GasLimit) {
-    return buildSubmittableExtrinsic(
-      this.__apiPromise,
-      this.__nativeContract,
-      'psp34::balanceOf',
-      [owner],
-      __options
-    );
-  }
-
-  /**
-   * collectionId
-   *
-   */
-  collectionId(__options: GasLimit) {
-    return buildSubmittableExtrinsic(
-      this.__apiPromise,
-      this.__nativeContract,
-      'psp34::collectionId',
-      [],
-      __options
-    );
-  }
-
-  /**
    * approve
    *
    * @param { ArgumentTypes.AccountId } operator,
@@ -67,6 +38,21 @@ export default class Methods {
   }
 
   /**
+   * ownerOf
+   *
+   * @param { ArgumentTypes.Id } id,
+   */
+  ownerOf(id: ArgumentTypes.Id, __options: GasLimit) {
+    return buildSubmittableExtrinsic(
+      this.__apiPromise,
+      this.__nativeContract,
+      'psp34::ownerOf',
+      [id],
+      __options
+    );
+  }
+
+  /**
    * allowance
    *
    * @param { ArgumentTypes.AccountId } owner,
@@ -84,6 +70,21 @@ export default class Methods {
       this.__nativeContract,
       'psp34::allowance',
       [owner, operator, id],
+      __options
+    );
+  }
+
+  /**
+   * balanceOf
+   *
+   * @param { ArgumentTypes.AccountId } owner,
+   */
+  balanceOf(owner: ArgumentTypes.AccountId, __options: GasLimit) {
+    return buildSubmittableExtrinsic(
+      this.__apiPromise,
+      this.__nativeContract,
+      'psp34::balanceOf',
+      [owner],
       __options
     );
   }
@@ -125,16 +126,15 @@ export default class Methods {
   }
 
   /**
-   * ownerOf
+   * collectionId
    *
-   * @param { ArgumentTypes.Id } id,
    */
-  ownerOf(id: ArgumentTypes.Id, __options: GasLimit) {
+  collectionId(__options: GasLimit) {
     return buildSubmittableExtrinsic(
       this.__apiPromise,
       this.__nativeContract,
-      'psp34::ownerOf',
-      [id],
+      'psp34::collectionId',
+      [],
       __options
     );
   }
@@ -151,21 +151,6 @@ export default class Methods {
       this.__nativeContract,
       'accessControl::grantRole',
       [role, account],
-      __options
-    );
-  }
-
-  /**
-   * getRoleAdmin
-   *
-   * @param { (number | string | BN) } role,
-   */
-  getRoleAdmin(role: number | string | BN, __options: GasLimit) {
-    return buildSubmittableExtrinsic(
-      this.__apiPromise,
-      this.__nativeContract,
-      'accessControl::getRoleAdmin',
-      [role],
       __options
     );
   }
@@ -219,6 +204,21 @@ export default class Methods {
   }
 
   /**
+   * getRoleAdmin
+   *
+   * @param { (number | string | BN) } role,
+   */
+  getRoleAdmin(role: number | string | BN, __options: GasLimit) {
+    return buildSubmittableExtrinsic(
+      this.__apiPromise,
+      this.__nativeContract,
+      'accessControl::getRoleAdmin',
+      [role],
+      __options
+    );
+  }
+
+  /**
    * getAttribute
    *
    * @param { ArgumentTypes.Id } id,
@@ -230,21 +230,6 @@ export default class Methods {
       this.__nativeContract,
       'psp34Metadata::getAttribute',
       [id, key],
-      __options
-    );
-  }
-
-  /**
-   * tokenByIndex
-   *
-   * @param { (string | number | BN) } index,
-   */
-  tokenByIndex(index: string | number | BN, __options: GasLimit) {
-    return buildSubmittableExtrinsic(
-      this.__apiPromise,
-      this.__nativeContract,
-      'psp34Enumerable::tokenByIndex',
-      [index],
       __options
     );
   }
@@ -270,15 +255,60 @@ export default class Methods {
   }
 
   /**
-   * maxSupply
+   * tokenByIndex
+   *
+   * @param { (string | number | BN) } index,
+   */
+  tokenByIndex(index: string | number | BN, __options: GasLimit) {
+    return buildSubmittableExtrinsic(
+      this.__apiPromise,
+      this.__nativeContract,
+      'psp34Enumerable::tokenByIndex',
+      [index],
+      __options
+    );
+  }
+
+  /**
+   * mintingLazy::maxSupply
    *
    */
-  maxSupply(__options: GasLimit) {
+  'mintingLazy::maxSupply'(__options: GasLimit) {
     return buildSubmittableExtrinsic(
       this.__apiPromise,
       this.__nativeContract,
       'mintingLazy::maxSupply',
       [],
+      __options
+    );
+  }
+
+  /**
+   * mintingLazy::tokenUri
+   *
+   * @param { (number | string | BN) } tokenId,
+   */
+  'mintingLazy::tokenUri'(tokenId: number | string | BN, __options: GasLimit) {
+    return buildSubmittableExtrinsic(
+      this.__apiPromise,
+      this.__nativeContract,
+      'mintingLazy::tokenUri',
+      [tokenId],
+      __options
+    );
+  }
+
+  /**
+   * mintingLazy::mintMany
+   *
+   * @param { (number | string | BN) } mintAmount,
+   */
+  'mintingLazy::mintMany'(mintAmount: number | string | BN, __options: GasLimitAndRequiredValue) {
+    return buildSubmittableExtrinsic(
+      this.__apiPromise,
+      this.__nativeContract,
+      'mintingLazy::mintMany',
+      [mintAmount],
       __options
     );
   }
@@ -298,25 +328,10 @@ export default class Methods {
   }
 
   /**
-   * tokenUri
-   *
-   * @param { (number | string | BN) } tokenId,
-   */
-  tokenUri(tokenId: number | string | BN, __options: GasLimit) {
-    return buildSubmittableExtrinsic(
-      this.__apiPromise,
-      this.__nativeContract,
-      'mintingLazy::tokenUri',
-      [tokenId],
-      __options
-    );
-  }
-
-  /**
-   * mint
+   * mintingLazy::mint
    *
    */
-  mint(__options: GasLimitAndRequiredValue) {
+  'mintingLazy::mint'(__options: GasLimitAndRequiredValue) {
     return buildSubmittableExtrinsic(
       this.__apiPromise,
       this.__nativeContract,
@@ -327,51 +342,85 @@ export default class Methods {
   }
 
   /**
-   * mintMany
+   * assignMetadata
    *
-   * @param { (number | string | BN) } mintAmount,
+   * @param { ArgumentTypes.Id } tokenId,
+   * @param { Array<(number | string | BN)> } metadata,
    */
-  mintMany(mintAmount: number | string | BN, __options: GasLimitAndRequiredValue) {
-    return buildSubmittableExtrinsic(
-      this.__apiPromise,
-      this.__nativeContract,
-      'mintingLazy::mintMany',
-      [mintAmount],
-      __options
-    );
-  }
-
-  /**
-   * addChild
-   *
-   * @param { ArgumentTypes.Id } parentTokenId,
-   * @param { [ArgumentTypes.AccountId, ArgumentTypes.Id] } childNft,
-   */
-  addChild(
-    parentTokenId: ArgumentTypes.Id,
-    childNft: [ArgumentTypes.AccountId, ArgumentTypes.Id],
+  assignMetadata(
+    tokenId: ArgumentTypes.Id,
+    metadata: Array<number | string | BN>,
     __options: GasLimit
   ) {
     return buildSubmittableExtrinsic(
       this.__apiPromise,
       this.__nativeContract,
-      'nesting::addChild',
-      [parentTokenId, childNft],
+      'minting::assignMetadata',
+      [tokenId, metadata],
       __options
     );
   }
 
   /**
-   * childrenBalance
+   * minting::maxSupply
    *
-   * @param { ArgumentTypes.Id } parentTokenId,
    */
-  childrenBalance(parentTokenId: ArgumentTypes.Id, __options: GasLimit) {
+  'minting::maxSupply'(__options: GasLimit) {
     return buildSubmittableExtrinsic(
       this.__apiPromise,
       this.__nativeContract,
-      'nesting::childrenBalance',
-      [parentTokenId],
+      'minting::maxSupply',
+      [],
+      __options
+    );
+  }
+
+  /**
+   * minting::mint
+   *
+   * @param { ArgumentTypes.AccountId } to,
+   */
+  'minting::mint'(to: ArgumentTypes.AccountId, __options: GasLimit) {
+    return buildSubmittableExtrinsic(
+      this.__apiPromise,
+      this.__nativeContract,
+      'minting::mint',
+      [to],
+      __options
+    );
+  }
+
+  /**
+   * minting::tokenUri
+   *
+   * @param { (number | string | BN) } tokenId,
+   */
+  'minting::tokenUri'(tokenId: number | string | BN, __options: GasLimit) {
+    return buildSubmittableExtrinsic(
+      this.__apiPromise,
+      this.__nativeContract,
+      'minting::tokenUri',
+      [tokenId],
+      __options
+    );
+  }
+
+  /**
+   * minting::mintMany
+   *
+   * @param { ArgumentTypes.AccountId } to,
+   * @param { (number | string | BN) } mintAmount,
+   */
+  'minting::mintMany'(
+    to: ArgumentTypes.AccountId,
+    mintAmount: number | string | BN,
+    __options: GasLimit
+  ) {
+    return buildSubmittableExtrinsic(
+      this.__apiPromise,
+      this.__nativeContract,
+      'minting::mintMany',
+      [to, mintAmount],
       __options
     );
   }
@@ -399,12 +448,12 @@ export default class Methods {
   }
 
   /**
-   * rejectChild
+   * addChild
    *
    * @param { ArgumentTypes.Id } parentTokenId,
    * @param { [ArgumentTypes.AccountId, ArgumentTypes.Id] } childNft,
    */
-  rejectChild(
+  addChild(
     parentTokenId: ArgumentTypes.Id,
     childNft: [ArgumentTypes.AccountId, ArgumentTypes.Id],
     __options: GasLimit
@@ -412,8 +461,23 @@ export default class Methods {
     return buildSubmittableExtrinsic(
       this.__apiPromise,
       this.__nativeContract,
-      'nesting::rejectChild',
+      'nesting::addChild',
       [parentTokenId, childNft],
+      __options
+    );
+  }
+
+  /**
+   * getAcceptedChildren
+   *
+   * @param { ArgumentTypes.Id } parentTokenId,
+   */
+  getAcceptedChildren(parentTokenId: ArgumentTypes.Id, __options: GasLimit) {
+    return buildSubmittableExtrinsic(
+      this.__apiPromise,
+      this.__nativeContract,
+      'nesting::getAcceptedChildren',
+      [parentTokenId],
       __options
     );
   }
@@ -434,6 +498,21 @@ export default class Methods {
       this.__nativeContract,
       'nesting::acceptChild',
       [parentTokenId, childNft],
+      __options
+    );
+  }
+
+  /**
+   * childrenBalance
+   *
+   * @param { ArgumentTypes.Id } parentTokenId,
+   */
+  childrenBalance(parentTokenId: ArgumentTypes.Id, __options: GasLimit) {
+    return buildSubmittableExtrinsic(
+      this.__apiPromise,
+      this.__nativeContract,
+      'nesting::childrenBalance',
+      [parentTokenId],
       __options
     );
   }
@@ -474,16 +553,51 @@ export default class Methods {
   }
 
   /**
-   * getAcceptedChildren
+   * rejectChild
    *
    * @param { ArgumentTypes.Id } parentTokenId,
+   * @param { [ArgumentTypes.AccountId, ArgumentTypes.Id] } childNft,
    */
-  getAcceptedChildren(parentTokenId: ArgumentTypes.Id, __options: GasLimit) {
+  rejectChild(
+    parentTokenId: ArgumentTypes.Id,
+    childNft: [ArgumentTypes.AccountId, ArgumentTypes.Id],
+    __options: GasLimit
+  ) {
     return buildSubmittableExtrinsic(
       this.__apiPromise,
       this.__nativeContract,
-      'nesting::getAcceptedChildren',
-      [parentTokenId],
+      'nesting::rejectChild',
+      [parentTokenId, childNft],
+      __options
+    );
+  }
+
+  /**
+   * getAssetUri
+   *
+   * @param { (number | string | BN) } assetId,
+   */
+  getAssetUri(assetId: number | string | BN, __options: GasLimit) {
+    return buildSubmittableExtrinsic(
+      this.__apiPromise,
+      this.__nativeContract,
+      'multiAsset::getAssetUri',
+      [assetId],
+      __options
+    );
+  }
+
+  /**
+   * totalTokenAssets
+   *
+   * @param { ArgumentTypes.Id } tokenId,
+   */
+  totalTokenAssets(tokenId: ArgumentTypes.Id, __options: GasLimit) {
+    return buildSubmittableExtrinsic(
+      this.__apiPromise,
+      this.__nativeContract,
+      'multiAsset::totalTokenAssets',
+      [tokenId],
       __options
     );
   }
@@ -506,6 +620,87 @@ export default class Methods {
       this.__nativeContract,
       'multiAsset::addAssetToToken',
       [tokenId, assetId, replacesAssetWithId],
+      __options
+    );
+  }
+
+  /**
+   * getPendingTokenAssets
+   *
+   * @param { ArgumentTypes.Id } tokenId,
+   */
+  getPendingTokenAssets(tokenId: ArgumentTypes.Id, __options: GasLimit) {
+    return buildSubmittableExtrinsic(
+      this.__apiPromise,
+      this.__nativeContract,
+      'multiAsset::getPendingTokenAssets',
+      [tokenId],
+      __options
+    );
+  }
+
+  /**
+   * totalAssets
+   *
+   */
+  totalAssets(__options: GasLimit) {
+    return buildSubmittableExtrinsic(
+      this.__apiPromise,
+      this.__nativeContract,
+      'multiAsset::totalAssets',
+      [],
+      __options
+    );
+  }
+
+  /**
+   * rejectAsset
+   *
+   * @param { ArgumentTypes.Id } tokenId,
+   * @param { (number | string | BN) } assetId,
+   */
+  rejectAsset(tokenId: ArgumentTypes.Id, assetId: number | string | BN, __options: GasLimit) {
+    return buildSubmittableExtrinsic(
+      this.__apiPromise,
+      this.__nativeContract,
+      'multiAsset::rejectAsset',
+      [tokenId, assetId],
+      __options
+    );
+  }
+
+  /**
+   * setPriority
+   *
+   * @param { ArgumentTypes.Id } tokenId,
+   * @param { Array<(number | string | BN)> } priorities,
+   */
+  setPriority(
+    tokenId: ArgumentTypes.Id,
+    priorities: Array<number | string | BN>,
+    __options: GasLimit
+  ) {
+    return buildSubmittableExtrinsic(
+      this.__apiPromise,
+      this.__nativeContract,
+      'multiAsset::setPriority',
+      [tokenId, priorities],
+      __options
+    );
+  }
+
+  /**
+   * acceptAsset
+   *
+   * @param { ArgumentTypes.Id } tokenId,
+   * @param { (number | string | BN) } assetId,
+   */
+  acceptAsset(tokenId: ArgumentTypes.Id, assetId: number | string | BN, __options: GasLimit) {
+    return buildSubmittableExtrinsic(
+      this.__apiPromise,
+      this.__nativeContract,
+      'multiAsset::acceptAsset',
+      [tokenId, assetId],
       __options
     );
   }
@@ -542,22 +737,6 @@ export default class Methods {
   }
 
   /**
-   * acceptAsset
-   *
-   * @param { ArgumentTypes.Id } tokenId,
-   * @param { (number | string | BN) } assetId,
-   */
-  acceptAsset(tokenId: ArgumentTypes.Id, assetId: number | string | BN, __options: GasLimit) {
-    return buildSubmittableExtrinsic(
-      this.__apiPromise,
-      this.__nativeContract,
-      'multiAsset::acceptAsset',
-      [tokenId, assetId],
-      __options
-    );
-  }
-
-  /**
    * multiAsset::getAsset
    *
    * @param { (number | string | BN) } assetId,
@@ -568,51 +747,6 @@ export default class Methods {
       this.__nativeContract,
       'multiAsset::getAsset',
       [assetId],
-      __options
-    );
-  }
-
-  /**
-   * totalAssets
-   *
-   */
-  totalAssets(__options: GasLimit) {
-    return buildSubmittableExtrinsic(
-      this.__apiPromise,
-      this.__nativeContract,
-      'multiAsset::totalAssets',
-      [],
-      __options
-    );
-  }
-
-  /**
-   * totalTokenAssets
-   *
-   * @param { ArgumentTypes.Id } tokenId,
-   */
-  totalTokenAssets(tokenId: ArgumentTypes.Id, __options: GasLimit) {
-    return buildSubmittableExtrinsic(
-      this.__apiPromise,
-      this.__nativeContract,
-      'multiAsset::totalTokenAssets',
-      [tokenId],
-      __options
-    );
-  }
-
-  /**
-   * rejectAsset
-   *
-   * @param { ArgumentTypes.Id } tokenId,
-   * @param { (number | string | BN) } assetId,
-   */
-  rejectAsset(tokenId: ArgumentTypes.Id, assetId: number | string | BN, __options: GasLimit) {
-    return buildSubmittableExtrinsic(
-      this.__apiPromise,
-      this.__nativeContract,
-      'multiAsset::rejectAsset',
-      [tokenId, assetId],
       __options
     );
   }
@@ -642,79 +776,16 @@ export default class Methods {
   }
 
   /**
-   * getPendingTokenAssets
+   * setupBase
    *
-   * @param { ArgumentTypes.Id } tokenId,
+   * @param { Array<(number | string | BN)> } baseMetadata,
    */
-  getPendingTokenAssets(tokenId: ArgumentTypes.Id, __options: GasLimit) {
+  setupBase(baseMetadata: Array<number | string | BN>, __options: GasLimit) {
     return buildSubmittableExtrinsic(
       this.__apiPromise,
       this.__nativeContract,
-      'multiAsset::getPendingTokenAssets',
-      [tokenId],
-      __options
-    );
-  }
-
-  /**
-   * setPriority
-   *
-   * @param { ArgumentTypes.Id } tokenId,
-   * @param { Array<(number | string | BN)> } priorities,
-   */
-  setPriority(
-    tokenId: ArgumentTypes.Id,
-    priorities: Array<number | string | BN>,
-    __options: GasLimit
-  ) {
-    return buildSubmittableExtrinsic(
-      this.__apiPromise,
-      this.__nativeContract,
-      'multiAsset::setPriority',
-      [tokenId, priorities],
-      __options
-    );
-  }
-
-  /**
-   * getAssetUri
-   *
-   * @param { (number | string | BN) } assetId,
-   */
-  getAssetUri(assetId: number | string | BN, __options: GasLimit) {
-    return buildSubmittableExtrinsic(
-      this.__apiPromise,
-      this.__nativeContract,
-      'multiAsset::getAssetUri',
-      [assetId],
-      __options
-    );
-  }
-
-  /**
-   * getBaseMetadata
-   *
-   */
-  getBaseMetadata(__options: GasLimit) {
-    return buildSubmittableExtrinsic(
-      this.__apiPromise,
-      this.__nativeContract,
-      'base::getBaseMetadata',
-      [],
-      __options
-    );
-  }
-
-  /**
-   * getPartsCount
-   *
-   */
-  getPartsCount(__options: GasLimit) {
-    return buildSubmittableExtrinsic(
-      this.__apiPromise,
-      this.__nativeContract,
-      'base::getPartsCount',
-      [],
+      'base::setupBase',
+      [baseMetadata],
       __options
     );
   }
@@ -755,21 +826,6 @@ export default class Methods {
   }
 
   /**
-   * resetEquippableAddresses
-   *
-   * @param { (number | string | BN) } partId,
-   */
-  resetEquippableAddresses(partId: number | string | BN, __options: GasLimit) {
-    return buildSubmittableExtrinsic(
-      this.__apiPromise,
-      this.__nativeContract,
-      'base::resetEquippableAddresses',
-      [partId],
-      __options
-    );
-  }
-
-  /**
    * addPartList
    *
    * @param { Array<ArgumentTypes.Part> } parts,
@@ -785,46 +841,15 @@ export default class Methods {
   }
 
   /**
-   * setEquippableByAll
+   * getBaseMetadata
    *
-   * @param { (number | string | BN) } partId,
    */
-  setEquippableByAll(partId: number | string | BN, __options: GasLimit) {
+  getBaseMetadata(__options: GasLimit) {
     return buildSubmittableExtrinsic(
       this.__apiPromise,
       this.__nativeContract,
-      'base::setEquippableByAll',
-      [partId],
-      __options
-    );
-  }
-
-  /**
-   * setupBase
-   *
-   * @param { Array<(number | string | BN)> } baseMetadata,
-   */
-  setupBase(baseMetadata: Array<number | string | BN>, __options: GasLimit) {
-    return buildSubmittableExtrinsic(
-      this.__apiPromise,
-      this.__nativeContract,
-      'base::setupBase',
-      [baseMetadata],
-      __options
-    );
-  }
-
-  /**
-   * base::getPart
-   *
-   * @param { (number | string | BN) } partId,
-   */
-  'base::getPart'(partId: number | string | BN, __options: GasLimit) {
-    return buildSubmittableExtrinsic(
-      this.__apiPromise,
-      this.__nativeContract,
-      'base::getPart',
-      [partId],
+      'base::getBaseMetadata',
+      [],
       __options
     );
   }
@@ -850,17 +875,60 @@ export default class Methods {
   }
 
   /**
-   * unequip
+   * getPartsCount
    *
-   * @param { ArgumentTypes.Id } tokenId,
-   * @param { (number | string | BN) } slotPartId,
    */
-  unequip(tokenId: ArgumentTypes.Id, slotPartId: number | string | BN, __options: GasLimit) {
+  getPartsCount(__options: GasLimit) {
     return buildSubmittableExtrinsic(
       this.__apiPromise,
       this.__nativeContract,
-      'equippable::unequip',
-      [tokenId, slotPartId],
+      'base::getPartsCount',
+      [],
+      __options
+    );
+  }
+
+  /**
+   * base::getPart
+   *
+   * @param { (number | string | BN) } partId,
+   */
+  'base::getPart'(partId: number | string | BN, __options: GasLimit) {
+    return buildSubmittableExtrinsic(
+      this.__apiPromise,
+      this.__nativeContract,
+      'base::getPart',
+      [partId],
+      __options
+    );
+  }
+
+  /**
+   * resetEquippableAddresses
+   *
+   * @param { (number | string | BN) } partId,
+   */
+  resetEquippableAddresses(partId: number | string | BN, __options: GasLimit) {
+    return buildSubmittableExtrinsic(
+      this.__apiPromise,
+      this.__nativeContract,
+      'base::resetEquippableAddresses',
+      [partId],
+      __options
+    );
+  }
+
+  /**
+   * setEquippableByAll
+   *
+   * @param { (number | string | BN) } partId,
+   */
+  setEquippableByAll(partId: number | string | BN, __options: GasLimit) {
+    return buildSubmittableExtrinsic(
+      this.__apiPromise,
+      this.__nativeContract,
+      'base::setEquippableByAll',
+      [partId],
       __options
     );
   }
@@ -887,6 +955,26 @@ export default class Methods {
       this.__nativeContract,
       'equippable::equip',
       [tokenId, assetId, slotPartId, childNft, childAssetId],
+      __options
+    );
+  }
+
+  /**
+   * getAssetAndEquippableData
+   *
+   * @param { ArgumentTypes.Id } tokenId,
+   * @param { (number | string | BN) } assetId,
+   */
+  getAssetAndEquippableData(
+    tokenId: ArgumentTypes.Id,
+    assetId: number | string | BN,
+    __options: GasLimit
+  ) {
+    return buildSubmittableExtrinsic(
+      this.__apiPromise,
+      this.__nativeContract,
+      'equippable::getAssetAndEquippableData',
+      [tokenId, assetId],
       __options
     );
   }
@@ -930,41 +1018,17 @@ export default class Methods {
   }
 
   /**
-   * getAssetAndEquippableData
+   * unequip
    *
    * @param { ArgumentTypes.Id } tokenId,
-   * @param { (number | string | BN) } assetId,
+   * @param { (number | string | BN) } slotPartId,
    */
-  getAssetAndEquippableData(
-    tokenId: ArgumentTypes.Id,
-    assetId: number | string | BN,
-    __options: GasLimit
-  ) {
+  unequip(tokenId: ArgumentTypes.Id, slotPartId: number | string | BN, __options: GasLimit) {
     return buildSubmittableExtrinsic(
       this.__apiPromise,
       this.__nativeContract,
-      'equippable::getAssetAndEquippableData',
-      [tokenId, assetId],
-      __options
-    );
-  }
-
-  /**
-   * query::getAsset
-   *
-   * @param { ArgumentTypes.AccountId } collectionId,
-   * @param { (number | string | BN) } assetId,
-   */
-  'query::getAsset'(
-    collectionId: ArgumentTypes.AccountId,
-    assetId: number | string | BN,
-    __options: GasLimit
-  ) {
-    return buildSubmittableExtrinsic(
-      this.__apiPromise,
-      this.__nativeContract,
-      'query::getAsset',
-      [collectionId, assetId],
+      'equippable::unequip',
+      [tokenId, slotPartId],
       __options
     );
   }
@@ -990,21 +1054,21 @@ export default class Methods {
   }
 
   /**
-   * getAssets
+   * query::getAsset
    *
    * @param { ArgumentTypes.AccountId } collectionId,
-   * @param { Array<(number | string | BN)> } assetIds,
+   * @param { (number | string | BN) } assetId,
    */
-  getAssets(
+  'query::getAsset'(
     collectionId: ArgumentTypes.AccountId,
-    assetIds: Array<number | string | BN>,
+    assetId: number | string | BN,
     __options: GasLimit
   ) {
     return buildSubmittableExtrinsic(
       this.__apiPromise,
       this.__nativeContract,
-      'query::getAssets',
-      [collectionId, assetIds],
+      'query::getAsset',
+      [collectionId, assetId],
       __options
     );
   }
@@ -1045,6 +1109,55 @@ export default class Methods {
       this.__nativeContract,
       'query::getToken',
       [collectionId, idU64],
+      __options
+    );
+  }
+
+  /**
+   * getAssets
+   *
+   * @param { ArgumentTypes.AccountId } collectionId,
+   * @param { Array<(number | string | BN)> } assetIds,
+   */
+  getAssets(
+    collectionId: ArgumentTypes.AccountId,
+    assetIds: Array<number | string | BN>,
+    __options: GasLimit
+  ) {
+    return buildSubmittableExtrinsic(
+      this.__apiPromise,
+      this.__nativeContract,
+      'query::getAssets',
+      [collectionId, assetIds],
+      __options
+    );
+  }
+
+  /**
+   * withdraw
+   *
+   */
+  withdraw(__options: GasLimit) {
+    return buildSubmittableExtrinsic(
+      this.__apiPromise,
+      this.__nativeContract,
+      'utils::withdraw',
+      [],
+      __options
+    );
+  }
+
+  /**
+   * setBaseUri
+   *
+   * @param { string } uri,
+   */
+  setBaseUri(uri: string, __options: GasLimit) {
+    return buildSubmittableExtrinsic(
+      this.__apiPromise,
+      this.__nativeContract,
+      'utils::setBaseUri',
+      [uri],
       __options
     );
   }

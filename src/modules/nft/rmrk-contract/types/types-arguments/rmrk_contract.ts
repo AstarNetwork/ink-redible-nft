@@ -1,5 +1,7 @@
 import type BN from 'bn.js';
 
+export type AccountId = string | number[];
+
 export interface Id {
   u8?: number | string | BN;
   u16?: number | string | BN;
@@ -42,35 +44,9 @@ export class IdBuilder {
   }
 }
 
-export type AccountId = string | number[];
-
-export type Key = string | number[];
-
-export type Asset = {
-  equippableGroupId: number | string | BN;
-  assetUri: Array<number | string | BN>;
-  partIds: Array<number | string | BN>;
-};
-
-export type Part = {
-  partType: PartType;
-  z: number | string | BN;
-  equippable: Array<AccountId>;
-  partUri: Array<number | string | BN>;
-  isEquippableByAll: boolean;
-};
-
-export enum PartType {
-  none = 'None',
-  slot = 'Slot',
-  fixed = 'Fixed',
+export enum LangError {
+  couldNotReadInput = 'CouldNotReadInput',
 }
-
-export type Equipment = {
-  assetId: number | string | BN;
-  childAssetId: number | string | BN;
-  childNft: [AccountId, Id];
-};
 
 export interface PSP34Error {
   custom?: Array<number | string | BN>;
@@ -184,6 +160,32 @@ export enum RmrkError {
 export enum ReentrancyGuardError {
   reentrantCall = 'ReentrantCall',
 }
+
+export type Asset = {
+  equippableGroupId: number | string | BN;
+  assetUri: Array<number | string | BN>;
+  partIds: Array<number | string | BN>;
+};
+
+export type Part = {
+  partType: PartType;
+  z: number | string | BN;
+  equippable: Array<AccountId>;
+  partUri: Array<number | string | BN>;
+  isEquippableByAll: boolean;
+};
+
+export enum PartType {
+  none = 'None',
+  slot = 'Slot',
+  fixed = 'Fixed',
+}
+
+export type Equipment = {
+  assetId: number | string | BN;
+  childAssetId: number | string | BN;
+  childNft: [AccountId, Id];
+};
 
 export type Token = {
   id: number | string | BN;

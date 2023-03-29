@@ -1,17 +1,17 @@
 <template>
   <div class="wrapper--nft-introduction">
     <div class="row--name">
-      <span class="text--xl">{{ name }}</span>
+      <span class="text--xl">{{ tokenMetadata?.name }}</span>
     </div>
     <div class="box--title-description">
       <div class="row--title">
-        <img :src="img" :alt="name" class="img--nft" />
+        <img :src="collectionMetadata?.mediaUri" :alt="collectionMetadata?.name" class="img--nft" />
         <div class="column--nft-title">
           <div>
             <span class="text--label">{{ $t('collection') }}</span>
           </div>
           <div class="row--title-valid">
-            <span class="text--lg">{{ collection }}</span>
+            <span class="text--lg">{{ collectionMetadata?.name }}</span>
             <div v-if="isValid" class="icon--valid">
               <astar-icon-valid />
             </div>
@@ -19,30 +19,23 @@
         </div>
       </div>
       <div class="box--description">
-        <span class="text--description">{{ description }}</span>
+        <span class="text--description">{{ collectionMetadata?.description }}</span>
       </div>
     </div>
   </div>
 </template>
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { Metadata } from 'src/modules/nft';
+import { defineComponent, PropType } from 'vue';
 
 export default defineComponent({
   props: {
-    collection: {
-      type: String,
+    collectionMetadata: {
+      type: Object as PropType<Metadata>,
       required: true,
     },
-    description: {
-      type: String,
-      required: true,
-    },
-    name: {
-      type: String,
-      required: true,
-    },
-    img: {
-      type: String,
+    tokenMetadata: {
+      type: Object as PropType<Metadata>,
       required: true,
     },
     isValid: {
@@ -51,9 +44,7 @@ export default defineComponent({
       default: false,
     },
   },
-  setup(props) {
-    return {};
-  },
+  setup() {},
 });
 </script>
 

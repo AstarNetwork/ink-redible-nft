@@ -54,7 +54,8 @@ import {
 import { setCurrentWallet } from 'src/v2/app.container';
 import { container } from 'src/v2/common';
 import { Symbols } from 'src/v2/symbols';
-import { useAppRouter } from 'src/hooks';
+import { useAppRouter, useAccount, useNetworkInfo } from 'src/hooks';
+import { ContractInventory } from './v2/repositories';
 
 export default defineComponent({
   name: 'App',
@@ -68,10 +69,13 @@ export default defineComponent({
   setup() {
     useAppRouter();
     const store = useStore();
+    const { currentAccount } = useAccount();
+    const { currentNetworkIdx } = useNetworkInfo();
     const isLoading = computed(() => store.getters['general/isLoading']);
     const showAlert = computed(() => store.getters['general/showAlert']);
     const isEthWallet = computed<boolean>(() => store.getters['general/isEthWallet']);
     const currentWallet = computed<string>(() => store.getters['general/currentWallet']);
+    const inventory = computed<ContractInventory[]>(() => store.getters['assets/getInventory']);
 
     // Handle busy and extrisnsic call status messages.
     const eventAggregator = container.get<IEventAggregator>(Symbols.EventAggregator);
@@ -105,6 +109,32 @@ export default defineComponent({
     // Handle wallet change so we can inject proper wallet
     watch([isEthWallet, currentWallet], () => {
       setCurrentWallet(isEthWallet.value, currentWallet.value);
+    });
+
+    watch(
+      [currentAccount, currentNetworkIdx],
+      async () => {
+        if (!currentAccount.value) return;
+        await store.dispatch('assets/getInventory', {
+          address: currentAccount.value,
+        });
+      },
+      { immediate: true }
+    );
+
+    watch([inventory], async () => {
+      // Fetch collections metadata
+      if (inventory.value.length > 0) {
+        const uniqueAddresses = [...new Set(inventory.value.map((x) => x.contractAddress))];
+        await Promise.all(
+          uniqueAddresses.map((x) => {
+            store.dispatch('assets/getContract', {
+              contractAddress: x,
+              userAddress: currentAccount.value,
+            });
+          })
+        );
+      }
     });
 
     const removeSplashScreen = () => {
