@@ -40,7 +40,7 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding-top: 24px;
+  padding-top: 16px;
   padding-bottom: 20px;
 }
 
@@ -192,11 +192,11 @@
     color: #fff;
   }
   .class-radio-off {
-    background: $gray-6;
+    background: $modal-item-bg-dark;
   }
 
   .class-radio-on {
-    background: $gray-5-selected-dark;
+    background: $modal-item-bg-dark;
   }
 
   .wrapper--account-detail {
