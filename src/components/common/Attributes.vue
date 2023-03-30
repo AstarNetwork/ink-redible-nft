@@ -27,14 +27,20 @@
           <div
             v-for="[key, value] in Object.entries(metadata.properties)"
             :key="key.toString()"
-            class="container--item"
+            class="wrapper--container--item"
           >
-            <span class="text--attributes-value">{{ key }}</span>
-            <span class="text--attributes-value">{{ value.value }}</span>
-            <div class="column--change-rate">
-              <!-- <span class="text--attributes-value">
+            <div class="container--item">
+              <div>
+                <span class="text--attributes-value">{{ key }}</span>
+              </div>
+              <div>
+                <span class="text--attributes-value">{{ value.value }}</span>
+              </div>
+              <div class="column--change-rate">
+                <!-- <span class="text--attributes-value">
                 {{ item.changeRate > 0 ? `+ ${item.changeRate}%` : `${item.changeRate}%` }}
               </span> -->
+              </div>
             </div>
           </div>
         </div>

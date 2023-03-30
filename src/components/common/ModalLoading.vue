@@ -24,9 +24,6 @@ export default defineComponent({});
 .loader {
   min-height: 100px;
   min-width: 100px;
-  @media (min-width: $lg) {
-    margin-left: 74px;
-  }
 }
 .body--dark {
   .wrapper {
