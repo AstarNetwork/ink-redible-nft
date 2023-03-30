@@ -40,13 +40,9 @@
   @media (min-width: $xl) {
     column-gap: 20px;
   }
-
   :hover {
     .img--item {
       opacity: 0.9;
-      transition: all 0.3s ease 0s;
-      border: 2px solid $astar-blue;
-      box-shadow: 0px 0px 6px #1cb8d2;
     }
   }
 }
