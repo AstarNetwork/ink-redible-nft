@@ -29,7 +29,7 @@
               {{ tokenName }}
             </span>
           </div>
-          <div class="buttons--lg-screen">
+          <div class="buttons--xl-screen">
             <action-buttons
               :is-disabled="!slotVacant"
               :button-width="buttonWidth"
@@ -82,7 +82,7 @@ import { useBreakpoints, useNft, useNft2, useToken } from 'src/hooks';
 import { ExtendedAsset, IBasePart, Id } from 'src/modules/nft';
 import { networkParam, Path } from 'src/router/routes';
 import { computed, defineComponent, ref, watch } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { useRouter } from 'vue-router';
 
 enum InventoryTab {
   inventory = 'Inventory',
@@ -129,7 +129,6 @@ export default defineComponent({
   setup(props) {
     const { width, screenSize } = useBreakpoints();
     const router = useRouter();
-    const route = useRoute();
 
     const { unequip, equip, isLoading } = useNft(Number(props.parentTokenId));
     const { token, fetchToken } = useToken(props.parentContractAddress, props.parentTokenId);
@@ -148,9 +147,9 @@ export default defineComponent({
     };
 
     const buttonWidth = computed<number>(() => {
-      const widthTwoButtons = width.value > screenSize.xl ? 170 : 142;
-      const widthThreeButtons = width.value > screenSize.xl ? 124 : 102;
-      return equippedParentNft ? widthThreeButtons : widthTwoButtons;
+      // const widthTwoButtons = width.value > screenSize.xl ? 170 : 142;
+      // const widthThreeButtons = width.value > screenSize.xl ? 124 : 102;
+      return 130;
     });
 
     const slotVacant = computed<IBasePart | undefined>(() => {
