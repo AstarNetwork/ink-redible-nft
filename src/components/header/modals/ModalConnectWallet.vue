@@ -1,5 +1,5 @@
 <template>
-  <astar-modal-drawer :show="isModalConnectWallet" title="Select a Wallet" @close="setCloseModal">
+  <astar-modal-drawer :show="isModalConnectWallet" title="Select a Wallet" @close="setCloseModal()">
     <div class="wrapper--modal--wallet">
       <div
         v-for="(wallet, index) in nativeWallets"
@@ -118,7 +118,7 @@ export default defineComponent({
     color: $gray-1;
   }
   .box__row--wallet {
-    background: $gray-6;
+    background: $modal-item-bg-dark;
     color: $gray-1;
   }
 }
