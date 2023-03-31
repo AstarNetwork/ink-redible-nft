@@ -19,6 +19,7 @@
   height: 320px;
   border-radius: 16px;
   background: $img-background;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.5);
   @media (min-width: $md) {
     width: 500px;
     height: 500px;

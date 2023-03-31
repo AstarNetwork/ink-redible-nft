@@ -71,21 +71,17 @@ export default defineComponent({
 }
 
 .nft--bg {
-  background-color: #000000;
-  backdrop-filter: blur(50px);
-  -webkit-backdrop-filter: blur(50px);
+  background-color: #081029;
   @media (min-width: $lg) {
-    background-image: url('src/assets/img/stars-2.svg');
-    background-position: center top 150px;
+    background-image: url('src/assets/img/stars-3.svg');
+    background-position: center top 100px;
   }
 }
 
 .assets--bg {
-  background-color: #000000;
-  backdrop-filter: blur(50px);
-  -webkit-backdrop-filter: blur(50px);
+  background-color: #081029;
   @media (min-width: $lg) {
-    background-image: url('src/assets/img/stars.svg');
+    background-image: url('src/assets/img/stars-4.svg');
     background-size: cover;
   }
 }
