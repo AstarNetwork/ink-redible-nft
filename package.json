@@ -23,7 +23,7 @@
     "@727-ventures/typechain-polkadot": "^0.6.10",
     "@727-ventures/typechain-types": "^0.0.22",
     "@astar-network/astar-sdk-core": "^0.1.16",
-    "@astar-network/astar-ui": "^0.0.78",
+    "@astar-network/astar-ui": "^0.0.80",
     "@ethersproject/bignumber": "^5.5.0",
     "@polkadot/api": "^9.13.6",
     "@polkadot/api-contract": "^9.13.6",

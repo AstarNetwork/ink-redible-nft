@@ -18,9 +18,6 @@
           </astar-icon-base>
         </a>
       </div>
-      <a :href="socialUrl.landing" target="_blank" rel="noreferrer">
-        <img src="../../assets/img/footer-logo.svg" alt="footer-logo" class="img--footer" />
-      </a>
     </div>
   </div>
 </template>

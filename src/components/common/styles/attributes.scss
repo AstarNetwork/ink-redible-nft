@@ -46,19 +46,24 @@
   align-items: center;
 }
 
-.container--item {
-  height: 68px;
-  padding: 18px;
+.wrapper--container--item {
+  padding-right: 16px;
   background: #081029;
   border-radius: 16px;
+}
+
+.container--item {
+  padding: 0 16px;
+  height: 68px;
   display: grid;
   grid-template-columns: 60% auto 20%;
   align-items: center;
+  grid-template-rows: 1fr;
 }
 
 .container--specifics {
   height: 68px;
-  padding: 18px;
+  padding: 0 16px;
   background: #081029;
   border-radius: 16px;
   display: grid;

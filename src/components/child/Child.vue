@@ -13,31 +13,33 @@
         </astar-button>
       </div>
 
-      <div class="wrapper-nft-introduction">
-        <nft-introduction
-          v-if="collectionMetadata && childTokenMetadata"
-          :collection-metadata="collectionMetadata"
-          :token-metadata="childTokenMetadata"
-          :is-valid="true"
-        />
-      </div>
-      <div class="wrapper--nft-option">
-        <attributes
-          v-if="childTokenMetadata"
-          :metadata="childTokenMetadata"
-          :token-id="childId"
-          :contract-address="contractAddress"
-        />
-        <parent-info
-          :collection-name="parentCollectionMetadata?.name ?? ''"
-          :token-name="parentTokenMetadata?.name ?? ''"
-          :img="sanitizeIpfsUrl(parentTokenMetadata?.image)"
-          :is-valid="true"
-          :parent-contract-address="parentContractAddress"
-          :child-contract-address="contractAddress"
-          :parent-token-id="parentId"
-          :child-token-id="childId"
-        />
+      <div class="wrapper--details">
+        <div class="wrapper-nft-introduction">
+          <nft-introduction
+            v-if="collectionMetadata && childTokenMetadata"
+            :collection-metadata="collectionMetadata"
+            :token-metadata="childTokenMetadata"
+            :is-valid="true"
+          />
+        </div>
+        <div class="wrapper--nft-option">
+          <attributes
+            v-if="childTokenMetadata"
+            :metadata="childTokenMetadata"
+            :token-id="childId"
+            :contract-address="contractAddress"
+          />
+          <parent-info
+            :collection-name="parentCollectionMetadata?.name ?? ''"
+            :token-name="parentTokenMetadata?.name ?? ''"
+            :img="sanitizeIpfsUrl(parentTokenMetadata?.image)"
+            :is-valid="true"
+            :parent-contract-address="parentContractAddress"
+            :child-contract-address="contractAddress"
+            :parent-token-id="parentId"
+            :child-token-id="childId"
+          />
+        </div>
       </div>
     </div>
   </div>

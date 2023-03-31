@@ -1,6 +1,6 @@
 <template>
   <div id="app--main">
-    <div>
+    <div :class="page === 'Assets' ? 'assets--bg' : 'nft--bg'">
       <portal-header />
       <main class="box--main">
         <div class="wrapper--components">
@@ -15,11 +15,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, computed } from 'vue';
 import { useGasPrice } from 'src/hooks';
 import PortalHeader from 'src/components/header/Header.vue';
 import AppFooter from 'src/components/common/Footer.vue';
-
+import { useRoute } from 'vue-router';
 export default defineComponent({
   components: {
     PortalHeader,
@@ -28,8 +28,14 @@ export default defineComponent({
   setup() {
     const isFetchGas = true;
     useGasPrice(isFetchGas);
+    const route = useRoute();
+    const page = computed<string>(() =>
+      route.matched[0] && route.matched[0].hasOwnProperty('name')
+        ? (route.matched[0].name as string)
+        : ''
+    );
 
-    return {};
+    return { page };
   },
 });
 </script>
@@ -64,11 +70,19 @@ export default defineComponent({
   }
 }
 
-#app--main {
-  background-image: url('src/assets/img/stars.svg');
-  background-size: cover;
-  background-color: #000000;
-  backdrop-filter: blur(50px);
-  -webkit-backdrop-filter: blur(50px);
+.nft--bg {
+  background-color: #081029;
+  @media (min-width: $lg) {
+    background-image: url('src/assets/img/stars-3.svg');
+    background-position: center top 100px;
+  }
+}
+
+.assets--bg {
+  background-color: #081029;
+  @media (min-width: $lg) {
+    background-image: url('src/assets/img/stars-4.svg');
+    background-size: cover;
+  }
 }
 </style>

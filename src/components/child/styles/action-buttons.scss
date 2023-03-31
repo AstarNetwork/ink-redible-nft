@@ -3,6 +3,8 @@
 .row--buttons {
   display: flex;
   justify-content: space-around;
+  // column-gap: 12px;
+  column-gap: 16px;
 }
 
 .icon--button {

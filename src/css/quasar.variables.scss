@@ -9,6 +9,7 @@ $gray-6: #191d1f;
 $gray-7: #222829;
 
 $object-light: #e6e9ee;
+$modal-item-bg-dark: #141c34;
 
 $astar-blue: #0085ff;
 $astar-blue-dark: #05b6fd;
@@ -59,4 +60,4 @@ $register-form-max-width: 768px;
 $blue: $astar-blue;
 $light-blue: $astar-blue-dark;
 
-$img-background: linear-gradient(180deg, #0085ff 0%, #081029 68.23%);
+$img-background: linear-gradient(180deg, rgba(0, 133, 255, 0.5) 0%, rgba(8, 16, 41, 0.5) 68.23%);

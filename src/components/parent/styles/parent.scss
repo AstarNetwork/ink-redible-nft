@@ -19,7 +19,6 @@
   max-height: 520px;
   border-radius: 16px;
   margin-bottom: 32px;
-  background: $img-background;
   @media (min-width: $md) {
     width: 500px;
     height: 500px;
@@ -35,6 +34,7 @@
   justify-content: center;
   align-items: center;
   background: $img-background;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.5);
   border-radius: 16px;
   padding-left: 56px;
   @media (min-width: $md) {
@@ -92,7 +92,7 @@
   @media (min-width: 820px) {
     padding: 0;
   }
-  @media (min-width: $lg) {
+  @media (min-width: $xl) {
     grid-template-columns: 380px auto;
     column-gap: 40px;
     justify-self: start;

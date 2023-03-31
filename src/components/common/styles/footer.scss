@@ -12,12 +12,10 @@
   flex-direction: column;
   align-items: center;
   row-gap: 24px;
-  @media (min-width: $md) {
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: flex-end;
-    width: 100%;
-  }
+}
+
+.img--footer {
+  height: 40px;
 }
 
 .box--footer-nft {
