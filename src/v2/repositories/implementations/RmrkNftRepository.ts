@@ -2,9 +2,8 @@ import { SubmittableExtrinsic } from '@polkadot/api/types';
 import { ISubmittableResult } from '@polkadot/types/types';
 import axios from 'axios';
 import { inject, injectable } from 'inversify';
-import { queryParentInventories, unequipSlot } from 'src/modules/nft';
+import { queryParentInventories } from 'src/modules/nft';
 import { sanitizeIpfsUrl } from 'src/modules/nft/ipfs';
-import { equipSlot, hex2ascii } from 'src/modules/nft/read-token';
 import Contract from 'src/modules/nft/rmrk-contract/types/contracts/rmrk_contract';
 import { IdBuilder } from 'src/modules/nft/rmrk-contract/types/types-arguments/rmrk_contract';
 import { PartType } from 'src/modules/nft/rmrk-contract/types/types-returns/rmrk_contract';
@@ -17,10 +16,13 @@ import {
 } from 'src/v2/repositories/IRmrkNftRepository';
 import { Symbols } from 'src/v2/symbols';
 import { EquipCallParam } from './../IRmrkNftRepository';
+import { SmartContractRepository } from './SmartContractRepository';
 
 @injectable()
-export class RmrkNftRepository implements IRmrkNftRepository {
-  constructor(@inject(Symbols.DefaultApi) private api: IApi) {}
+export class RmrkNftRepository extends SmartContractRepository implements IRmrkNftRepository {
+  constructor(@inject(Symbols.DefaultApi) private api: IApi) {
+    super(api);
+  }
 
   public async getEquipCallData({
     parentContractAddress,
@@ -33,17 +35,17 @@ export class RmrkNftRepository implements IRmrkNftRepository {
     senderAddress,
   }: EquipCallParam): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> {
     const api = await this.api.getApi();
-    const transaction = await equipSlot({
+    const transaction = await this.getContractCall(
       parentContractAddress,
-      tokenId,
+      'equippable::equip',
+      senderAddress,
+      IdBuilder.U64(tokenId.u64 ?? 0),
       assetId,
       slot,
-      childContractAddress,
-      childTokenId,
-      childAssetId,
-      api,
-      senderAddress,
-    });
+      [childContractAddress, IdBuilder.U64(childTokenId.u64 ?? 0)],
+      childAssetId
+    );
+
     return transaction;
   }
 
@@ -54,13 +56,14 @@ export class RmrkNftRepository implements IRmrkNftRepository {
     senderAddress,
   }: UnequipCallParam): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> {
     const api = await this.api.getApi();
-    const transaction = await unequipSlot({
+    const transaction = await this.getContractCall(
       contractAddress,
-      tokenId,
-      slotId,
+      'equippable::unequip',
       senderAddress,
-      api,
-    });
+      { u64: tokenId },
+      slotId
+    );
+
     return transaction;
   }
 
@@ -70,10 +73,16 @@ export class RmrkNftRepository implements IRmrkNftRepository {
     // for local test only
     // return [
     //   {
-    //     contractAddress: 'ZpJd27qjg3VNk5gTSeMSVii8p4VLMBjy67mBvWDQWRRsZzm',
+    //     contractAddress: 'YvXaB6p4wDH3LviBWHnqycaErdfKZxMvrxSb8U42hC7ZfB8',
     //     tokenId: 5,
     //   },
     // ];
+    // return Array.from({ length: 100 }, (_, index) => index + 1).map((x) => {
+    //   return {
+    //     contractAddress: 'YvXaB6p4wDH3LviBWHnqycaErdfKZxMvrxSb8U42hC7ZfB8',
+    //     tokenId: x,
+    //   } as ContractInventory;
+    // });
   }
 
   public async getCollectionMetadata(
@@ -129,7 +138,7 @@ export class RmrkNftRepository implements IRmrkNftRepository {
       if (assetValue) {
         const uiAsset = {
           equippableGroupId: assetValue?.equippableGroupId,
-          assetUri: sanitizeIpfsUrl(hex2ascii(assetValue?.assetUri?.toString() ?? '')),
+          assetUri: sanitizeIpfsUrl(this.hex2ascii(assetValue?.assetUri?.toString() ?? '')),
           parts: [],
           id: assetId,
           tokenId: tokenId.toString(),
@@ -146,7 +155,7 @@ export class RmrkNftRepository implements IRmrkNftRepository {
               partType: partValue.partType,
               z: partValue.z,
               isEquippableByAll: partValue.isEquippableByAll,
-              partUri: sanitizeIpfsUrl(hex2ascii(partValue.partUri.toString() ?? '')),
+              partUri: sanitizeIpfsUrl(this.hex2ascii(partValue.partUri.toString() ?? '')),
               equippable: partValue.equippable,
             } as Part;
 
@@ -195,7 +204,7 @@ export class RmrkNftRepository implements IRmrkNftRepository {
     const collectionMetadataUri = await contract.query.getAttribute(id, metadataKey);
 
     if (collectionMetadataUri && collectionMetadataUri.value.ok) {
-      const metadataUri = hex2ascii(collectionMetadataUri.value.unwrap()?.toString() ?? '');
+      const metadataUri = this.hex2ascii(collectionMetadataUri.value.unwrap()?.toString() ?? '');
       const response = await axios.get<Metadata>(
         sanitizeIpfsUrl(metadataUri + (tokenId ? `/${tokenId}.json` : ''))
       );
@@ -204,5 +213,18 @@ export class RmrkNftRepository implements IRmrkNftRepository {
     }
 
     return undefined;
+  }
+
+  private hex2ascii(hex: string): string {
+    if (!hex) {
+      return '';
+    }
+
+    let result = '';
+    hex = hex.replace('0x', '');
+    for (let i = 0; i < hex.length; i += 2) {
+      result += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
+    }
+    return result;
   }
 }

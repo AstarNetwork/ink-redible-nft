@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!isFetching" class="wrapper--child">
+  <div class="wrapper--child">
     <div class="container--child">
       <nft :contract-address="contractAddress" :token-id="childId" />
 
@@ -52,7 +52,7 @@ import Attributes from 'src/components/common/Attributes.vue';
 import ShareButton from '../common/ShareButton.vue';
 import Nft from 'src/components/common/Nft.vue';
 import NftIntroduction from 'src/components/common/NftIntroduction.vue';
-import { useChildNft, useToken } from 'src/hooks';
+import { useToken } from 'src/hooks';
 import { Metadata } from 'src/modules/nft';
 import { sanitizeIpfsUrl } from 'src/modules/nft/ipfs';
 import { useStore } from 'src/store';
@@ -70,11 +70,6 @@ export default defineComponent({
     const parentToken = useToken(parentContractAddress, parentId);
     const childTokenMetadata = computed(() => childToken.token.value?.metadata);
     const parentTokenMetadata = computed(() => parentToken.token.value?.metadata);
-    const { isFetching, childDetail } = useChildNft(
-      parentContractAddress,
-      contractAddress,
-      childId
-    );
     const collectionMetadata = computed<Metadata | undefined>(() =>
       store.getters['assets/getCollectionMetadata'](contractAddress)
     );
@@ -96,9 +91,8 @@ export default defineComponent({
       parentContractAddress,
       parentId,
       childId,
-      isFetching,
-      childDetail,
       reload,
+      childToken,
     };
   },
 });

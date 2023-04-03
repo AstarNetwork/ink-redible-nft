@@ -24,15 +24,15 @@
   </div>
 </template>
 <script lang="ts">
-import { useAccount, useBreakpoints, useNft2 } from 'src/hooks';
+import { useAccount, useBreakpoints } from 'src/hooks';
 import { defineComponent, computed } from 'vue';
 import { getShortenAddress } from '@astar-network/astar-sdk-core';
-import { IBasePart } from 'src/modules/nft';
 import ParentCard from 'src/components/assets/ParentCard.vue';
 import { useStore } from 'src/store';
 import { networkParam, Path } from 'src/router/routes';
 import { useRouter } from 'vue-router';
 import { ContractInventory } from 'src/v2/repositories/IRmrkNftRepository';
+import { Part } from 'src/v2/models';
 
 export default defineComponent({
   components: { ParentCard },
@@ -46,9 +46,8 @@ export default defineComponent({
     const router = useRouter();
     const store = useStore();
     const inventory = computed<ContractInventory[]>(() => store.getters['assets/getInventory']);
-    const { availableContracts } = useNft2();
 
-    const isSlot = (part: IBasePart): boolean => part.partType === 'Slot';
+    const isSlot = (part: Part): boolean => part.partType === 'Slot';
     const navigate = (contractAddress: string, id: string): void => {
       const item = inventory.value.find(
         (x) => x.contractAddress === contractAddress && x.tokenId === parseInt(id)
@@ -72,7 +71,6 @@ export default defineComponent({
       currentAccount,
       currentAccountName,
       address,
-      availableContracts,
       inventory,
       isSlot,
       navigateToParent: navigate,

@@ -12,11 +12,11 @@
 </template>
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
+import { useRoute } from 'vue-router';
 import HeroConnectWallet from 'src/components/assets/HeroConnectWallet.vue';
 import { useAccount } from 'src/hooks';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import AssetList from 'src/components/assets/AssetList.vue';
-import { useRoute } from 'vue-router';
 
 export default defineComponent({
   components: { HeroConnectWallet, AssetList },

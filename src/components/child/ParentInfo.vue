@@ -78,9 +78,10 @@
 <script lang="ts">
 import { getShortenAddress } from '@astar-network/astar-sdk-core';
 import ActionButtons from 'src/components/child/ActionButtons.vue';
-import { useBreakpoints, useNft, useNft2, useToken } from 'src/hooks';
-import { ExtendedAsset, IBasePart, Id } from 'src/modules/nft';
+import { useBreakpoints, useToken } from 'src/hooks';
+import { ExtendedAsset, Id } from 'src/modules/nft';
 import { networkParam, Path } from 'src/router/routes';
+import { Part } from 'src/v2/models';
 import { computed, defineComponent, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 
@@ -130,13 +131,14 @@ export default defineComponent({
     const { width, screenSize } = useBreakpoints();
     const router = useRouter();
 
-    const { unequip, equip, isLoading } = useNft(Number(props.parentTokenId));
-    const { token, fetchToken } = useToken(props.parentContractAddress, props.parentTokenId);
+    const { token, fetchToken, equip, unequip, isLoading } = useToken(
+      props.parentContractAddress,
+      props.parentTokenId
+    );
     const parts = computed(() => token.value?.assets[0].parts ?? []);
     const itemPreview = ref<[Id, (ExtendedAsset | null)[]]>();
     const isLoadingItem = ref<boolean>(false);
     const selectedTab = ref<InventoryTab>(InventoryTab.inventory);
-    const { getChildrenToEquipPreview } = useNft2();
 
     const loadParentToken = async (): Promise<void> => {
       await fetchToken(true);
@@ -152,7 +154,7 @@ export default defineComponent({
       return 130;
     });
 
-    const slotVacant = computed<IBasePart | undefined>(() => {
+    const slotVacant = computed<Part | undefined>(() => {
       const partFound = parts.value.find(
         (it) => it.partType === 'Slot' && it.equippable.includes(props.childContractAddress)
       );
@@ -175,24 +177,12 @@ export default defineComponent({
       return false;
     });
 
-    const setItemPreview = async (): Promise<void> => {
-      if (!isLoading.value && slotVacant.value) {
-        isLoadingItem.value = true;
-        const preview = await getChildrenToEquipPreview(
-          props.parentContractAddress,
-          Number(props.parentTokenId)
-        );
-        if (!preview)
-          throw Error(`there are no equitable child Nfts with parentId:${props.parentTokenId}`);
-        itemPreview.value = Array.from(preview).find(
-          (it) => it[0].u64 === Number(props.childTokenId)
-        );
-        isLoadingItem.value = false;
-      }
-    };
     const handleUnequip = async (): Promise<void> => {
       const part = parts.value.find(
-        (it) => it.children?.length > 0 && it.children[0].tokenId === props.childTokenId
+        (it) =>
+          it.children?.length > 0 &&
+          it.children[0].tokenId === props.childTokenId &&
+          it.children[0].contractAddress === props.childContractAddress
       );
       await unequip(props.parentContractAddress, Number(part?.id));
       await loadParentToken();
@@ -200,12 +190,11 @@ export default defineComponent({
     };
 
     const handleEquip = async (): Promise<void> => {
-      if (!itemPreview.value || !slotVacant.value) return;
+      if (!slotVacant.value) return;
       const slotId = Number(slotVacant.value.id);
       await equip(
         slotId,
-        itemPreview.value[0],
-        itemPreview.value[1],
+        props.childTokenId,
         props.parentContractAddress,
         props.childContractAddress
       );
@@ -218,8 +207,6 @@ export default defineComponent({
       const url = `${base}?parentId=${props.parentTokenId}&contractAddress=${props.parentContractAddress}`;
       router.push(url);
     };
-
-    watch([parts, isLoading], setItemPreview, { immediate: true });
 
     return {
       selectedTab,

@@ -5,9 +5,10 @@ import { OwnedToken } from 'src/store/assets/state';
 import { ContractInventory, IRmrkNftRepository } from 'src/v2/repositories';
 import { container } from 'src/v2/common';
 import { Symbols } from 'src/v2/symbols';
-import { AddressIdPair } from 'src/v2/models';
+import { AddressIdPair, Asset } from 'src/v2/models';
+import { IRmrkNftService } from 'src/v2/services';
+import { Id } from 'src/modules/nft';
 
-// TODO remove useNft and useNft2
 export const useToken = (contractAddress: string, tokenId: string) => {
   const account = useAccount();
   const store = useStore();
@@ -67,6 +68,46 @@ export const useToken = (contractAddress: string, tokenId: string) => {
     return children;
   };
 
+  const equip = async (
+    slot: string | number,
+    childTokenId: string,
+    baseAddress: string,
+    equippableAddress: string
+  ): Promise<void> => {
+    // TODO determine asset to equip. We are fine for some time since we are not using multi asset tokens.
+    const parentAssetToEquip = '1';
+    const childAssetToEquip = '1';
+    if (slot) {
+      const rmrkNftService = container.get<IRmrkNftService>(Symbols.RmrkNftService);
+
+      await rmrkNftService.equip({
+        parentContractAddress: baseAddress,
+        tokenId: { u64: tokenId },
+        assetId: parentAssetToEquip,
+        slot: Number(slot.toString()),
+        childContractAddress: equippableAddress,
+        childTokenId: { u64: childTokenId },
+        childAssetId: childAssetToEquip,
+        senderAddress: account.currentAccount.value,
+      });
+    }
+  };
+
+  const unequip = async (contractAddress: string, slot?: string | number): Promise<void> => {
+    console.log('unequipping', slot);
+    if (slot && token.value) {
+      const rmrkNftService = container.get<IRmrkNftService>(Symbols.RmrkNftService);
+      await rmrkNftService.unequip({
+        contractAddress,
+        tokenId: parseInt(token.value.id),
+        slotId: slot.toString(),
+        senderAddress: account.currentAccount.value,
+      });
+    } else {
+      console.log('Unable to unequip, slot or token not defined');
+    }
+  };
+
   watch(
     [account.currentAccount],
     () => {
@@ -83,5 +124,7 @@ export const useToken = (contractAddress: string, tokenId: string) => {
     fetchToken,
     fetchChildren,
     getAcceptedChildren,
+    equip,
+    unequip,
   };
 };
