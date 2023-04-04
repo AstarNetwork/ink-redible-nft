@@ -56,6 +56,7 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   position: relative;
+  padding-top: 64px;
   @media (min-width: $lg) {
     padding-top: 64px;
     overflow-y: auto;

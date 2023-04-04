@@ -15,6 +15,9 @@
         <account-button :account="currentAccount" @click="changeAccount" />
       </template>
       <network-button @show-network="modalNetwork = true" />
+      <div class="wrapper--links-header">
+        <links-header />
+      </div>
     </header-comp>
 
     <!-- Modals -->
@@ -66,6 +69,7 @@ import { useBreakpoints, useConnectWallet } from 'src/hooks';
 import { useStore } from 'src/store';
 import { computed, defineComponent, reactive, toRefs } from 'vue';
 import HeaderComp from './HeaderComp.vue';
+import LinksHeader from 'src/components/common/LinksHeader.vue';
 
 interface Modal {
   modalNetwork: boolean;
@@ -82,6 +86,7 @@ export default defineComponent({
     ModalNetwork,
     ModalUpdateWallet,
     HeaderComp,
+    LinksHeader,
   },
   setup() {
     const { width, screenSize } = useBreakpoints();
@@ -145,20 +150,6 @@ export default defineComponent({
   margin-left: -15px;
 }
 
-.text--logo-gradient {
-  color: white;
-  background: -webkit-linear-gradient(
-    100.62deg,
-    #e6007a -13.87%,
-    #703ac2 10.44%,
-    #0070eb 47.07%,
-    #0297fb 89.31%,
-    #0ae2ff 151.16%
-  );
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
 .app-logo {
   width: 144px;
   height: 28px;
@@ -166,5 +157,9 @@ export default defineComponent({
     width: 204px;
     height: 40px;
   }
+}
+
+.wrapper--links-header {
+  margin-left: 16px;
 }
 </style>
