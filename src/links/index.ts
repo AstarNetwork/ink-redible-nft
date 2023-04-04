@@ -17,6 +17,6 @@ export const socialUrl = {
 
 export const headerLinks = {
   docs: 'https://docs.astar.network',
-  ink: 'https://docs.astar.network',
-  astar: 'https://docs.astar.network',
+  ink: 'https://docs.astar.network/docs/build/wasm/ink-dev',
+  astar: 'https://astar.network',
 };
