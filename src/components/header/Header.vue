@@ -160,6 +160,9 @@ export default defineComponent({
 }
 
 .wrapper--links-header {
-  margin-left: 16px;
+  margin-left: 8px;
+  @media (min-width: $sm) {
+    margin-left: 16px;
+  }
 }
 </style>

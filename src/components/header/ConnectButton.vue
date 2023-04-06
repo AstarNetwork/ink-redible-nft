@@ -38,13 +38,13 @@ export default defineComponent({
   padding: 8px 16px 8px 16px;
   border-radius: 16px;
   margin-left: 8px;
-
-  background: $gray-5;
+  background: #141c34;
   color: #fff;
   border: 1px solid $gray-6;
+  transition: all 0.3s ease 0s;
 }
 .btn--connect:hover {
-  background: $gray-5-selected;
+  background: $astar-blue;
 }
 
 .m-btn--connect {
@@ -53,12 +53,12 @@ export default defineComponent({
   height: 32px;
   border-radius: 16px;
   margin-left: 16px;
-
+  transition: all 0.3s ease 0s;
   background: $gray-6;
   color: $gray-3;
 }
 .m-btn--connect:hover {
-  background: $gray-5-selected;
+  background: $astar-blue;
 }
 
 .iconbase {

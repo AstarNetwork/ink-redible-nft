@@ -23,7 +23,7 @@
             </span>
           </div>
           <div v-else>
-            <span class="text--md">
+            <span class="text--sm">
               {{ currentNetworkName.replace('Network', '') }}
             </span>
           </div>
@@ -131,7 +131,6 @@ export default defineComponent({
 
 .btn--network:hover {
   background: $astar-blue;
-  transition: all 0.3s ease 0s;
 }
 
 .divider {
@@ -156,11 +155,16 @@ export default defineComponent({
 .m-btn--network {
   box-shadow: none;
   padding: 8px;
+  padding-left: 0px;
   background: $gray-6;
   color: $gray-3;
   display: flex;
-  column-gap: 8px;
+  column-gap: 6px;
   align-items: center;
+  @media (min-width: $sm) {
+    column-gap: 8px;
+    padding-left: 8px;
+  }
   .iconbase {
     color: $gray-4;
   }
