@@ -37,6 +37,11 @@ export default {
     error: 'Error',
     copied: 'Copied',
   },
+  links: {
+    docs: 'Docs',
+    aboutInk: 'About ink!',
+    aboutAstar: 'About Astar Network',
+  },
   common: {
     updateMetadata: 'Update Metadata',
     speed: {

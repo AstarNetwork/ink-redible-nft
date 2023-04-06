@@ -51,6 +51,12 @@ span {
   color: $gray-5;
 }
 
+.text--sm {
+  font-weight: 400;
+  font-size: 12px;
+  color: $gray-5;
+}
+
 .text--accent {
   font-weight: 700;
   font-size: 14px;
@@ -125,6 +131,7 @@ input::placeholder {
   .text--xlg,
   .text--lg,
   .text--md,
+  .text--sm,
   .text--color,
   .text--xl {
     color: $gray-1;

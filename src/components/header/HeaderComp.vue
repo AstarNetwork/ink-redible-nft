@@ -1,12 +1,12 @@
 <template>
-  <div class="header">
+  <div class="header highest-z-index">
     <div class="header-left">
       <div>
         <slot name="left"></slot>
       </div>
     </div>
     <div class="header-right">
-      <slot></slot>
+      <slot />
     </div>
   </div>
 </template>
@@ -23,10 +23,11 @@ export default defineComponent({
 @import 'src/css/quasar.variables.scss';
 
 .header {
-  overflow: hidden;
+  position: fixed;
+  width: 100%;
   display: flex;
   justify-content: space-between;
-  height: 6rem;
+  height: 96px;
   padding: 40px 40px 25px 40px;
   background: rgba(247, 247, 248, 0.8);
   mix-blend-mode: normal;

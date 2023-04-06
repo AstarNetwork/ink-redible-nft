@@ -14,3 +14,9 @@ export const socialUrl = {
   youtube: 'https://www.youtube.com/c/AstarNetwork',
   landing: 'https://astar.network/',
 };
+
+export const headerLinks = {
+  docs: 'https://docs.astar.network',
+  ink: 'https://docs.astar.network/docs/build/wasm/ink-dev',
+  astar: 'https://astar.network',
+};
