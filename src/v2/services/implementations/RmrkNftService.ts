@@ -1,7 +1,7 @@
 import { inject, injectable } from 'inversify';
 import { ParentInventory, queryParentInventories } from 'src/modules/nft';
 import { Guard } from 'src/v2/common';
-import { IEventAggregator } from 'src/v2/messaging';
+import { EventMessage, ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
 import {
   ContractInventory,
   EquipCallParam,
@@ -31,7 +31,9 @@ export class RmrkNftService implements IRmrkNftService {
       const transaction = await this.rmrkNftRepository.getEquipCallData(param);
       await this.wallet.signAndSend(transaction, param.senderAddress);
     } catch (error) {
+      const e = error as Error;
       console.error(error);
+      this.eventAggregator.publish(new ExtrinsicStatusMessage(false, e.toString()));
     }
   }
   public async unequip(param: UnequipCallParam): Promise<void> {
@@ -41,7 +43,38 @@ export class RmrkNftService implements IRmrkNftService {
       const transaction = await this.rmrkNftRepository.getUnequipCallData(param);
       await this.wallet.signAndSend(transaction, param.senderAddress);
     } catch (error) {
+      const e = error as Error;
       console.error(error);
+      this.eventAggregator.publish(new ExtrinsicStatusMessage(false, e.toString()));
+    }
+  }
+
+  public async acceptChild(
+    contractAddress: string,
+    tokenId: number,
+    childContractAddress: string,
+    childTokenId: number,
+    senderAddress: string
+  ): Promise<void> {
+    Guard.ThrowIfUndefined('contractAddress', contractAddress);
+    Guard.ThrowIfUndefined('tokenId', tokenId);
+    Guard.ThrowIfUndefined('childContractAddress', childContractAddress);
+    Guard.ThrowIfUndefined('childTokenId', childTokenId);
+    Guard.ThrowIfUndefined('senderAddress', senderAddress);
+
+    try {
+      const transaction = await this.rmrkNftRepository.getAcceptChildCallData(
+        contractAddress,
+        tokenId,
+        childContractAddress,
+        childTokenId,
+        senderAddress
+      );
+      await this.wallet.signAndSend(transaction, senderAddress);
+    } catch (error) {
+      const e = error as Error;
+      console.error(error);
+      this.eventAggregator.publish(new ExtrinsicStatusMessage(false, e.toString()));
     }
   }
 

@@ -21,6 +21,7 @@
           :token-id="item.tokenId"
           :navigate-to-child-page="navigateToChildPage"
           :is-equipped="checkIsEquipped(item)"
+          :is-accepted="item.isAccepted"
         />
       </div>
     </div>
@@ -41,7 +42,7 @@ import { getShortenAddress } from '@astar-network/astar-sdk-core';
 import ModeTabs from 'src/components/common/ModeTabs.vue';
 import { useBreakpoints } from 'src/hooks';
 import { networkParam, Path } from 'src/router/routes';
-import { AddressIdPair, TokenAsset, Part } from 'src/v2/models';
+import { ChildInfo, TokenAsset, Part } from 'src/v2/models';
 import { computed, defineComponent, PropType, ref, watchEffect } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import InventoryItem from './InventoryItem.vue';
@@ -73,7 +74,7 @@ export default defineComponent({
   },
   setup(props) {
     const selectedTab = ref<InventoryTab>(InventoryTab.inventory);
-    const acceptableEquipments = ref<AddressIdPair[]>();
+    const acceptableEquipments = ref<ChildInfo[]>();
     const router = useRouter();
     const route = useRoute();
     const parentId = route.query.parentId?.toString() ?? '';
@@ -107,7 +108,7 @@ export default defineComponent({
       router.push(url);
     };
 
-    const checkIsEquipped = (child: AddressIdPair): boolean => {
+    const checkIsEquipped = (child: ChildInfo): boolean => {
       return equipped.value.some((it) =>
         it.children.some(
           (x) => x.tokenId === child.tokenId && x.contractAddress === child.contractAddress

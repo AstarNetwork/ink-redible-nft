@@ -35,7 +35,8 @@ export interface Part {
   equippable: string[];
 }
 
-export interface AddressIdPair {
+export interface ChildInfo {
   contractAddress: string;
   tokenId: string;
+  isAccepted: boolean;
 }

@@ -44,7 +44,7 @@
           :token-id="Number(parentId)"
           :contract-address="contractAddress"
           :asset="token.assets[0]"
-          :get-children="getAcceptedChildren"
+          :get-children="getChildren"
         />
       </div>
     </div>
@@ -74,7 +74,7 @@ export default defineComponent({
     const collectionMetadata = computed<Metadata | undefined>(() =>
       store.getters['assets/getCollectionMetadata'](contractAddress)
     );
-    const { getAcceptedChildren } = useToken(contractAddress, parentId);
+    const { getChildren } = useToken(contractAddress, parentId);
 
     const reload = (): void => {
       window.location.reload();
@@ -86,7 +86,7 @@ export default defineComponent({
       parentId,
       contractAddress,
       collectionMetadata,
-      getAcceptedChildren,
+      getChildren,
       reload,
     };
   },

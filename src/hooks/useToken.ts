@@ -5,9 +5,8 @@ import { OwnedToken } from 'src/store/assets/state';
 import { ContractInventory, IRmrkNftRepository } from 'src/v2/repositories';
 import { container } from 'src/v2/common';
 import { Symbols } from 'src/v2/symbols';
-import { AddressIdPair, Asset } from 'src/v2/models';
+import { ChildInfo } from 'src/v2/models';
 import { IRmrkNftService } from 'src/v2/services';
-import { Id } from 'src/modules/nft';
 
 export const useToken = (contractAddress: string, tokenId: string) => {
   const account = useAccount();
@@ -35,7 +34,7 @@ export const useToken = (contractAddress: string, tokenId: string) => {
       isLoading.value = true;
       const childInventory: ContractInventory[] = [];
       try {
-        const children = await getAcceptedChildren();
+        const children = await getChildren();
         children.forEach((child) => {
           childInventory.push({
             contractAddress: child.contractAddress,
@@ -57,9 +56,9 @@ export const useToken = (contractAddress: string, tokenId: string) => {
     }
   };
 
-  const getAcceptedChildren = async (): Promise<AddressIdPair[]> => {
+  const getChildren = async (): Promise<ChildInfo[]> => {
     const rmrkRepo = container.get<IRmrkNftRepository>(Symbols.RmrkNftRepository);
-    const children = await rmrkRepo.getAcceptedChildren(
+    const children = await rmrkRepo.getChildren(
       contractAddress,
       account.currentAccount.value,
       parseInt(tokenId)
@@ -108,6 +107,22 @@ export const useToken = (contractAddress: string, tokenId: string) => {
     }
   };
 
+  const acceptChild = async (
+    parentContractAddress: string,
+    parentTokenId: number,
+    childContractAddress: string,
+    childTokenId: number
+  ): Promise<void> => {
+    const rmrkNftService = container.get<IRmrkNftService>(Symbols.RmrkNftService);
+    await rmrkNftService.acceptChild(
+      parentContractAddress,
+      parentTokenId,
+      childContractAddress,
+      childTokenId,
+      account.currentAccount.value
+    );
+  };
+
   watch(
     [account.currentAccount],
     () => {
@@ -123,8 +138,9 @@ export const useToken = (contractAddress: string, tokenId: string) => {
     isLoading,
     fetchToken,
     fetchChildren,
-    getAcceptedChildren,
+    getChildren,
     equip,
     unequip,
+    acceptChild,
   };
 };

@@ -64,6 +64,12 @@
   height: 100px;
 }
 
+.box--nft-img-pending {
+  height: 100px;
+  filter: grayscale(100%);
+}
+
+
 .img--item {
   max-height: 100px;
   border-radius: 8px;

@@ -20,6 +20,7 @@ export default {
   add: 'Add',
   equip: 'Equip',
   unequip: 'Unequip',
+  bond: 'Bond',
   remove: 'Remove',
   detail: 'Detail',
   parent: 'Parent',
@@ -100,5 +101,10 @@ export default {
     unequippedInventory: 'This NFT is currently unequipped and in inventory',
     parentNotVacant: 'Parent NFT for this item is fully equipped',
     parentNft: 'Parent NFT #{id}',
+  },
+  parentPage: {
+    modals: {
+      acceptChild: 'Accept Child NFT',
+    },
   },
 };
