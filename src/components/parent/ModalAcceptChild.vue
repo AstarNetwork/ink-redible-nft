@@ -70,10 +70,14 @@ export default defineComponent({
       type: String,
       required: true,
     },
+    setChildren: {
+      type: Function,
+      required: true,
+    },
   },
   setup(props) {
     const store = useStore();
-    const { token, acceptChild } = useToken(props.contractAddress, props.childId);
+    const { token, acceptChild, fetchToken } = useToken(props.contractAddress, props.childId);
     const collectionMetadata = computed<Metadata | undefined>(() =>
       store.getters['assets/getCollectionMetadata'](props.contractAddress)
     );
@@ -100,6 +104,8 @@ export default defineComponent({
           props.contractAddress,
           parseInt(props.childId)
         );
+        await fetchToken(true);
+        await props.setChildren();
         closeModal();
       } else {
         console.log('no parent');

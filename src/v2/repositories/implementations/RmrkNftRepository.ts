@@ -91,8 +91,8 @@ export class RmrkNftRepository extends SmartContractRepository implements IRmrkN
     // for local test only
     return [
       {
-        contractAddress: '5ESHH1BDa7iu6nLQa3n6c7VV5QgLYztDvvJGdkqE8pig7FyJ',
-        tokenId: 1,
+        contractAddress: 'XyfkCVRSRTChUft42e8c6FD7RhTeAuPcq8sNZ8vb1PbycDB',
+        tokenId: 3,
       },
     ];
     // return Array.from({ length: 100 }, (_, index) => index + 1).map((x) => {

@@ -22,6 +22,7 @@
           :navigate-to-child-page="navigateToChildPage"
           :is-equipped="checkIsEquipped(item)"
           :is-accepted="item.isAccepted"
+          :set-children="setAcceptableEquipments"
         />
       </div>
     </div>
@@ -33,6 +34,7 @@
         :token-id="item.children[0].tokenId"
         :navigate-to-child-page="navigateToChildPage"
         :is-equipped="true"
+        :set-children="setAcceptableEquipments"
       />
     </div>
   </div>
@@ -131,6 +133,7 @@ export default defineComponent({
       isSlotEquipped,
       navigateToChildPage,
       checkIsEquipped,
+      setAcceptableEquipments,
     };
   },
 });

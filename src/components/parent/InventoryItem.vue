@@ -16,6 +16,7 @@
       :show="showAcceptChildModal"
       :contract-address="contractAddress"
       :child-id="tokenId"
+      :set-children="setChildren"
     />
   </div>
 </template>
@@ -45,6 +46,10 @@ export default defineComponent({
       default: false,
     },
     navigateToChildPage: {
+      type: Function,
+      required: true,
+    },
+    setChildren: {
       type: Function,
       required: true,
     },
