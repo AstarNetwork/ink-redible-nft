@@ -1,3 +1,4 @@
+import { ASTAR_NETWORK_IDX } from 'src/config/chain';
 import {
   ContractInventory,
   EquipCallParam,
@@ -14,6 +15,5 @@ export interface IRmrkNftService {
     childTokenId: number,
     senderAddress: string
   ): Promise<void>;
-  fetchParentInventories(address: string): Promise<ContractInventory[]>;
-  getInventory(ownerAddress: string): Promise<ContractInventory[]>;
+  getInventory(ownerAddress: string, networkIdx: ASTAR_NETWORK_IDX): Promise<ContractInventory[]>;
 }

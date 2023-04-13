@@ -16,6 +16,8 @@ import {
 import { Symbols } from 'src/v2/symbols';
 import { EquipCallParam } from './../IRmrkNftRepository';
 import { SmartContractRepository } from './SmartContractRepository';
+import { ASTAR_NETWORK_IDX } from 'src/config/chain';
+import { queryParentInventories } from 'src/modules/nft';
 
 @injectable()
 export class RmrkNftRepository extends SmartContractRepository implements IRmrkNftRepository {
@@ -85,16 +87,19 @@ export class RmrkNftRepository extends SmartContractRepository implements IRmrkN
     return transaction;
   }
 
-  public async getInventory(ownerAddress: string): Promise<ContractInventory[]> {
-    // return await queryParentInventories(ownerAddress);
+  public async getInventory(
+    ownerAddress: string,
+    networkIdx: ASTAR_NETWORK_IDX
+  ): Promise<ContractInventory[]> {
+    return await queryParentInventories(ownerAddress, networkIdx);
 
     // for local test only
-    return [
-      {
-        contractAddress: 'XyfkCVRSRTChUft42e8c6FD7RhTeAuPcq8sNZ8vb1PbycDB',
-        tokenId: 3,
-      },
-    ];
+    // return [
+    //   {
+    //     contractAddress: 'XyfkCVRSRTChUft42e8c6FD7RhTeAuPcq8sNZ8vb1PbycDB',
+    //     tokenId: 3,
+    //   },
+    // ];
     // return Array.from({ length: 100 }, (_, index) => index + 1).map((x) => {
     //   return {
     //     contractAddress: 'YvXaB6p4wDH3LviBWHnqycaErdfKZxMvrxSb8U42hC7ZfB8',

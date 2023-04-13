@@ -1,7 +1,7 @@
 import { inject, injectable } from 'inversify';
-import { ParentInventory, queryParentInventories } from 'src/modules/nft';
+import { ASTAR_NETWORK_IDX } from 'src/config/chain';
 import { Guard } from 'src/v2/common';
-import { EventMessage, ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
+import { ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
 import {
   ContractInventory,
   EquipCallParam,
@@ -78,20 +78,12 @@ export class RmrkNftService implements IRmrkNftService {
     }
   }
 
-  public async fetchParentInventories(walletAddress: string): Promise<ContractInventory[]> {
-    Guard.ThrowIfUndefined('walletAddress', walletAddress);
-    try {
-      const inventories = await queryParentInventories(walletAddress);
-      return inventories;
-    } catch (error) {
-      console.error(error);
-      return [];
-    }
-  }
-
-  public async getInventory(ownerAddress: string): Promise<ContractInventory[]> {
+  public async getInventory(
+    ownerAddress: string,
+    networkIdx: ASTAR_NETWORK_IDX
+  ): Promise<ContractInventory[]> {
     Guard.ThrowIfUndefined('ownerAddress', ownerAddress);
 
-    return await this.rmrkNftRepository.getInventory(ownerAddress);
+    return await this.rmrkNftRepository.getInventory(ownerAddress, networkIdx);
   }
 }

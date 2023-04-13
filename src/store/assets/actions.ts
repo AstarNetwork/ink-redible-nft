@@ -6,22 +6,17 @@ import { container } from 'src/v2/common';
 import { Symbols } from 'src/v2/symbols';
 import { IRmrkNftRepository } from 'src/v2/repositories';
 import { sanitizeIpfsUrl } from 'src/modules/nft/ipfs';
+import { ASTAR_NETWORK_IDX } from 'src/config/chain';
 
 const actions: ActionTree<State, StateInterface> = {
-  async getParentInventories({ commit }, { address }: { address: string }): Promise<void> {
-    try {
-      const service = container.get<IRmrkNftService>(Symbols.RmrkNftService);
-      const inventories = await service.fetchParentInventories(address);
-      commit('setParentInventories', inventories);
-    } catch (error) {
-      console.error(error);
-    }
-  },
-  async getInventory({ commit }, { address }: { address: string }): Promise<void> {
+  async getInventory(
+    { commit },
+    { address, networkIdx }: { address: string; networkIdx: ASTAR_NETWORK_IDX }
+  ): Promise<void> {
     try {
       commit('general/setLoading', true, { root: true });
       const service = container.get<IRmrkNftService>(Symbols.RmrkNftService);
-      const inventories = await service.getInventory(address);
+      const inventories = await service.getInventory(address, networkIdx);
       commit('setInventory', inventories);
     } catch (error) {
       console.error(error);

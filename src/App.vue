@@ -117,6 +117,7 @@ export default defineComponent({
         if (!currentAccount.value) return;
         await store.dispatch('assets/getInventory', {
           address: currentAccount.value,
+          networkIdx: currentNetworkIdx.value,
         });
       },
       { immediate: true }
