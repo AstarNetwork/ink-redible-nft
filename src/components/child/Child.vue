@@ -1,6 +1,7 @@
 <template>
   <div class="wrapper--child">
     <div class="container--child">
+      <back-to-page :text="$t('backToAssets')" :link="Path.Assets" />
       <nft :contract-address="contractAddress" :token-id="childId" />
 
       <div class="buttons">
@@ -52,13 +53,15 @@ import Attributes from 'src/components/common/Attributes.vue';
 import ShareButton from '../common/ShareButton.vue';
 import Nft from 'src/components/common/Nft.vue';
 import NftIntroduction from 'src/components/common/NftIntroduction.vue';
+import BackToPage from '../common/BackToPage.vue';
 import { useToken } from 'src/hooks';
 import { Metadata } from 'src/modules/nft';
 import { sanitizeIpfsUrl } from 'src/modules/nft/ipfs';
 import { useStore } from 'src/store';
+import { Path } from 'src/router';
 
 export default defineComponent({
-  components: { NftIntroduction, Attributes, ParentInfo, Nft, ShareButton },
+  components: { NftIntroduction, Attributes, ParentInfo, Nft, ShareButton, BackToPage },
   setup() {
     const route = useRoute();
     const store = useStore();
@@ -93,6 +96,7 @@ export default defineComponent({
       childId,
       reload,
       childToken,
+      Path,
     };
   },
 });

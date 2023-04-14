@@ -1,6 +1,7 @@
 <template>
   <div v-if="!isLoading" class="wrapper--parent">
     <div class="container--parent">
+      <back-to-page :text="$t('backToAssets')" :link="Path.Assets" />
       <div v-if="token && token.assets.length > 0" class="image-container--parent">
         <img
           v-for="(part, index) in token.assets[0].parts.filter((x) => x.partUri)"
@@ -57,12 +58,14 @@ import NftIntroduction from 'src/components/common/NftIntroduction.vue';
 import Attributes from 'src/components/common/Attributes.vue';
 import Inventory from 'src/components/parent/Inventory.vue';
 import ShareButton from '../common/ShareButton.vue';
+import BackToPage from 'src/components/common/BackToPage.vue';
 import { useToken } from 'src/hooks';
 import { Metadata } from 'src/modules/nft';
 import { useStore } from 'src/store';
+import { Path } from 'src/router';
 
 export default defineComponent({
-  components: { NftIntroduction, Attributes, Inventory, ShareButton },
+  components: { NftIntroduction, Attributes, Inventory, ShareButton, BackToPage },
   setup() {
     // TODO refactor this component is very similar to ParentCard, at least regarding NFT rendering,
     // there should be only one component which displays NFT.
@@ -88,6 +91,7 @@ export default defineComponent({
       collectionMetadata,
       getChildren,
       reload,
+      Path,
     };
   },
 });
