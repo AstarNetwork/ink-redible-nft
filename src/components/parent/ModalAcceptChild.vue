@@ -6,6 +6,10 @@
     :close-modal="closeModal"
   >
     <div class="wrapper">
+      <div class="row--description">
+        {{ $t('bondDescription') }}
+      </div>
+
       <nft :contract-address="contractAddress" :token-id="childId" />
       <div class="row">
         <div class="row--collection">
@@ -166,5 +170,13 @@ export default defineComponent({
 
 .row {
   margin-top: 30px;
+}
+
+.row--description {
+  margin-bottom: 34px;
+  padding: 0 16px;
+  @media (min-width: $sm) {
+    padding: 0;
+  }
 }
 </style>

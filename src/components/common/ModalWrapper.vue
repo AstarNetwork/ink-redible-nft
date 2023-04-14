@@ -53,3 +53,17 @@ export default defineComponent({
   },
 });
 </script>
+
+<style lang="scss">
+.body--dark {
+  .modalbg[data-v-393868e4] {
+    -webkit-backdrop-filter: blur(50px);
+    backdrop-filter: blur(50px);
+    background: #081029b3 !important;
+  }
+
+  .modal-content {
+    background: #081029b3 !important;
+  }
+}
+</style>

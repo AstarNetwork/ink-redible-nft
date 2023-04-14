@@ -29,7 +29,11 @@ export class RmrkNftService implements IRmrkNftService {
 
     try {
       const transaction = await this.rmrkNftRepository.getEquipCallData(param);
-      await this.wallet.signAndSend(transaction, param.senderAddress);
+      await this.wallet.signAndSend(
+        transaction,
+        param.senderAddress,
+        'The child NFT is successfully equipped to parent.'
+      );
     } catch (error) {
       const e = error as Error;
       console.error(error);
@@ -41,7 +45,11 @@ export class RmrkNftService implements IRmrkNftService {
 
     try {
       const transaction = await this.rmrkNftRepository.getUnequipCallData(param);
-      await this.wallet.signAndSend(transaction, param.senderAddress);
+      await this.wallet.signAndSend(
+        transaction,
+        param.senderAddress,
+        'The child NFT is successfully unequipped from parent.'
+      );
     } catch (error) {
       const e = error as Error;
       console.error(error);
@@ -70,7 +78,11 @@ export class RmrkNftService implements IRmrkNftService {
         childTokenId,
         senderAddress
       );
-      await this.wallet.signAndSend(transaction, senderAddress);
+      await this.wallet.signAndSend(
+        transaction,
+        senderAddress,
+        'The child NFT is now accepted and in the inventory.'
+      );
     } catch (error) {
       const e = error as Error;
       console.error(error);
