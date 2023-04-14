@@ -34,7 +34,7 @@
         <div class="row--collection row--buttons row">
           <astar-button :width="130" :height="48" class="button-action" @click="accept()">
             <div class="icon--button">
-              <astar-icon-unequip />
+              <icon-bond />
             </div>
             <span class="text--button">{{ $t('bond') }}</span>
           </astar-button>
@@ -54,9 +54,10 @@ import { useToken } from 'src/hooks';
 import { useStore } from 'src/store';
 import { Metadata } from 'src/v2/models';
 import { ContractInventory } from 'src/v2/repositories';
+import IconBond from './IconBond.vue';
 
 export default defineComponent({
-  components: { ModalWrapper, Nft },
+  components: { ModalWrapper, Nft, IconBond },
   props: {
     show: {
       type: Boolean,
