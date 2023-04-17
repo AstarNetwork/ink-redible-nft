@@ -38,6 +38,17 @@
             </div>
             <span class="text--button">{{ $t('bond') }}</span>
           </astar-button>
+          <astar-button
+            :width="130"
+            :height="48"
+            class="button-action"
+            @click="navigateToChildPage(contractAddress, childId)"
+          >
+            <div class="icon--button">
+              <astar-icon-external-link />
+            </div>
+            <span class="text--button"> {{ $t('detail') }} </span>
+          </astar-button>
         </div>
       </div>
     </div>
@@ -76,6 +87,10 @@ export default defineComponent({
       required: true,
     },
     setChildren: {
+      type: Function,
+      required: true,
+    },
+    navigateToChildPage: {
       type: Function,
       required: true,
     },

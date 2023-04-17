@@ -17,6 +17,7 @@
       :contract-address="contractAddress"
       :child-id="tokenId"
       :set-children="setChildren"
+      :navigate-to-child-page="navigateToChildPage"
     />
   </div>
 </template>
