@@ -4,7 +4,8 @@
       <span class="text--parent">{{ $t('parent') }}</span>
     </div>
     <div v-if="equippedParentNft || isChild" class="box-nft--info">
-      <span v-if="equippedParentNft">{{ $t('child.equippedInventory') }}</span>
+      <span v-if="equippedParentNft && isChildAccepted">{{ $t('child.equippedInventory') }}</span>
+      <span v-else-if="!isChildAccepted">{{ $t('child.equippedInventoryNotAccepted') }}</span>
       <span v-else class="text--description">
         {{ $t('child.unequippedInventory') }}
       </span>
@@ -37,7 +38,9 @@
               :is-equipped="equippedParentNft"
               :handle-equip="handleEquip"
               :handle-unequip="handleUnequip"
+              :handle-bond="handleBond"
               :is-ready="!isLoadingItem && !isLoading"
+              :is-child-accepted="isChildAccepted"
             />
           </div>
         </div>
@@ -57,7 +60,9 @@
           :is-equipped="equippedParentNft"
           :handle-equip="handleEquip"
           :handle-unequip="handleUnequip"
+          :handle-bond="handleBond"
           :is-ready="!isLoadingItem && !isLoading"
+          :is-child-accepted="isChildAccepted"
         />
       </div>
     </div>
@@ -69,8 +74,10 @@
         :button-height="48"
         :handle-equip="handleEquip"
         :handle-unequip="handleUnequip"
+        :handle-bond="handleBond"
         :is-loading-item="isLoadingItem"
         :is-ready="!isLoadingItem && !isLoading"
+        :is-child-accepted="isChildAccepted"
       />
     </div>
   </div>
@@ -79,10 +86,9 @@
 import { getShortenAddress } from '@astar-network/astar-sdk-core';
 import ActionButtons from 'src/components/child/ActionButtons.vue';
 import { useBreakpoints, useToken } from 'src/hooks';
-import { ExtendedAsset, Id } from 'src/modules/nft';
 import { networkParam, Path } from 'src/router/routes';
 import { Part } from 'src/v2/models';
-import { computed, defineComponent, ref, watch } from 'vue';
+import { computed, defineComponent, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 enum InventoryTab {
@@ -126,17 +132,20 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
+    isChildAccepted: {
+      type: Boolean,
+      required: true,
+    },
   },
   setup(props) {
     const { width, screenSize } = useBreakpoints();
     const router = useRouter();
 
-    const { token, fetchToken, equip, unequip, isLoading } = useToken(
+    const { token, fetchToken, equip, unequip, acceptChild, isLoading } = useToken(
       props.parentContractAddress,
       props.parentTokenId
     );
     const parts = computed(() => token.value?.assets[0].parts ?? []);
-    const itemPreview = ref<[Id, (ExtendedAsset | null)[]]>();
     const isLoadingItem = ref<boolean>(false);
     const selectedTab = ref<InventoryTab>(InventoryTab.inventory);
 
@@ -177,6 +186,8 @@ export default defineComponent({
       return false;
     });
 
+    console.log(props.isChildAccepted, equippedParentNft.value);
+
     const handleUnequip = async (): Promise<void> => {
       const part = parts.value.find(
         (it) =>
@@ -202,6 +213,17 @@ export default defineComponent({
       navigateToParent();
     };
 
+    const handleBond = async (): Promise<void> => {
+      await acceptChild(
+        props.parentContractAddress,
+        parseInt(props.parentTokenId),
+        props.childContractAddress,
+        parseInt(props.childTokenId)
+      );
+      await loadParentToken();
+      navigateToParent();
+    };
+
     const navigateToParent = (): void => {
       const base = networkParam + Path.Parent;
       const url = `${base}?parentId=${props.parentTokenId}&contractAddress=${props.parentContractAddress}`;
@@ -222,6 +244,7 @@ export default defineComponent({
       setSelectedTab,
       getShortenAddress,
       navigateToParent,
+      handleBond,
     };
   },
 });

@@ -39,6 +39,7 @@
             :child-contract-address="contractAddress"
             :parent-token-id="parentId"
             :child-token-id="childId"
+            :is-child-accepted="isAccepted"
           />
         </div>
       </div>
@@ -46,7 +47,7 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, computed } from 'vue';
+import { defineComponent, computed, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import ParentInfo from 'src/components/child/ParentInfo.vue';
 import Attributes from 'src/components/common/Attributes.vue';
@@ -59,6 +60,7 @@ import { Metadata } from 'src/modules/nft';
 import { sanitizeIpfsUrl } from 'src/modules/nft/ipfs';
 import { useStore } from 'src/store';
 import { Path } from 'src/router';
+import { ChildInfo } from 'src/v2/models';
 
 export default defineComponent({
   components: { NftIntroduction, Attributes, ParentInfo, Nft, ShareButton, BackToPage },
@@ -79,6 +81,16 @@ export default defineComponent({
     const parentCollectionMetadata = computed<Metadata | undefined>(() =>
       store.getters['assets/getCollectionMetadata'](parentContractAddress)
     );
+    const children = ref<ChildInfo[]>([]);
+    const isAccepted = computed(() => {
+      return children.value.some((child) => child.tokenId === childId && child.isAccepted);
+    });
+
+    const getChildren = async (): Promise<void> => {
+      children.value = await parentToken.getChildren();
+    };
+
+    getChildren();
 
     const reload = (): void => {
       window.location.reload();
@@ -97,6 +109,7 @@ export default defineComponent({
       reload,
       childToken,
       Path,
+      isAccepted,
     };
   },
 });

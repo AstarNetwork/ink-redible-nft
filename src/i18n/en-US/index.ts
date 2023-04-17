@@ -100,14 +100,16 @@ export default {
     },
   },
   child: {
-    equippedInventory: 'This NFT is currently equipped',
-    unequippedInventory: 'This NFT is currently unequipped and in inventory',
-    parentNotVacant: 'Parent NFT for this item is fully equipped',
+    equippedInventory: 'This NFT is currently equipped.',
+    equippedInventoryNotAccepted:
+      'This NFT is not bonded to parent yet. Bond the child so you can equip it.',
+    unequippedInventory: 'This NFT is currently unequipped and in inventory.',
+    parentNotVacant: 'Parent NFT for this item is fully equipped.',
     parentNft: 'Parent NFT #{id}',
   },
   parentPage: {
     modals: {
-      acceptChild: 'Accept Child NFT',
+      acceptChild: 'Bond Child NFT',
     },
   },
 };

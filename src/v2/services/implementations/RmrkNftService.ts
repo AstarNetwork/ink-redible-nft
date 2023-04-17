@@ -81,7 +81,7 @@ export class RmrkNftService implements IRmrkNftService {
       await this.wallet.signAndSend(
         transaction,
         senderAddress,
-        'The child NFT is now accepted and in the inventory.'
+        'The child NFT is successfully bonded to parent.'
       );
     } catch (error) {
       const e = error as Error;
