@@ -20,9 +20,13 @@ export default {
   add: 'Add',
   equip: 'Equip',
   unequip: 'Unequip',
+  bond: 'Bond',
+  bondDescription:
+    'This NFT has not yet been added to the parent NFT\'s inventory. By "Accepting" the NFT to the parent, it will be added to the parent inventory and you will be able to "equip" the child. Please note that it is still under development that the UI is not able to remove the NFT from the inventory at this moment.',
   remove: 'Remove',
   detail: 'Detail',
   parent: 'Parent',
+  backToAssets: 'Back to Assets',
   toast: {
     transactionFailed: 'Transaction failed with error: {message}',
     completedHash: 'Completed at block hash #{hash}',
@@ -86,9 +90,9 @@ export default {
   },
   assets: {
     hero: {
-      rmkable: 'RMRKable',
-      experience: 'experience',
-      inAstarWasm: 'in Astar WASM',
+      rmkable: 'Ink!redible',
+      experience: 'NFT technology',
+      inAstarWasm: 'on Astar Network',
     },
     attributes: {
       ranking: 'Ranking',
@@ -96,9 +100,16 @@ export default {
     },
   },
   child: {
-    equippedInventory: 'This NFT is currently equipped',
-    unequippedInventory: 'This NFT is currently unequipped and in inventory',
-    parentNotVacant: 'Parent NFT for this item is fully equipped',
+    equippedInventory: 'This NFT is currently equipped.',
+    equippedInventoryNotAccepted:
+      'This NFT is not bonded to parent yet. Bond the child so you can equip it.',
+    unequippedInventory: 'This NFT is currently unequipped and in inventory.',
+    parentNotVacant: 'Parent NFT for this item is fully equipped.',
     parentNft: 'Parent NFT #{id}',
+  },
+  parentPage: {
+    modals: {
+      acceptChild: 'Bond Child NFT',
+    },
   },
 };

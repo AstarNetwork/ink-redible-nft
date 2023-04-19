@@ -1,6 +1,13 @@
 <template>
   <div v-if="isValidContractAddress && isValidTokenId && token" class="img--nft-big">
-    <q-carousel v-model="displayedAsset" animated arrows navigation infinite>
+    <q-carousel
+      v-if="token.assets.length > 1"
+      v-model="displayedAsset"
+      animated
+      arrows
+      navigation
+      infinite
+    >
       <q-carousel-slide
         v-for="(asset, index) in token.assets"
         :key="index"
@@ -8,8 +15,10 @@
         :img-src="sanitizeIpfsUrl(asset.assetUri)"
       />
     </q-carousel>
+    <img v-else :src="sanitizeIpfsUrl(token.assets[0].assetUri)" />
   </div>
 </template>
+
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import { isValidAddressPolkadotAddress } from '@astar-network/astar-sdk-core';

@@ -1,7 +1,7 @@
 import { inject, injectable } from 'inversify';
-import { ParentInventory, queryParentInventories } from 'src/modules/nft';
+import { ASTAR_NETWORK_IDX } from 'src/config/chain';
 import { Guard } from 'src/v2/common';
-import { IEventAggregator } from 'src/v2/messaging';
+import { ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
 import {
   ContractInventory,
   EquipCallParam,
@@ -29,9 +29,15 @@ export class RmrkNftService implements IRmrkNftService {
 
     try {
       const transaction = await this.rmrkNftRepository.getEquipCallData(param);
-      await this.wallet.signAndSend(transaction, param.senderAddress);
+      await this.wallet.signAndSend(
+        transaction,
+        param.senderAddress,
+        'The child NFT is successfully equipped to parent.'
+      );
     } catch (error) {
+      const e = error as Error;
       console.error(error);
+      this.eventAggregator.publish(new ExtrinsicStatusMessage(false, e.toString()));
     }
   }
   public async unequip(param: UnequipCallParam): Promise<void> {
@@ -39,26 +45,57 @@ export class RmrkNftService implements IRmrkNftService {
 
     try {
       const transaction = await this.rmrkNftRepository.getUnequipCallData(param);
-      await this.wallet.signAndSend(transaction, param.senderAddress);
+      await this.wallet.signAndSend(
+        transaction,
+        param.senderAddress,
+        'The child NFT is successfully unequipped from parent.'
+      );
     } catch (error) {
+      const e = error as Error;
       console.error(error);
+      this.eventAggregator.publish(new ExtrinsicStatusMessage(false, e.toString()));
     }
   }
 
-  public async fetchParentInventories(walletAddress: string): Promise<ContractInventory[]> {
-    Guard.ThrowIfUndefined('walletAddress', walletAddress);
+  public async acceptChild(
+    contractAddress: string,
+    tokenId: number,
+    childContractAddress: string,
+    childTokenId: number,
+    senderAddress: string
+  ): Promise<void> {
+    Guard.ThrowIfUndefined('contractAddress', contractAddress);
+    Guard.ThrowIfUndefined('tokenId', tokenId);
+    Guard.ThrowIfUndefined('childContractAddress', childContractAddress);
+    Guard.ThrowIfUndefined('childTokenId', childTokenId);
+    Guard.ThrowIfUndefined('senderAddress', senderAddress);
+
     try {
-      const inventories = await queryParentInventories(walletAddress);
-      return inventories;
+      const transaction = await this.rmrkNftRepository.getAcceptChildCallData(
+        contractAddress,
+        tokenId,
+        childContractAddress,
+        childTokenId,
+        senderAddress
+      );
+      await this.wallet.signAndSend(
+        transaction,
+        senderAddress,
+        'The child NFT is successfully bonded to parent.'
+      );
     } catch (error) {
+      const e = error as Error;
       console.error(error);
-      return [];
+      this.eventAggregator.publish(new ExtrinsicStatusMessage(false, e.toString()));
     }
   }
 
-  public async getInventory(ownerAddress: string): Promise<ContractInventory[]> {
+  public async getInventory(
+    ownerAddress: string,
+    networkIdx: ASTAR_NETWORK_IDX
+  ): Promise<ContractInventory[]> {
     Guard.ThrowIfUndefined('ownerAddress', ownerAddress);
 
-    return await this.rmrkNftRepository.getInventory(ownerAddress);
+    return await this.rmrkNftRepository.getInventory(ownerAddress, networkIdx);
   }
 }

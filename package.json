@@ -1,8 +1,8 @@
 {
   "name": "@astar-network/ink-redible-nft",
   "version": "0.0.1",
-  "description": "ink!redibleNFT",
-  "productName": "ink!redibleNFT",
+  "description": "Astar NFT showcases the first RMRK NFT smart contracts using ink!.",
+  "productName": "Astar NFT",
   "author": "Astar Network",
   "private": true,
   "scripts": {

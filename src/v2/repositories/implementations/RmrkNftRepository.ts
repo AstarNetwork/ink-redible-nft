@@ -2,13 +2,12 @@ import { SubmittableExtrinsic } from '@polkadot/api/types';
 import { ISubmittableResult } from '@polkadot/types/types';
 import axios from 'axios';
 import { inject, injectable } from 'inversify';
-import { queryParentInventories } from 'src/modules/nft';
 import { sanitizeIpfsUrl } from 'src/modules/nft/ipfs';
 import Contract from 'src/modules/nft/rmrk-contract/types/contracts/rmrk_contract';
 import { IdBuilder } from 'src/modules/nft/rmrk-contract/types/types-arguments/rmrk_contract';
 import { PartType } from 'src/modules/nft/rmrk-contract/types/types-returns/rmrk_contract';
 import { IApi } from 'src/v2/integration';
-import { AddressIdPair, Metadata, Part, TokenAsset } from 'src/v2/models';
+import { ChildInfo, Metadata, Part, TokenAsset } from 'src/v2/models';
 import {
   ContractInventory,
   IRmrkNftRepository,
@@ -17,6 +16,8 @@ import {
 import { Symbols } from 'src/v2/symbols';
 import { EquipCallParam } from './../IRmrkNftRepository';
 import { SmartContractRepository } from './SmartContractRepository';
+import { ASTAR_NETWORK_IDX } from 'src/config/chain';
+import { queryParentInventories } from 'src/modules/nft';
 
 @injectable()
 export class RmrkNftRepository extends SmartContractRepository implements IRmrkNftRepository {
@@ -67,13 +68,35 @@ export class RmrkNftRepository extends SmartContractRepository implements IRmrkN
     return transaction;
   }
 
-  public async getInventory(ownerAddress: string): Promise<ContractInventory[]> {
-    return await queryParentInventories(ownerAddress);
+  public async getAcceptChildCallData(
+    contractAddress: string,
+    tokenId: number,
+    childContractAddress: string,
+    childTokenId: number,
+    senderAddress: string
+  ): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> {
+    const api = await this.api.getApi();
+    const transaction = await this.getContractCall(
+      contractAddress,
+      'nesting::acceptChild',
+      senderAddress,
+      { u64: tokenId },
+      [childContractAddress, { u64: childTokenId }]
+    );
+
+    return transaction;
+  }
+
+  public async getInventory(
+    ownerAddress: string,
+    networkIdx: ASTAR_NETWORK_IDX
+  ): Promise<ContractInventory[]> {
+    return await queryParentInventories(ownerAddress, networkIdx);
 
     // for local test only
     // return [
     //   {
-    //     contractAddress: 'YvXaB6p4wDH3LviBWHnqycaErdfKZxMvrxSb8U42hC7ZfB8',
+    //     contractAddress: 'XyfkCVRSRTChUft42e8c6FD7RhTeAuPcq8sNZ8vb1PbycDB',
     //     tokenId: 5,
     //   },
     // ];
@@ -100,23 +123,39 @@ export class RmrkNftRepository extends SmartContractRepository implements IRmrkN
     return await this.getMetadata(contractAddress, callerAddress, 'baseUri', tokenId);
   }
 
-  public async getAcceptedChildren(
+  public async getChildren(
     contractAddress: string,
     callerAddress: string,
     tokenId: number
-  ): Promise<AddressIdPair[]> {
+  ): Promise<ChildInfo[]> {
     const api = await this.api.getApi();
     const contract = new Contract(contractAddress, callerAddress, api);
 
-    const children = await (
+    const acceptedChildren = await (
       await contract.query.getAcceptedChildren({ u64: tokenId })
     ).value.unwrap();
-    return children.map((x) => {
+    const result = acceptedChildren.map((x) => {
       return {
         contractAddress: x[0].toString(),
         tokenId: x[1].u64?.toString(),
-      } as AddressIdPair;
+        isAccepted: true,
+      } as ChildInfo;
     });
+
+    const pendingChildren = await (
+      await contract.query.getPendingChildren({ u64: tokenId })
+    ).value.unwrap();
+    result.push(
+      ...pendingChildren.map((x) => {
+        return {
+          contractAddress: x[0].toString(),
+          tokenId: x[1].u64?.toString(),
+          isAccepted: false,
+        } as ChildInfo;
+      })
+    );
+
+    return result;
   }
 
   public async getTokenAssets(

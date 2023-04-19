@@ -1,6 +1,7 @@
 <template>
   <div class="wrapper--child">
     <div class="container--child">
+      <back-to-page :text="$t('backToAssets')" :link="Path.Assets" />
       <nft :contract-address="contractAddress" :token-id="childId" />
 
       <div class="buttons">
@@ -38,6 +39,7 @@
             :child-contract-address="contractAddress"
             :parent-token-id="parentId"
             :child-token-id="childId"
+            :is-child-accepted="isAccepted"
           />
         </div>
       </div>
@@ -45,20 +47,23 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, computed } from 'vue';
+import { defineComponent, computed, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import ParentInfo from 'src/components/child/ParentInfo.vue';
 import Attributes from 'src/components/common/Attributes.vue';
 import ShareButton from '../common/ShareButton.vue';
 import Nft from 'src/components/common/Nft.vue';
 import NftIntroduction from 'src/components/common/NftIntroduction.vue';
+import BackToPage from '../common/BackToPage.vue';
 import { useToken } from 'src/hooks';
 import { Metadata } from 'src/modules/nft';
 import { sanitizeIpfsUrl } from 'src/modules/nft/ipfs';
 import { useStore } from 'src/store';
+import { Path } from 'src/router';
+import { ChildInfo } from 'src/v2/models';
 
 export default defineComponent({
-  components: { NftIntroduction, Attributes, ParentInfo, Nft, ShareButton },
+  components: { NftIntroduction, Attributes, ParentInfo, Nft, ShareButton, BackToPage },
   setup() {
     const route = useRoute();
     const store = useStore();
@@ -76,6 +81,16 @@ export default defineComponent({
     const parentCollectionMetadata = computed<Metadata | undefined>(() =>
       store.getters['assets/getCollectionMetadata'](parentContractAddress)
     );
+    const children = ref<ChildInfo[]>([]);
+    const isAccepted = computed(() => {
+      return children.value.some((child) => child.tokenId === childId && child.isAccepted);
+    });
+
+    const getChildren = async (): Promise<void> => {
+      children.value = await parentToken.getChildren();
+    };
+
+    getChildren();
 
     const reload = (): void => {
       window.location.reload();
@@ -93,6 +108,8 @@ export default defineComponent({
       childId,
       reload,
       childToken,
+      Path,
+      isAccepted,
     };
   },
 });

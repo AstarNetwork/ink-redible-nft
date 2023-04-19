@@ -1,17 +1,34 @@
 <template>
-  <div class="card--item" @click="navigateToChildPage(contractAddress, tokenId)">
-    <div class="box--nft-img">
+  <div
+    class="card--item"
+    @click="
+      isAccepted ? navigateToChildPage(contractAddress, tokenId) : setShowAcceptChildModal(true)
+    "
+  >
+    <div :class="isAccepted ? 'box--nft-img' : 'box--nft-img-pending'">
       <img :src="asset?.assetUri" class="img--item" :class="isEquipped && 'img--item--equipped'" />
     </div>
     <span class="text--name">{{ token?.metadata?.name }}</span>
+
+    <modal-accept-child
+      v-if="showAcceptChildModal"
+      :set-is-open="setShowAcceptChildModal"
+      :show="showAcceptChildModal"
+      :contract-address="contractAddress"
+      :child-id="tokenId"
+      :set-children="setChildren"
+      :navigate-to-child-page="navigateToChildPage"
+    />
   </div>
 </template>
 
 <script lang="ts">
 import { useToken } from 'src/hooks';
-import { defineComponent, computed } from 'vue';
+import { defineComponent, computed, ref } from 'vue';
+import ModalAcceptChild from './ModalAcceptChild.vue';
 
 export default defineComponent({
+  components: { ModalAcceptChild },
   props: {
     contractAddress: {
       type: String,
@@ -25,7 +42,15 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    isAccepted: {
+      type: Boolean,
+      default: false,
+    },
     navigateToChildPage: {
+      type: Function,
+      required: true,
+    },
+    setChildren: {
       type: Function,
       required: true,
     },
@@ -33,8 +58,13 @@ export default defineComponent({
   setup(props) {
     const { token } = useToken(props.contractAddress, props.tokenId);
     const asset = computed(() => token.value?.assets[0]);
+    const showAcceptChildModal = ref<boolean>(false);
 
-    return { asset, token };
+    const setShowAcceptChildModal = (isOpen: boolean): void => {
+      showAcceptChildModal.value = isOpen;
+    };
+
+    return { asset, token, showAcceptChildModal, setShowAcceptChildModal };
   },
 });
 </script>

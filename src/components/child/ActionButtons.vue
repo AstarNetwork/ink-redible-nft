@@ -14,7 +14,7 @@
     </astar-button>
 
     <astar-button
-      v-if="!isEquipped"
+      v-if="!isEquipped && isChildAccepted"
       :disabled="isDisabled"
       :width="buttonWidth"
       :height="buttonHeight"
@@ -25,6 +25,18 @@
         <astar-icon-equip />
       </div>
       <span class="text--button">{{ $t('equip') }}</span>
+    </astar-button>
+    <astar-button
+      v-if="!isChildAccepted"
+      :width="buttonWidth"
+      :height="buttonHeight"
+      class="button-action"
+      @click="handleBond()"
+    >
+      <div class="icon--button">
+        <icon-bond />
+      </div>
+      <span class="text--button">{{ $t('bond') }}</span>
     </astar-button>
     <a href="https://astar.subscan.io/" target="_blank" rel="noopener noreferrer">
       <astar-button :width="buttonWidth" :height="buttonHeight" class="button-action">
@@ -41,9 +53,10 @@
 </template>
 <script lang="ts">
 import { defineComponent } from 'vue';
+import IconBond from '../parent/IconBond.vue';
 
 export default defineComponent({
-  components: {},
+  components: { IconBond },
   props: {
     buttonWidth: {
       type: Number,
@@ -65,6 +78,10 @@ export default defineComponent({
       type: Boolean,
       required: true,
     },
+    isChildAccepted: {
+      type: Boolean,
+      required: true,
+    },
     handleEquip: {
       type: Function,
       required: true,
@@ -73,8 +90,12 @@ export default defineComponent({
       type: Function,
       required: true,
     },
+    handleBond: {
+      type: Function,
+      required: true,
+    },
   },
-  setup(props) {
+  setup() {
     return {};
   },
 });

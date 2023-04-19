@@ -1,5 +1,6 @@
 import { gql, GraphQLClient } from 'graphql-request';
-import { ParentInventory } from 'src/modules/nft';
+import { ASTAR_NETWORK_IDX } from 'src/config/chain';
+import { endpointKey } from 'src/config/chainEndpoints';
 import { ContractInventory } from 'src/v2/repositories';
 
 interface OwnerByIdQuery {
@@ -16,12 +17,22 @@ interface ContractToken {
   token: { id: string };
 }
 
-const graphQlServer = 'https://squid.subsquid.io/sqd-nft-viewer/v/v1/graphql';
+const graphQlServerUrls = new Map<number, string>([
+  [endpointKey.ASTAR, ''],
+  [endpointKey.SHIDEN, ''],
+  [endpointKey.SHIBUYA, 'https://squid.subsquid.io/sqd-nft-viewer/v/v1/graphql'],
+]);
 
 export const queryParentInventories = async (
-  walletAddress: string
+  walletAddress: string,
+  networkIdx: ASTAR_NETWORK_IDX
 ): Promise<ContractInventory[]> => {
   try {
+    const graphQlServer = graphQlServerUrls.get(networkIdx);
+    if (!graphQlServer) {
+      return [];
+    }
+
     const graphQLClient = new GraphQLClient(graphQlServer);
     const query = gql`
       query InventoryQuery($id: String!) {

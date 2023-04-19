@@ -6,8 +6,6 @@ import { StateInterface } from '../index';
 import { AssetsStateInterface as State, OwnedToken } from './state';
 
 export interface AssetsGetters {
-  // TODO remove getParentInv...
-  getParentInventories(state: State): ParentInventory[];
   getInventory(state: State): ContractInventory[];
   getOwnedTokens(state: State): OwnedToken[];
   getCollectionMetadata(state: State): (contractAddress: string) => Metadata | undefined;
@@ -15,7 +13,6 @@ export interface AssetsGetters {
 }
 
 const getters: GetterTree<State, StateInterface> & AssetsGetters = {
-  getParentInventories: (state) => state.parentInventories,
   getInventory: (state) => state.inventory,
   getOwnedTokens: (state) => state.tokens,
   getCollectionMetadata: (state) => (contractAddress) =>

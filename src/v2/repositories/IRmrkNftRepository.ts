@@ -1,7 +1,8 @@
 import { SubmittableExtrinsic } from '@polkadot/api/types';
 import { ISubmittableResult } from '@polkadot/types/types';
 import { Id } from 'src/modules/nft';
-import { AddressIdPair, Metadata, TokenAsset } from '../models';
+import { ChildInfo, Metadata, TokenAsset } from '../models';
+import { ASTAR_NETWORK_IDX } from 'src/config/chain';
 
 export interface EquipCallParam {
   parentContractAddress: string;
@@ -36,7 +37,15 @@ export interface IRmrkNftRepository {
     param: UnequipCallParam
   ): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>>;
 
-  getInventory(ownerAddress: string): Promise<ContractInventory[]>;
+  getAcceptChildCallData(
+    contractAddress: string,
+    tokenId: number,
+    childContractAddress: string,
+    childTokenId: number,
+    senderAddress: string
+  ): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>>;
+
+  getInventory(ownerAddress: string, networkIdx: ASTAR_NETWORK_IDX): Promise<ContractInventory[]>;
 
   getCollectionMetadata(
     contractAddress: string,
@@ -55,9 +64,9 @@ export interface IRmrkNftRepository {
     tokenId: number
   ): Promise<TokenAsset[]>;
 
-  getAcceptedChildren(
+  getChildren(
     contractAddress: string,
     callerAddress: string,
     tokenId: number
-  ): Promise<AddressIdPair[]>;
+  ): Promise<ChildInfo[]>;
 }
