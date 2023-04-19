@@ -90,9 +90,9 @@ export default {
   },
   assets: {
     hero: {
-      rmkable: 'RMRKable',
-      experience: 'experience',
-      inAstarWasm: 'in Astar WASM',
+      rmkable: 'Ink!redible',
+      experience: 'NFT technology',
+      inAstarWasm: 'on Astar Network',
     },
     attributes: {
       ranking: 'Ranking',
