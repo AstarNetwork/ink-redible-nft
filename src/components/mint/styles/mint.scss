@@ -12,17 +12,15 @@
 }
 
 .wrapper--mint-button {
+  width: 355px;
   display: flex;
   flex-direction: column;
   background: #131c34;
-  padding: 36px 16px;
+  padding: 16px 32px;
+  border-radius: 16px;
   // margin-left: -16px;
   // margin-right: -16px;
-  width: 100vw;
-  overflow: scroll;
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-
+  
   // @media (min-width: $md) {
   //   max-width: 380px;
   //   margin-left: 0px;
@@ -31,4 +29,26 @@
   //   padding: 36px 32px;
   //   max-height: 462px;
   // }
+}
+
+.mint--info-item {
+  font-size: 16px;
+  font-weight: 600;
+  padding: 8px 0px;
+  display: grid;
+  grid-template-columns: 50% 50%;
+  align-items: center;
+  grid-template-rows: 1fr;
+
+  div:nth-child(2) {
+    text-align: right;
+    align-items:end;
+  }
+}
+
+.storage--deposit {
+  padding-top: 16px;
+  padding-bottom: 32px;
+  font-size: 12px;
+  font-weight: 500;
 }

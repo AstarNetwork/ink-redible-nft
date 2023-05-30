@@ -106,25 +106,32 @@ export class RmrkNftService implements IRmrkNftService {
     contractAddress: string,
     senderAddress: string,
     price: bigint
-  ): Promise<DryRunResult> {
-    const result = await this.rmrkLazyMintRepository.mintDryRun(
-      contractAddress,
-      senderAddress,
-      price
-    );
+  ): Promise<DryRunResult | undefined> {
+    try {
+      const result = await this.rmrkLazyMintRepository.mintDryRun(
+        contractAddress,
+        senderAddress,
+        price
+      );
 
-    // minting price
-    const call = await this.rmrkLazyMintRepository.getMintCall(
-      contractAddress,
-      senderAddress,
-      price
-    );
-    const paymentInfo = await call.paymentInfo(senderAddress);
+      // minting price
+      const call = await this.rmrkLazyMintRepository.getMintCall(
+        contractAddress,
+        senderAddress,
+        price
+      );
+      const paymentInfo = await call.paymentInfo(senderAddress);
 
-    return {
-      result,
-      storageFeeFormatted: result.storageDeposit.toHuman()?.toString() ?? '',
-      gasFormatted: paymentInfo.partialFee.toHuman()?.toString() ?? '',
-    };
+      return {
+        result,
+        storageFeeFormatted: result.storageDeposit.asCharge.toHuman()?.toString() ?? '',
+        gasFormatted: paymentInfo.partialFee.toHuman()?.toString() ?? '',
+      };
+    } catch (error) {
+      const e = error as Error;
+      this.eventAggregator.publish(new ExtrinsicStatusMessage(false, e.toString()));
+    }
+
+    return undefined;
   }
 }
