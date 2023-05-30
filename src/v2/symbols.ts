@@ -12,4 +12,5 @@ export const Symbols = {
   PolkadotWalletService: Symbol.for('PolkadotWalletService'),
   RmrkNftService: Symbol.for('RmrkNftService'),
   RmrkNftRepository: Symbol.for('RmrkNftRepository'),
+  RmrkLazyMintRepository: Symbol.for('RmrkLazyMintRepository'),
 };

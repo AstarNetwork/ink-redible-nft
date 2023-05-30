@@ -1,6 +1,7 @@
 import Parent from 'pages/Parent.vue';
 import Child from 'pages/Child.vue';
 import AssetsPage from 'pages/AssetsPage.vue';
+import Mint from 'pages/Mint.vue';
 import { endpointKey, getNetworkName } from 'src/config/chainEndpoints';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 
@@ -14,6 +15,7 @@ export enum Path {
   Assets = '/assets',
   Parent = '/parent',
   Child = '/child',
+  Mint = '/mint',
 }
 
 const routes = [
@@ -40,10 +42,16 @@ const routes = [
     name: 'Parent',
     component: Parent,
   },
+  {
+    path: '/:network' + Path.Mint + '/:contractAddress',
+    name: 'Mint',
+    component: Mint,
+  },
 
   // Always leave this as last one,
   // but you can also remove it
   {
+    name: '404',
     path: '/:catchAll(.*)*',
     redirect: '/',
     component: () => import('pages/Error404.vue'),

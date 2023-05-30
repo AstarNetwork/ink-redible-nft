@@ -19,6 +19,8 @@ import { IEventAggregator, EventAggregator } from './messaging';
 import { container } from './common';
 import { ITypeFactory, TypeFactory } from './config/types';
 import { endpointKey } from 'src/config/chainEndpoints';
+import { IRmrkLazyMintRepository } from './repositories/IRmrkLazyMintRepository';
+import { RmrkLazyMintRepository } from './repositories/implementations/RmrkLazyMintRepository';
 
 let currentWalletType = WalletType.Polkadot;
 let currentWalletName = '';
@@ -50,6 +52,10 @@ export default function buildDependencyContainer(network: endpointKey): void {
   container.addTransient<IMetadataRepository>(MetadataRepository, Symbols.MetadataRepository);
   container.addTransient<ISystemRepository>(SystemRepository, Symbols.SystemRepository);
   container.addTransient<IRmrkNftRepository>(RmrkNftRepository, Symbols.RmrkNftRepository);
+  container.addTransient<IRmrkLazyMintRepository>(
+    RmrkLazyMintRepository,
+    Symbols.RmrkLazyMintRepository
+  );
 
   // Services
   container.addTransient<IWalletService>(PolkadotWalletService, Symbols.PolkadotWalletService);

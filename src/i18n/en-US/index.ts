@@ -112,4 +112,7 @@ export default {
       acceptChild: 'Bond Child NFT',
     },
   },
+  mint: {
+    mint: 'Mint',
+  },
 };

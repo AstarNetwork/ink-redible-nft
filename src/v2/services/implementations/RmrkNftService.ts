@@ -1,7 +1,9 @@
+import { ContractCallOutcome } from '@polkadot/api-contract/types';
 import { inject, injectable } from 'inversify';
 import { ASTAR_NETWORK_IDX } from 'src/config/chain';
 import { Guard } from 'src/v2/common';
 import { ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
+import { IRmrkLazyMintRepository } from 'src/v2/repositories/IRmrkLazyMintRepository';
 import {
   ContractInventory,
   EquipCallParam,
@@ -9,7 +11,7 @@ import {
   UnequipCallParam,
 } from 'src/v2/repositories/IRmrkNftRepository';
 import { IWalletService } from 'src/v2/services';
-import { IRmrkNftService } from 'src/v2/services/IRmrkNftService';
+import { DryRunResult, IRmrkNftService } from 'src/v2/services/IRmrkNftService';
 import { Symbols } from 'src/v2/symbols';
 
 @injectable()
@@ -18,6 +20,7 @@ export class RmrkNftService implements IRmrkNftService {
 
   constructor(
     @inject(Symbols.RmrkNftRepository) private rmrkNftRepository: IRmrkNftRepository,
+    @inject(Symbols.RmrkLazyMintRepository) private rmrkLazyMintRepository: IRmrkLazyMintRepository,
     @inject(Symbols.WalletFactory) walletFactory: () => IWalletService,
     @inject(Symbols.EventAggregator) readonly eventAggregator: IEventAggregator
   ) {
@@ -97,5 +100,31 @@ export class RmrkNftService implements IRmrkNftService {
     Guard.ThrowIfUndefined('ownerAddress', ownerAddress);
 
     return await this.rmrkNftRepository.getInventory(ownerAddress, networkIdx);
+  }
+
+  public async mintDryRun(
+    contractAddress: string,
+    senderAddress: string,
+    price: bigint
+  ): Promise<DryRunResult> {
+    const result = await this.rmrkLazyMintRepository.mintDryRun(
+      contractAddress,
+      senderAddress,
+      price
+    );
+
+    // minting price
+    const call = await this.rmrkLazyMintRepository.getMintCall(
+      contractAddress,
+      senderAddress,
+      price
+    );
+    const paymentInfo = await call.paymentInfo(senderAddress);
+
+    return {
+      result,
+      storageFeeFormatted: result.storageDeposit.toHuman()?.toString() ?? '',
+      gasFormatted: paymentInfo.partialFee.toHuman()?.toString() ?? '',
+    };
   }
 }
