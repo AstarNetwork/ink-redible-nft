@@ -1,4 +1,5 @@
 @import 'src/css/quasar.variables.scss';
+@import 'src/components/common/styles/nft-introduction.scss';
 
 .wrapper--mint {
   padding: 32px 8px;
@@ -9,6 +10,10 @@
   @media (min-width: $lg) {
     padding-top: 100px;
   }
+}
+
+.container--mint {
+  max-width: 1022px;
 }
 
 .wrapper--mint-button {
@@ -55,8 +60,28 @@
 
 .collection--image {
   background-color: #0085FF;
-  width: 100%;
   padding: 24px;
   margin-bottom: 72px;
   border-radius: 16px;
+}
+
+.description--mint {
+  display: grid;
+  // grid-template-columns: 1fr auto;
+  @media (min-width: $lg) {
+    grid-template-columns: 1fr auto;
+  }
+}
+
+.description--wrapper {
+  background: #131c34;
+  padding: 16px 32px;
+  border-radius: 16px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 28px;
+}
+
+.description {
+  margin-top: 16px;
 }

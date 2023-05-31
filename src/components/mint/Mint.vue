@@ -1,7 +1,24 @@
 <template>
   <div class="wrapper--mint">
-    <div class="collection--image">Collection image goes here</div>
-    <mint-button :can-mint="canMint" :price-info="dryRunOutcome" :mint="mint" />
+    <div class="container--mint">
+      <div class="collection--image">Collection image goes here</div>
+      <div class="description--mint">
+        <div class="description--wrapper">
+          <div class="row--name"><span class="text--xl">Collection Name</span></div>
+          <div class="description">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, Lorem ipsum dolor
+            sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+            dolore magna aliqua. Ut enim ad minim veniam, Lorem ipsum dolor sit amet, consectetur
+            adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+            enim ad minim veniam, Lorem ipsum dolor sit amet, consectetur aveniam, Lorem ipsum dolor
+            sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+            dolore magna aliqua. Ut enim ad minim veniam
+          </div>
+        </div>
+        <mint-button :can-mint="canMint" :price-info="dryRunOutcome" :mint="mint" />
+      </div>
+    </div>
   </div>
 </template>
 <script lang="ts">
