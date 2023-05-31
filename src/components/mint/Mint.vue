@@ -1,6 +1,7 @@
 <template>
   <div class="wrapper--mint">
-    <mint-button :can-mint="canMint" :price-info="dryRunOutcome" />
+    <div class="collection--image">Collection image goes here</div>
+    <mint-button :can-mint="canMint" :price-info="dryRunOutcome" :mint="mint" />
   </div>
 </template>
 <script lang="ts">
@@ -11,48 +12,61 @@ import { container } from 'src/v2/common';
 import { IRmrkNftService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 import { DryRunResult } from 'src/v2/services';
-import { useAccount } from 'src/hooks';
+import { useAccount, useNetworkInfo } from 'src/hooks';
 import MintButton from './MintButton.vue';
+import { NftCollection, getCollection } from './collections';
 
 export default defineComponent({
   components: {
     MintButton,
   },
   setup() {
-    const contractAddress = ref<string>('');
-    const dryRunOutcome = ref<DryRunResult | undefined>(undefined);
-    const rmrkService = container.get<IRmrkNftService>(Symbols.RmrkNftService);
     const route = useRoute();
     const router = useRouter();
     const account = useAccount();
-    contractAddress.value = String(route.params.contractAddress);
-
+    const { currentNetworkIdx } = useNetworkInfo();
+    const contractAddress = ref<string>(String(route.params.contractAddress));
+    const dryRunOutcome = ref<DryRunResult | undefined>(undefined);
+    const rmrkService = container.get<IRmrkNftService>(Symbols.RmrkNftService);
     const canMint = computed<boolean>(() => dryRunOutcome.value !== undefined);
+    const collectionInfo = ref<NftCollection | undefined>(undefined);
+
+    const mint = async () => {
+      rmrkService.mint(
+        contractAddress.value,
+        account.currentAccount.value!,
+        collectionInfo.value?.mintPrice ?? BigInt(0)
+      );
+    };
 
     watch(
-      [contractAddress, account.currentAccount],
+      [contractAddress, account.currentAccount, currentNetworkIdx],
       async () => {
         if (!isValidAddressPolkadotAddress(contractAddress.value)) {
           router.push({ name: '404' });
         } else {
           if (account.currentAccount.value) {
             try {
+              collectionInfo.value = getCollection(contractAddress.value, currentNetworkIdx.value);
+              if (!collectionInfo.value) {
+                router.push({ name: '404' });
+              }
+
               dryRunOutcome.value = await rmrkService.mintDryRun(
                 contractAddress.value,
                 account.currentAccount.value,
-                BigInt('1000000000000000000')
+                collectionInfo.value?.mintPrice ?? BigInt(0)
               );
             } catch (e) {
-              console.log(e);
+              console.error(e);
             }
-            console.log(dryRunOutcome.value);
           }
         }
       },
       { immediate: true }
     );
 
-    return { contractAddress, canMint, dryRunOutcome };
+    return { contractAddress, canMint, dryRunOutcome, mint };
   },
 });
 </script>

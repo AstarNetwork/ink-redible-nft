@@ -2,7 +2,7 @@
   <div class="wrapper--mint-button">
     <div class="mint--info-item">
       <div>{{ $t('mint.mint') }}</div>
-      <div>Free</div>
+      <div>{{ priceInfo?.priceFormatted }}</div>
     </div>
     <div class="mint--info-item">
       <div>{{ $t('mint.storageDeposit') }}</div>
@@ -13,7 +13,7 @@
       <div>{{ priceInfo?.gasFormatted }}</div>
     </div>
     <div class="storage--deposit">{{ $t('mint.storageDepositInfo') }}</div>
-    <astar-button :width="291" :height="49" :disabled="!canMint">
+    <astar-button :width="291" :height="49" :disabled="!canMint" @click="mint()">
       <div class="row--button">
         <span> {{ $t('mint.mint') }} </span>
       </div>
@@ -31,7 +31,12 @@ export default defineComponent({
       required: true,
     },
     priceInfo: {
-      type: Object as PropType<DryRunResult | undefined>,
+      type: Object as PropType<DryRunResult>,
+      required: false,
+      default: undefined,
+    },
+    mint: {
+      type: Function,
       required: true,
     },
   },

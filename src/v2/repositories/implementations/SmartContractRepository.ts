@@ -8,8 +8,6 @@ import { ISubmittableResult } from '@polkadot/types/types';
 import { rmrkAbi } from 'src/modules/nft/abi/rmrk'; // TODO this should be injected.
 import { IApi } from 'src/v2/integration';
 
-export interface DryRunResult {}
-
 /**
  * Contains common functions to interact with the RMRK contract.
  */
@@ -92,8 +90,9 @@ export class SmartContractRepository {
 
     const extrinsic = contract.tx[call](
       {
-        gasLimit: this.increaseGasLimit(contract.api, txResult.gasRequired), // TODO increasing might be not needed
+        gasLimit: txResult.gasRequired, // this.increaseGasLimit(contract.api, txResult.gasRequired), // TODO increasing might be not needed
         storageDepositLimit: txResult.storageDeposit.asCharge,
+        value,
       },
       ...params
     );

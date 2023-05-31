@@ -2,6 +2,7 @@ import { ContractCallOutcome } from '@polkadot/api-contract/types';
 import { inject, injectable } from 'inversify';
 import { ASTAR_NETWORK_IDX } from 'src/config/chain';
 import { Guard } from 'src/v2/common';
+import { IApi } from 'src/v2/integration';
 import { ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
 import { IRmrkLazyMintRepository } from 'src/v2/repositories/IRmrkLazyMintRepository';
 import {
@@ -22,7 +23,8 @@ export class RmrkNftService implements IRmrkNftService {
     @inject(Symbols.RmrkNftRepository) private rmrkNftRepository: IRmrkNftRepository,
     @inject(Symbols.RmrkLazyMintRepository) private rmrkLazyMintRepository: IRmrkLazyMintRepository,
     @inject(Symbols.WalletFactory) walletFactory: () => IWalletService,
-    @inject(Symbols.EventAggregator) readonly eventAggregator: IEventAggregator
+    @inject(Symbols.EventAggregator) readonly eventAggregator: IEventAggregator,
+    @inject(Symbols.DefaultApi) private api: IApi
   ) {
     this.wallet = walletFactory();
   }
@@ -107,6 +109,9 @@ export class RmrkNftService implements IRmrkNftService {
     senderAddress: string,
     price: bigint
   ): Promise<DryRunResult | undefined> {
+    Guard.ThrowIfUndefined('contractAddress', contractAddress);
+    Guard.ThrowIfUndefined('senderAddress', senderAddress);
+
     try {
       const result = await this.rmrkLazyMintRepository.mintDryRun(
         contractAddress,
@@ -121,11 +126,17 @@ export class RmrkNftService implements IRmrkNftService {
         price
       );
       const paymentInfo = await call.paymentInfo(senderAddress);
+      const api = await this.api.getApi();
+      const priceFormatted =
+        price === BigInt(0)
+          ? 'Free'
+          : api.registry.createType('Balance', price).toHuman()?.toString() ?? '';
 
       return {
         result,
         storageFeeFormatted: result.storageDeposit.asCharge.toHuman()?.toString() ?? '',
         gasFormatted: paymentInfo.partialFee.toHuman()?.toString() ?? '',
+        priceFormatted,
       };
     } catch (error) {
       const e = error as Error;
@@ -133,5 +144,23 @@ export class RmrkNftService implements IRmrkNftService {
     }
 
     return undefined;
+  }
+
+  public async mint(contractAddress: string, senderAddress: string, price: bigint): Promise<void> {
+    Guard.ThrowIfUndefined('contractAddress', contractAddress);
+    Guard.ThrowIfUndefined('senderAddress', senderAddress);
+
+    try {
+      const transaction = await this.rmrkLazyMintRepository.getMintCall(
+        contractAddress,
+        senderAddress,
+        price
+      );
+      await this.wallet.signAndSend(transaction, senderAddress, 'The NFT is successfully minted.');
+    } catch (error) {
+      const e = error as Error;
+      console.error(error);
+      this.eventAggregator.publish(new ExtrinsicStatusMessage(false, e.toString()));
+    }
   }
 }

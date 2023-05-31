@@ -10,6 +10,7 @@ export interface DryRunResult {
   result: ContractCallOutcome;
   storageFeeFormatted: string;
   gasFormatted: string;
+  priceFormatted: string;
 }
 
 export interface IRmrkNftService {
@@ -28,4 +29,6 @@ export interface IRmrkNftService {
     senderAddress: string,
     price: bigint
   ): Promise<DryRunResult | undefined>;
+
+  mint(contractAddress: string, senderAddress: string, price: bigint): Promise<void>;
 }
