@@ -113,7 +113,7 @@ export default {
     },
   },
   mint: {
-    mint: 'Mint 1 token',
+    mint: 'Mint',
     storageDeposit: 'Storage deposit',
     storageDepositInfo:
       '* Storage deposit is charged for each call and depends on call length. This is to prevent bloating a chain with unnecessary calls and database entries.',
