@@ -37,7 +37,8 @@ export default defineComponent({
     const router = useRouter();
     const account = useAccount();
     const { currentNetworkIdx } = useNetworkInfo();
-    const contractAddress = ref<string>(String(route.params.contractAddress));
+    const collectionName = ref<string>(String(route.params.collectionName));
+    const contractAddress = ref<string>(String(''));
     const dryRunOutcome = ref<DryRunResult | undefined>(undefined);
     const rmrkService = container.get<IRmrkNftService>(Symbols.RmrkNftService);
     const canMint = computed<boolean>(() => dryRunOutcome.value !== undefined);
@@ -73,27 +74,26 @@ export default defineComponent({
     };
 
     watch(
-      [contractAddress, account.currentAccount, currentNetworkIdx],
+      [collectionName, account.currentAccount, currentNetworkIdx],
       async () => {
-        if (!isValidAddressPolkadotAddress(contractAddress.value)) {
-          router.push({ name: '404' });
-        } else {
-          if (account.currentAccount.value) {
-            try {
-              collectionInfo.value = getCollection(contractAddress.value, currentNetworkIdx.value);
-              if (!collectionInfo.value) {
-                router.push({ name: '404' });
-              }
-
-              dryRunOutcome.value = await rmrkService.mintDryRun(
-                contractAddress.value,
-                account.currentAccount.value,
-                collectionInfo.value?.mintPrice ?? BigInt(0)
-              );
-            } catch (e) {
-              console.error(e);
-            }
+        try {
+          collectionInfo.value = getCollection(collectionName.value, currentNetworkIdx.value);
+          if (!collectionInfo.value) {
+            router.push({ name: '404' });
           }
+
+          contractAddress.value = collectionInfo.value?.contractAddress ?? '';
+          if (!isValidAddressPolkadotAddress(contractAddress.value)) {
+            router.push({ name: '404' });
+          } else {
+            dryRunOutcome.value = await rmrkService.mintDryRun(
+              contractAddress.value,
+              account.currentAccount.value,
+              collectionInfo.value?.mintPrice ?? BigInt(0)
+            );
+          }
+        } catch (e) {
+          console.error(e);
         }
       },
       { immediate: true }

@@ -43,7 +43,7 @@ const routes = [
     component: Parent,
   },
   {
-    path: '/:network' + '/:contractAddress' + Path.Mint,
+    path: '/:network' + '/:collectionName' + Path.Mint,
     name: 'Mint',
     component: Mint,
   },
