@@ -51,7 +51,7 @@ export default defineComponent({
       query CommentsByContract {
         posts(
           where: {
-            canonical_contains: "XzoT9sH6zpC19TdkkePiopgXjTHcEgX8qjXXHs4p1HuQ5uR"
+            canonical_contains: "${contractAddress.value}"
             rootPost: { space: { id_eq: "11453" } }
           }
         ) {

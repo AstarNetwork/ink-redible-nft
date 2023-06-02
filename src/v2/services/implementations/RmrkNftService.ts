@@ -156,7 +156,11 @@ export class RmrkNftService implements IRmrkNftService {
         senderAddress,
         price
       );
-      await this.wallet.signAndSend(transaction, senderAddress, 'The NFT is successfully minted.');
+      await this.wallet.signAndSend(
+        transaction,
+        senderAddress,
+        'The NFT has been successfully minted. It will be visible on the homepage in a few seconds.'
+      );
     } catch (error) {
       const e = error as Error;
       console.error(error);
