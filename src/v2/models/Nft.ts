@@ -1,4 +1,4 @@
-import { PartType } from 'src/modules/nft/rmrk-contract/types/types-returns/rmrk_contract';
+import { PartType } from 'src/modules/nft/types/types-returns/catalog_contract';
 
 export interface Metadata {
   name: string;

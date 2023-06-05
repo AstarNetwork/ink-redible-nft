@@ -3,9 +3,10 @@ import { ISubmittableResult } from '@polkadot/types/types';
 import axios from 'axios';
 import { inject, injectable } from 'inversify';
 import { sanitizeIpfsUrl } from 'src/modules/nft/ipfs';
-import Contract from 'src/modules/nft/rmrk-contract/types/contracts/rmrk_contract';
-import { IdBuilder } from 'src/modules/nft/rmrk-contract/types/types-arguments/rmrk_contract';
-import { PartType } from 'src/modules/nft/rmrk-contract/types/types-returns/rmrk_contract';
+import Contract from 'src/modules/nft/types/contracts/rmrk_example_equippable_lazy';
+import Catalog from 'src/modules/nft/types/contracts/catalog_contract';
+import { IdBuilder } from 'src/modules/nft/types/types-arguments/rmrk_example_equippable_lazy';
+import { PartType } from 'src/modules/nft/types/types-returns/catalog_contract';
 import { IApi } from 'src/v2/integration';
 import { ChildInfo, Metadata, Part, TokenAsset } from 'src/v2/models';
 import {
@@ -17,7 +18,6 @@ import { Symbols } from 'src/v2/symbols';
 import { EquipCallParam } from './../IRmrkNftRepository';
 import { SmartContractRepository } from './SmartContractRepository';
 import { ASTAR_NETWORK_IDX } from 'src/config/chain';
-import { queryParentInventories } from 'src/modules/nft';
 
 @injectable()
 export class RmrkNftRepository extends SmartContractRepository implements IRmrkNftRepository {
@@ -91,15 +91,15 @@ export class RmrkNftRepository extends SmartContractRepository implements IRmrkN
     ownerAddress: string,
     networkIdx: ASTAR_NETWORK_IDX
   ): Promise<ContractInventory[]> {
-    return await queryParentInventories(ownerAddress, networkIdx);
+    // return await queryParentInventories(ownerAddress, networkIdx);
 
     // for local test only
-    // return [
-    //   {
-    //     contractAddress: 'XyfkCVRSRTChUft42e8c6FD7RhTeAuPcq8sNZ8vb1PbycDB',
-    //     tokenId: 5,
-    //   },
-    // ];
+    return [
+      {
+        contractAddress: 'W31sRs7oHgzYTLa2xoVR8yU6dXC3GnUBBMQo2HoCY4Fneyq',
+        tokenId: 1,
+      },
+    ];
     // return Array.from({ length: 100 }, (_, index) => index + 1).map((x) => {
     //   return {
     //     contractAddress: 'YvXaB6p4wDH3LviBWHnqycaErdfKZxMvrxSb8U42hC7ZfB8',
@@ -185,8 +185,15 @@ export class RmrkNftRepository extends SmartContractRepository implements IRmrkN
         } as TokenAsset;
 
         const partsToAdd: Part[] = [];
+        const catalogAddressQuery = await contract.query.getAssetCatalogAddress(assetId);
+        const catalogAddress = catalogAddressQuery.value.unwrap();
+        if (!catalogAddress) {
+          throw 'Catalog address is undefined';
+        }
+
+        const catalog = new Catalog(catalogAddress.toString(), callerAddress, api);
         for (const partId of assetValue.partIds) {
-          const part = await contract.query['base::getPart'](partId);
+          const part = await catalog.query['getPart'](partId);
           const partValue = part.value.unwrap();
           if (partValue) {
             const partToAdd = {
