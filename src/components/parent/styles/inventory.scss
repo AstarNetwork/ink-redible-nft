@@ -42,7 +42,17 @@
   }
   :hover {
     .img--item {
-      opacity: 0.8;
+      opacity: 0.9;
+      transition: all 0.3s ease 0s;
+      border: 2px solid $astar-blue;
+      box-shadow: 0px 0px 6px #1cb8d2;
+    }
+    .img--plus {
+      cursor: pointer;
+      opacity: 0.9;
+      transition: all 0.3s ease 0s;
+      border: 2px solid $astar-blue;
+      box-shadow: 0px 0px 6px #1cb8d2;
     }
   }
 }
@@ -101,4 +111,33 @@
   @media (min-width: $md) {
     margin-top: 100px;
   }
+}
+
+.img--plus {
+  height: 100px;
+  width: 100px;
+  border-radius: 8px;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 133, 255, 0.2) 0%,
+    rgba(8, 16, 41, 0.2) 68.23%,
+    rgba(0, 133, 255, 0.2) 98%
+  );
+
+  transition: all 0.3s ease 0s;
+  border: 2px solid transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.text--plus {
+  font-size: 600;
+  font-size: 24px;
+}
+
+.text--add {
+  font-size: 600;
+  font-size: 14px;
 }

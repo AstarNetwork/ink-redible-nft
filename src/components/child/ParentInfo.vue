@@ -186,8 +186,6 @@ export default defineComponent({
       return false;
     });
 
-    console.log(props.isChildAccepted, equippedParentNft.value);
-
     const handleUnequip = async (): Promise<void> => {
       const part = parts.value.find(
         (it) =>

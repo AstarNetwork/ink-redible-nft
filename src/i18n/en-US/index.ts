@@ -110,6 +110,7 @@ export default {
   parentPage: {
     modals: {
       acceptChild: 'Bond Child NFT',
+      addChildren: 'Add Children NFT',
     },
   },
   mint: {
