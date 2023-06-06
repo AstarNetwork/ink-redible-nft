@@ -1,7 +1,13 @@
 <template>
   <div class="wrapper--mint">
     <div class="container--mint">
-      <img v-if="imageUrl" class="collection--image" :src="imageUrl" />
+      <img
+        v-if="imageUrl"
+        class="collection--image"
+        :src="imageUrl"
+        @load="setNotBusy()"
+        @error="setNotBusy()"
+      />
       <div class="description--mint">
         <div class="description--wrapper">
           <div class="row--name">
@@ -27,6 +33,7 @@ import { DryRunResult } from 'src/v2/services';
 import { useAccount, useNetworkInfo } from 'src/hooks';
 import MintButton from './MintButton.vue';
 import { NftCollection, getCollection } from './collections';
+import { BusyMessage, IEventAggregator } from 'src/v2/messaging';
 
 export default defineComponent({
   components: {
@@ -73,10 +80,17 @@ export default defineComponent({
       );
     };
 
+    const setNotBusy = () => {
+      const aggregator = container.get<IEventAggregator>(Symbols.EventAggregator);
+      aggregator.publish(new BusyMessage(false));
+    };
+
     watch(
       [collectionName, account.currentAccount, currentNetworkIdx],
       async () => {
         try {
+          const aggregator = container.get<IEventAggregator>(Symbols.EventAggregator);
+          aggregator.publish(new BusyMessage(true));
           collectionInfo.value = getCollection(collectionName.value, currentNetworkIdx.value);
           if (!collectionInfo.value) {
             router.push({ name: '404' });
@@ -118,7 +132,16 @@ export default defineComponent({
       { immediate: true }
     );
 
-    return { contractAddress, canMint, dryRunOutcome, mint, title, description, imageUrl };
+    return {
+      contractAddress,
+      canMint,
+      dryRunOutcome,
+      mint,
+      title,
+      description,
+      imageUrl,
+      setNotBusy,
+    };
   },
 });
 </script>
