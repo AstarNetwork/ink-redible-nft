@@ -117,11 +117,11 @@ export class RmrkNftRepository extends SmartContractRepository implements IRmrkN
     return [
       {
         contractAddress: 'W31sRs7oHgzYTLa2xoVR8yU6dXC3GnUBBMQo2HoCY4Fneyq',
-        tokenId: 3,
+        tokenId: 4,
       },
       {
         contractAddress: 'bLnHkdnmesecS8rJ9gW7tXcWGijcZtii5Vg1nj1rZytBsbb',
-        tokenId: 4,
+        tokenId: 5,
       },
     ];
 

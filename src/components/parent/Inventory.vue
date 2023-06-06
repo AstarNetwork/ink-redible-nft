@@ -149,6 +149,7 @@ export default defineComponent({
       await addChild(props.contractAddress, props.tokenId, childContractAddress, childTokenId);
       setShowModalAddChildren(false);
       await fetchToken(true);
+      await setAcceptableEquipments();
     };
 
     watchEffect(setAcceptableEquipments);
