@@ -8,6 +8,7 @@ import { Symbols } from 'src/v2/symbols';
 import { ChildInfo } from 'src/v2/models';
 import { IRmrkNftService } from 'src/v2/services';
 import { PartType } from 'src/modules/nft/types/types-returns/catalog_contract';
+import { Part as LocalPart } from 'src/v2/models';
 
 export const useToken = (contractAddress: string, tokenId: string) => {
   const account = useAccount();
@@ -23,6 +24,12 @@ export const useToken = (contractAddress: string, tokenId: string) => {
     return (unequippedSlots && unequippedSlots.length > 0) ?? false;
   });
   const isLoading = ref<boolean>(false);
+  const emptySlots = computed<LocalPart[]>(
+    () =>
+      token?.value?.assets[0].parts.filter(
+        (x) => x.partType === PartType.slot && x.partUri === ''
+      ) ?? []
+  );
 
   const fetchToken = async (forceFetch = false): Promise<void> => {
     isLoading.value = true;
@@ -145,6 +152,7 @@ export const useToken = (contractAddress: string, tokenId: string) => {
     token,
     isLoading,
     hasUnequippedSlots,
+    emptySlots,
     fetchToken,
     fetchChildren,
     getChildren,

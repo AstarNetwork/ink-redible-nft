@@ -47,6 +47,8 @@
       v-if="showModalAddChildren"
       :set-is-open="setShowModalAddChildren"
       :show="showModalAddChildren"
+      :parent-contract-address="contractAddress"
+      :parent-token-id="tokenId"
     />
   </div>
 </template>

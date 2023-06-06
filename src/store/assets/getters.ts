@@ -1,4 +1,3 @@
-import { ParentInventory } from 'src/modules/nft';
 import { Metadata } from 'src/v2/models';
 import { ContractInventory } from 'src/v2/repositories';
 import { GetterTree } from 'vuex';
