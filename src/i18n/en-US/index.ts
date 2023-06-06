@@ -112,4 +112,11 @@ export default {
       acceptChild: 'Bond Child NFT',
     },
   },
+  mint: {
+    mint: 'Mint',
+    storageDeposit: 'Storage deposit',
+    storageDepositInfo:
+      '* Storage deposit is charged for each call and depends on call length. This is to prevent bloating a chain with unnecessary calls and database entries.',
+    gasFee: 'Gas fee',
+  },
 };

@@ -1,5 +1,6 @@
 import { ApiPromise } from '@polkadot/api';
 import { Abi, ContractPromise } from '@polkadot/api-contract';
+import { ContractCallOutcome } from '@polkadot/api-contract/types';
 import { ApiBase } from '@polkadot/api/base';
 import { SubmittableExtrinsic } from '@polkadot/api/types';
 import { DispatchError, WeightV2 } from '@polkadot/types/interfaces';
@@ -43,7 +44,55 @@ export class SmartContractRepository {
     const extrinsic = contract.tx[call](
       {
         gasLimit: this.increaseGasLimit(contract.api, txResult.gasRequired),
+        storageDepositLimit: txResult.storageDeposit.asCharge,
+      },
+      ...params
+    );
+
+    return extrinsic;
+  }
+
+  protected async dryRun(
+    contract: ContractPromise,
+    senderAddress: string,
+    call: string,
+    value: bigint,
+    ...params: unknown[]
+  ): Promise<ContractCallOutcome> {
+    const gasLimit = this.getGasLimit(contract.api);
+    const txResult = await contract.query[call](
+      senderAddress,
+      {
+        gasLimit,
         storageDepositLimit: null,
+        value,
+      },
+      ...params
+    );
+
+    if (txResult.result.isErr || txResult.result.toString().includes('Revert')) {
+      throw this.getErrorMessage(txResult.result.value as DispatchError);
+    } else if (txResult.result.toString().includes('Revert')) {
+      throw txResult.result.value;
+    }
+
+    return txResult;
+  }
+
+  protected async getContractCall2(
+    contract: ContractPromise,
+    senderAddress: string,
+    call: string,
+    value: bigint,
+    ...params: unknown[]
+  ): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> {
+    const txResult = await this.dryRun(contract, senderAddress, call, value, ...params);
+
+    const extrinsic = contract.tx[call](
+      {
+        gasLimit: txResult.gasRequired, // this.increaseGasLimit(contract.api, txResult.gasRequired), // TODO increasing might be not needed
+        storageDepositLimit: txResult.storageDeposit.asCharge,
+        value,
       },
       ...params
     );
