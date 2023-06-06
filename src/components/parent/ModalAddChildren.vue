@@ -6,7 +6,10 @@
     :close-modal="closeModal"
   >
     <div class="wrapper">
-      <div>{{ $t('parentPage.modals.addChildrenDescription') }}</div>
+      <div v-if="equippableTokens.length === 0">
+        {{ $t('parentPage.modals.noChildrenToAdd') }}
+      </div>
+      <div v-else>{{ $t('parentPage.modals.addChildrenDescription') }}</div>
       <div v-for="(item, key) in equippableTokens" :key="key" class="wrapper--nft">
         <img :src="item.assets[0].assetUri" :alt="item.metadata?.name" class="img--nft" />
         <div class="info">
@@ -14,7 +17,12 @@
             {{ getCollectionMetadata(item.contractAddress)?.name }}
           </div>
           <div class="name">{{ item.metadata?.name }}</div>
-          <astar-button :width="200" :height="48" class="button-action right">
+          <astar-button
+            :width="200"
+            :height="48"
+            class="button-action right"
+            @click="addChild(item.contractAddress, item.id)"
+          >
             <div class="icon--button">
               <icon-bond />
             </div>
@@ -57,8 +65,12 @@ export default defineComponent({
       type: Number,
       required: true,
     },
+    addChild: {
+      type: Function,
+      required: true,
+    },
   },
-  setup(props, { emit }) {
+  setup(props) {
     const store = useStore();
     const isClosingModal = ref<boolean>(false);
     const equippableTokens = ref<OwnedToken[]>([]);
@@ -117,6 +129,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@use 'src/css/quasar.variables.scss';
 @use 'src/components/child/styles/action-buttons.scss';
 
 .wrapper {
@@ -139,6 +152,7 @@ export default defineComponent({
   width: 120px;
   height: 120px;
   border-radius: 16px;
+  background: $img-background;
 }
 
 .info {

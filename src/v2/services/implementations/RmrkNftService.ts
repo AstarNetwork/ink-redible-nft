@@ -167,4 +167,37 @@ export class RmrkNftService implements IRmrkNftService {
       this.eventAggregator.publish(new ExtrinsicStatusMessage(false, e.toString()));
     }
   }
+
+  public async addChild(
+    contractAddress: string,
+    tokenId: number,
+    childContractAddress: string,
+    childTokenId: number,
+    senderAddress: string
+  ): Promise<void> {
+    Guard.ThrowIfUndefined('contractAddress', contractAddress);
+    Guard.ThrowIfUndefined('tokenId', tokenId);
+    Guard.ThrowIfUndefined('childContractAddress', childContractAddress);
+    Guard.ThrowIfUndefined('childTokenId', childTokenId);
+    Guard.ThrowIfUndefined('senderAddress', senderAddress);
+
+    try {
+      const transaction = await this.rmrkNftRepository.getAddChildCallData(
+        contractAddress,
+        tokenId,
+        childContractAddress,
+        childTokenId,
+        senderAddress
+      );
+      await this.wallet.signAndSend(
+        transaction,
+        senderAddress,
+        'The child NFT is successfully added to parent.'
+      );
+    } catch (error) {
+      const e = error as Error;
+      console.error(error);
+      this.eventAggregator.publish(new ExtrinsicStatusMessage(false, e.toString()));
+    }
+  }
 }

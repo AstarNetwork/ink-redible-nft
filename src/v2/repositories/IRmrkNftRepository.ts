@@ -45,6 +45,14 @@ export interface IRmrkNftRepository {
     senderAddress: string
   ): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>>;
 
+  getAddChildCallData(
+    contractAddress: string,
+    tokenId: number,
+    childContractAddress: string,
+    childTokenId: number,
+    senderAddress: string
+  ): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>>;
+
   getInventory(ownerAddress: string, networkIdx: ASTAR_NETWORK_IDX): Promise<ContractInventory[]>;
 
   getCollectionMetadata(

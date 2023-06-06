@@ -49,6 +49,7 @@
       :show="showModalAddChildren"
       :parent-contract-address="contractAddress"
       :parent-token-id="tokenId"
+      :add-child="addChildToParent"
     />
   </div>
 </template>
@@ -95,7 +96,10 @@ export default defineComponent({
     const route = useRoute();
     const parentId = route.query.parentId?.toString() ?? '';
     const isLoadingInventory = ref<boolean>(false);
-    const { hasUnequippedSlots } = useToken(props.contractAddress, props.tokenId.toString());
+    const { hasUnequippedSlots, addChild, fetchToken } = useToken(
+      props.contractAddress,
+      props.tokenId.toString()
+    );
 
     const { width, screenSize } = useBreakpoints();
     const gearHeight = computed<string>(() => (width.value > screenSize.md ? '100px' : '48px'));
@@ -138,6 +142,15 @@ export default defineComponent({
       );
     };
 
+    const addChildToParent = async (
+      childContractAddress: string,
+      childTokenId: number
+    ): Promise<void> => {
+      await addChild(props.contractAddress, props.tokenId, childContractAddress, childTokenId);
+      setShowModalAddChildren(false);
+      await fetchToken(true);
+    };
+
     watchEffect(setAcceptableEquipments);
 
     return {
@@ -157,6 +170,7 @@ export default defineComponent({
       checkIsEquipped,
       setAcceptableEquipments,
       setShowModalAddChildren,
+      addChildToParent,
     };
   },
 });

@@ -15,7 +15,9 @@ export interface DryRunResult {
 
 export interface IRmrkNftService {
   equip(param: EquipCallParam): Promise<void>;
+
   unequip(param: UnequipCallParam): Promise<void>;
+
   acceptChild(
     contractAddress: string,
     tokenId: number,
@@ -23,7 +25,9 @@ export interface IRmrkNftService {
     childTokenId: number,
     senderAddress: string
   ): Promise<void>;
+
   getInventory(ownerAddress: string, networkIdx: ASTAR_NETWORK_IDX): Promise<ContractInventory[]>;
+
   mintDryRun(
     contractAddress: string,
     senderAddress: string,
@@ -31,4 +35,12 @@ export interface IRmrkNftService {
   ): Promise<DryRunResult | undefined>;
 
   mint(contractAddress: string, senderAddress: string, price: bigint): Promise<void>;
+
+  addChild(
+    contractAddress: string,
+    tokenId: number,
+    childContractAddress: string,
+    childTokenId: number,
+    senderAddress: string
+  ): Promise<void>;
 }

@@ -138,6 +138,22 @@ export const useToken = (contractAddress: string, tokenId: string) => {
     );
   };
 
+  const addChild = async (
+    parentContractAddress: string,
+    parentTokenId: number,
+    childContractAddress: string,
+    childTokenId: number
+  ): Promise<void> => {
+    const rmrkNftService = container.get<IRmrkNftService>(Symbols.RmrkNftService);
+    await rmrkNftService.addChild(
+      parentContractAddress,
+      parentTokenId,
+      childContractAddress,
+      childTokenId,
+      account.currentAccount.value
+    );
+  };
+
   watch(
     [account.currentAccount],
     () => {
@@ -159,5 +175,6 @@ export const useToken = (contractAddress: string, tokenId: string) => {
     equip,
     unequip,
     acceptChild,
+    addChild,
   };
 };

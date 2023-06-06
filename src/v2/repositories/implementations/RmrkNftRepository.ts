@@ -88,6 +88,25 @@ export class RmrkNftRepository extends SmartContractRepository implements IRmrkN
     return transaction;
   }
 
+  public async getAddChildCallData(
+    contractAddress: string,
+    tokenId: number,
+    childContractAddress: string,
+    childTokenId: number,
+    senderAddress: string
+  ): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> {
+    const api = await this.api.getApi();
+    const transaction = await this.getContractCall(
+      contractAddress,
+      'nesting::addChild',
+      senderAddress,
+      { u64: tokenId },
+      [childContractAddress, { u64: childTokenId }]
+    );
+
+    return transaction;
+  }
+
   public async getInventory(
     ownerAddress: string,
     networkIdx: ASTAR_NETWORK_IDX
@@ -98,11 +117,11 @@ export class RmrkNftRepository extends SmartContractRepository implements IRmrkN
     return [
       {
         contractAddress: 'W31sRs7oHgzYTLa2xoVR8yU6dXC3GnUBBMQo2HoCY4Fneyq',
-        tokenId: 1,
+        tokenId: 3,
       },
       {
         contractAddress: 'bLnHkdnmesecS8rJ9gW7tXcWGijcZtii5Vg1nj1rZytBsbb',
-        tokenId: 3,
+        tokenId: 4,
       },
     ];
 

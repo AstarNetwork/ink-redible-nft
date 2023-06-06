@@ -114,6 +114,8 @@ export default {
       addChildren: 'Add to the inventory',
       addChildrenDescription:
         'This NFTs are equippable with this parents NFT once it is accepted to the inventory.',
+      noChildrenToAdd:
+        "You don't have any NFTs that can be added to the parent. Mint some tokens first, but please be sure that minted token can be added to this parent.",
     },
   },
   mint: {
