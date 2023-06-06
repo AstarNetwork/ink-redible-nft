@@ -137,8 +137,10 @@ export default defineComponent({
   flex-direction: column;
   align-items: center;
   padding-bottom: 36px;
+  margin: 24px;
   @media (min-width: $md) {
     padding-bottom: 0px;
+    margin: 0px;
   }
 }
 
@@ -146,6 +148,10 @@ export default defineComponent({
   width: 100%;
   display: flex;
   margin: 16px 0px;
+
+  margin: 16px 0px;
+  border-bottom: 1px solid #9da3ae;
+  padding-bottom: 24px;
 }
 
 .img--nft {

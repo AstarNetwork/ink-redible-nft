@@ -111,19 +111,31 @@ export class RmrkNftRepository extends SmartContractRepository implements IRmrkN
     ownerAddress: string,
     networkIdx: ASTAR_NETWORK_IDX
   ): Promise<ContractInventory[]> {
-    // return await queryParentInventories(ownerAddress, networkIdx);
+    return await queryParentInventories(ownerAddress, networkIdx);
 
     // for local test only
-    return [
-      {
-        contractAddress: 'W31sRs7oHgzYTLa2xoVR8yU6dXC3GnUBBMQo2HoCY4Fneyq',
-        tokenId: 4,
-      },
-      {
-        contractAddress: 'bLnHkdnmesecS8rJ9gW7tXcWGijcZtii5Vg1nj1rZytBsbb',
-        tokenId: 5,
-      },
-    ];
+    // return [
+    //   {
+    //     contractAddress: 'W31sRs7oHgzYTLa2xoVR8yU6dXC3GnUBBMQo2HoCY4Fneyq',
+    //     tokenId: 5,
+    //   },
+    //   {
+    //     contractAddress: 'bLnHkdnmesecS8rJ9gW7tXcWGijcZtii5Vg1nj1rZytBsbb',
+    //     tokenId: 6,
+    //   },
+    //   {
+    //     contractAddress: 'bLnHkdnmesecS8rJ9gW7tXcWGijcZtii5Vg1nj1rZytBsbb',
+    //     tokenId: 7,
+    //   },
+    //   {
+    //     contractAddress: 'bLnHkdnmesecS8rJ9gW7tXcWGijcZtii5Vg1nj1rZytBsbb',
+    //     tokenId: 8,
+    //   },
+    //   {
+    //     contractAddress: 'bLnHkdnmesecS8rJ9gW7tXcWGijcZtii5Vg1nj1rZytBsbb',
+    //     tokenId: 9,
+    //   },
+    // ];
 
     // return Array.from({ length: 100 }, (_, index) => index + 1).map((x) => {
     //   return {
