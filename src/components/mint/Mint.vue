@@ -86,6 +86,10 @@ export default defineComponent({
           if (!isValidAddressPolkadotAddress(contractAddress.value)) {
             router.push({ name: '404' });
           } else {
+            if (!contractAddress.value || !account.currentAccount.value) {
+              return;
+            }
+
             dryRunOutcome.value = await rmrkService.mintDryRun(
               contractAddress.value,
               account.currentAccount.value,
@@ -102,12 +106,13 @@ export default defineComponent({
     watch(
       [result, error],
       () => {
-        console.log('error', error.value);
-        console.log('result', result.value);
-        if (result.value?.posts?.length > 0) {
-          title.value = result.value.posts[0].title;
-          description.value = result.value.posts[0].body;
-          imageUrl.value = `https://ipfs.subsocial.network/ipfs/${result.value.posts[0].image}`;
+        const post = result.value?.posts?.find((p: any) =>
+          p.canonical.includes(contractAddress.value)
+        );
+        if (post) {
+          title.value = post.title;
+          description.value = post.body;
+          imageUrl.value = `https://ipfs.subsocial.network/ipfs/${post.image}`;
         }
       },
       { immediate: true }
