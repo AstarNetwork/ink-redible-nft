@@ -5,6 +5,7 @@ import { inject, injectable } from 'inversify';
 import { sanitizeIpfsUrl } from 'src/modules/nft/ipfs';
 import Contract from 'src/modules/nft/types/contracts/rmrk_example_equippable_lazy';
 import Catalog from 'src/modules/nft/types/contracts/catalog_contract';
+import Proxy from 'src/modules/nft/types/contracts/rmrk_proxy';
 import { IdBuilder } from 'src/modules/nft/types/types-arguments/rmrk_example_equippable_lazy';
 import { PartType } from 'src/modules/nft/types/types-returns/catalog_contract';
 import { IApi } from 'src/v2/integration';
@@ -272,6 +273,14 @@ export class RmrkNftRepository extends SmartContractRepository implements IRmrkN
     }
 
     return result;
+  }
+
+  public async getMintPrice(contractAddress: string, callerAddress: string): Promise<bigint> {
+    const api = await this.api.getApi();
+    const contract = new Proxy(contractAddress, callerAddress, api);
+    const mintPrice = await contract.query.mintPrice();
+
+    return BigInt(mintPrice.value.unwrap().toHuman());
   }
 
   private async getMetadata(

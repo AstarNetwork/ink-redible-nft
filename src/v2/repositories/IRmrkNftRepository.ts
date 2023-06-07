@@ -77,4 +77,6 @@ export interface IRmrkNftRepository {
     callerAddress: string,
     tokenId: number
   ): Promise<ChildInfo[]>;
+
+  getMintPrice(contractAddress: string, callerAddress: string): Promise<bigint>;
 }

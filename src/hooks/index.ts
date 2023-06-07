@@ -11,3 +11,4 @@ export * from './useNetworkInfo';
 export * from './useAppRouter';
 export * from './wallet/useWalletIcon';
 export * from './useToken';
+export * from './useCollectionInfo';
