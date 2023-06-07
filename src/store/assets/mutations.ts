@@ -6,6 +6,7 @@ export interface AssetsMutations<S = State> {
   setParentInventories(state: S, payload: ParentInventory[]): void;
   setInventory(state: S, payload: ContractInventory[]): void;
   appendInventory(state: S, payload: ContractInventory[]): void;
+  updateInventory(state: S, payload: ContractInventory): void;
   setCollection(state: S, payload: Contract): void;
   setToken(state: S, payload: OwnedToken): void;
 }
@@ -19,6 +20,14 @@ const mutations: MutationTree<State> & AssetsMutations = {
   },
   appendInventory(state: State, payload: ContractInventory[]) {
     state.inventory = [...state.inventory, ...payload];
+  },
+  updateInventory(state: State, payload: ContractInventory) {
+    state.inventory = [
+      ...state.inventory.filter(
+        (x) => x.contractAddress !== payload.contractAddress || x.tokenId !== payload.tokenId
+      ),
+      payload,
+    ];
   },
   setCollection(state: State, payload: Contract) {
     state.collections = [

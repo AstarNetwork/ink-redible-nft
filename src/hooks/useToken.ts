@@ -16,6 +16,7 @@ export const useToken = (contractAddress: string, tokenId: string) => {
   const token = computed<OwnedToken | undefined>(() =>
     store.getters['assets/getToken'](contractAddress, tokenId)
   );
+  const inventory = computed<ContractInventory[]>(() => store.getters['assets/getInventory']);
   const hasUnequippedSlots = computed<boolean>(() => {
     // Not supporting multi asset tokens for now
     const unequippedSlots = token.value?.assets[0].parts.filter(
@@ -64,9 +65,11 @@ export const useToken = (contractAddress: string, tokenId: string) => {
         );
       }
 
-      if (childInventory.length > 0) {
-        store.commit('assets/appendInventory', childInventory);
-      }
+      // Update inventory since childInventory items holds a parent information. Items loaded from indexer doesn't have this information.
+      childInventory.forEach((child) => {
+        store.commit('assets/updateInventory', child);
+      });
+
       isLoading.value = false;
     }
   };

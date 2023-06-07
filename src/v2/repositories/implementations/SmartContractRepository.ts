@@ -44,7 +44,9 @@ export class SmartContractRepository {
     const extrinsic = contract.tx[call](
       {
         gasLimit: this.increaseGasLimit(contract.api, txResult.gasRequired),
-        storageDepositLimit: txResult.storageDeposit.asCharge,
+        storageDepositLimit: txResult.storageDeposit.isCharge
+          ? txResult.storageDeposit.asCharge
+          : 0,
       },
       ...params
     );
@@ -79,6 +81,7 @@ export class SmartContractRepository {
     return txResult;
   }
 
+  // TODO refactor, very similar to getContractCall
   protected async getContractCall2(
     contract: ContractPromise,
     senderAddress: string,
@@ -91,7 +94,9 @@ export class SmartContractRepository {
     const extrinsic = contract.tx[call](
       {
         gasLimit: txResult.gasRequired, // this.increaseGasLimit(contract.api, txResult.gasRequired), // TODO increasing might be not needed
-        storageDepositLimit: txResult.storageDeposit.asCharge,
+        storageDepositLimit: txResult.storageDeposit.isCharge
+          ? txResult.storageDeposit.asCharge
+          : 0,
         value,
       },
       ...params
