@@ -1,7 +1,13 @@
 <template>
   <div class="wrapper--mint">
     <div class="container--mint">
-      <img v-if="imageUrl" class="collection--image" :src="imageUrl" />
+      <img
+        v-if="imageUrl"
+        class="collection--image"
+        :src="imageUrl"
+        @load="setNotBusy()"
+        @error="setNotBusy()"
+      />
       <div class="description--mint">
         <div class="description--wrapper">
           <div class="row--name">
@@ -27,6 +33,7 @@ import { DryRunResult } from 'src/v2/services';
 import { useAccount, useNetworkInfo } from 'src/hooks';
 import MintButton from './MintButton.vue';
 import { NftCollection, getCollection } from './collections';
+import { BusyMessage, IEventAggregator } from 'src/v2/messaging';
 
 export default defineComponent({
   components: {
@@ -73,10 +80,17 @@ export default defineComponent({
       );
     };
 
+    const setNotBusy = () => {
+      const aggregator = container.get<IEventAggregator>(Symbols.EventAggregator);
+      aggregator.publish(new BusyMessage(false));
+    };
+
     watch(
       [collectionName, account.currentAccount, currentNetworkIdx],
       async () => {
         try {
+          const aggregator = container.get<IEventAggregator>(Symbols.EventAggregator);
+          aggregator.publish(new BusyMessage(true));
           collectionInfo.value = getCollection(collectionName.value, currentNetworkIdx.value);
           if (!collectionInfo.value) {
             router.push({ name: '404' });
@@ -86,6 +100,10 @@ export default defineComponent({
           if (!isValidAddressPolkadotAddress(contractAddress.value)) {
             router.push({ name: '404' });
           } else {
+            if (!contractAddress.value || !account.currentAccount.value) {
+              return;
+            }
+
             dryRunOutcome.value = await rmrkService.mintDryRun(
               contractAddress.value,
               account.currentAccount.value,
@@ -102,18 +120,28 @@ export default defineComponent({
     watch(
       [result, error],
       () => {
-        console.log('error', error.value);
-        console.log('result', result.value);
-        if (result.value?.posts?.length > 0) {
-          title.value = result.value.posts[0].title;
-          description.value = result.value.posts[0].body;
-          imageUrl.value = `https://ipfs.subsocial.network/ipfs/${result.value.posts[0].image}`;
+        const post = result.value?.posts?.find((p: any) =>
+          p.canonical.includes(contractAddress.value)
+        );
+        if (post) {
+          title.value = post.title;
+          description.value = post.body;
+          imageUrl.value = `https://ipfs.subsocial.network/ipfs/${post.image}`;
         }
       },
       { immediate: true }
     );
 
-    return { contractAddress, canMint, dryRunOutcome, mint, title, description, imageUrl };
+    return {
+      contractAddress,
+      canMint,
+      dryRunOutcome,
+      mint,
+      title,
+      description,
+      imageUrl,
+      setNotBusy,
+    };
   },
 });
 </script>
