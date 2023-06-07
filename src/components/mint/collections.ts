@@ -21,6 +21,24 @@ const collections: NftCollection[] = [
     networkIdx: endpointKey.SHIBUYA,
     mintPrice: BigInt(1000000000000000000),
   },
+  {
+    name: 'StrMouths',
+    contractAddress: 'aL4gBi1W7HEDD1DUHTaGC418EbasXtsPNuhNnAoCvEAKRAs',
+    networkIdx: endpointKey.SHIBUYA,
+    mintPrice: BigInt(1000000000000000000),
+  },
+  {
+    name: 'StrCaps',
+    contractAddress: 'XnNHN2FijKJWA75cqMJy6brVoW8kBPqDDg47sVT5nbTZjN8',
+    networkIdx: endpointKey.SHIBUYA,
+    mintPrice: BigInt(1000000000000000000),
+  },
+  {
+    name: 'StrFarts',
+    contractAddress: 'Y6BsFuMW3TAnjhq1dcCziu6tGrN733yBLhyiGDWocyAnKvC',
+    networkIdx: endpointKey.SHIBUYA,
+    mintPrice: BigInt(1000000000000000000),
+  },
 ];
 
 export const getCollection = (
