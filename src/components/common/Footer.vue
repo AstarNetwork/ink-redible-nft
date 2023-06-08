@@ -18,6 +18,9 @@
           </astar-icon-base>
         </a>
       </div>
+      <a :href="socialUrl.landing" target="_blank" rel="noreferrer">
+        <img src="../../assets/img/footer-logo.svg" alt="footer-logo" class="img--footer" />
+      </a>
     </div>
   </div>
 </template>
@@ -26,7 +29,6 @@ import { socialUrl } from 'src/links';
 import { Path } from 'src/router';
 import { computed, defineComponent } from 'vue';
 import { useRoute } from 'vue-router';
-
 export default defineComponent({
   setup() {
     const route = useRoute();
@@ -34,7 +36,6 @@ export default defineComponent({
       const paths = route.path.split('/');
       return `/${paths[paths.length - 1]}` === Path.Assets;
     });
-
     return { socialUrl, isAssetsPage };
   },
 });

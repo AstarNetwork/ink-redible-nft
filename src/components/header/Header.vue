@@ -151,11 +151,9 @@ export default defineComponent({
 }
 
 .app-logo {
-  width: 144px;
-  height: 28px;
+  height: 18px;
   @media (min-width: $md) {
-    width: 204px;
-    height: 40px;
+    height: 20px;
   }
 }
 
