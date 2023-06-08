@@ -43,4 +43,12 @@ export interface IRmrkNftService {
     childTokenId: number,
     senderAddress: string
   ): Promise<void>;
+
+  approve(
+    contractAddress: string,
+    callerAddress: string,
+    operatorContractAddress: string,
+    tokenId: number,
+    approved: boolean
+  ): Promise<void>;
 }

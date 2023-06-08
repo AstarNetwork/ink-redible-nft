@@ -22,6 +22,7 @@ export default {
   unequip: 'Unequip',
   bond: 'Bond',
   addToInventory: 'Add to inventory',
+  approve: 'Approve',
   bondDescription:
     'This NFT has not yet been added to the parent NFT\'s inventory. By "Accepting" the NFT to the parent, it will be added to the parent inventory and you will be able to "equip" the child. Please note that it is still under development that the UI is not able to remove the NFT from the inventory at this moment.',
   remove: 'Remove',

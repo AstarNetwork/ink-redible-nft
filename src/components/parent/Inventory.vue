@@ -50,6 +50,7 @@
       :parent-contract-address="contractAddress"
       :parent-token-id="tokenId"
       :add-child="addChildToParent"
+      :approve-parent="approve"
     />
   </div>
 </template>
@@ -96,7 +97,7 @@ export default defineComponent({
     const route = useRoute();
     const parentId = route.query.parentId?.toString() ?? '';
     const isLoadingInventory = ref<boolean>(false);
-    const { hasUnequippedSlots, addChild, fetchToken } = useToken(
+    const { hasUnequippedSlots, addChild, fetchToken, approveParent } = useToken(
       props.contractAddress,
       props.tokenId.toString()
     );
@@ -152,6 +153,10 @@ export default defineComponent({
       await setAcceptableEquipments();
     };
 
+    const approve = async (childContractAddress: string, childTokenId: string): Promise<void> => {
+      await approveParent(props.contractAddress, childContractAddress, parseInt(childTokenId));
+    };
+
     watchEffect(setAcceptableEquipments);
 
     return {
@@ -172,6 +177,7 @@ export default defineComponent({
       setAcceptableEquipments,
       setShowModalAddChildren,
       addChildToParent,
+      approve,
     };
   },
 });
