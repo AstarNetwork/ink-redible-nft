@@ -7,7 +7,7 @@ export interface NftCollection {
   mintPrice: bigint;
 }
 
-// List of collections supported by Astar NFT.
+// List of collections supported by ink!redible NFT.
 const collections: NftCollection[] = [
   {
     name: 'StrBods',
