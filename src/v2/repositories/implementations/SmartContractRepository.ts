@@ -35,7 +35,7 @@ export class SmartContractRepository {
       ...params
     );
 
-    if (txResult.result.isErr || txResult.result.toString().includes('Revert')) {
+    if (txResult.result.isErr) {
       throw this.getErrorMessage(txResult.result.value as DispatchError);
     } else if (txResult.result.toString().includes('Revert')) {
       throw txResult.result.value;

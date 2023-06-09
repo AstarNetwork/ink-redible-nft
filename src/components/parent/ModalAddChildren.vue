@@ -17,17 +17,29 @@
             {{ getCollectionMetadata(item.contractAddress)?.name }}
           </div>
           <div class="name">{{ item.metadata?.name }}</div>
-          <astar-button
-            :width="200"
-            :height="48"
-            class="button-action right"
-            @click="addChild(item.contractAddress, item.id)"
-          >
-            <div class="icon--button">
-              <icon-bond />
-            </div>
-            <span class="text--button">{{ $t('addToInventory') }}</span>
-          </astar-button>
+          <div class="wrapper--buttons">
+            <astar-button
+              v-if="!allowances[key]"
+              :width="100"
+              :height="48"
+              class="button-action"
+              @click="approve(item.contractAddress, item.id)"
+            >
+              <span class="text--button">{{ $t('approve') }}</span>
+            </astar-button>
+            <astar-button
+              :disabled="!allowances[key]"
+              :width="200"
+              :height="48"
+              class="button-action right"
+              @click="addChild(item.contractAddress, item.id)"
+            >
+              <div class="icon--button">
+                <icon-bond />
+              </div>
+              <span class="text--button">{{ $t('addToInventory') }}</span>
+            </astar-button>
+          </div>
         </div>
       </div>
     </div>
@@ -38,13 +50,16 @@
 import { truncate, wait } from '@astar-network/astar-sdk-core';
 import { fadeDuration } from '@astar-network/astar-ui';
 import ModalWrapper from 'src/components/common/ModalWrapper.vue';
-import { useToken } from 'src/hooks';
+import { useAccount, useToken } from 'src/hooks';
 import { useStore } from 'src/store';
 import { OwnedToken } from 'src/store/assets/state';
 import { ContractInventory } from 'src/v2/repositories';
 import { defineComponent, ref, watch, computed } from 'vue';
 import { Metadata } from 'src/v2/models';
 import IconBond from './IconBond.vue';
+import { container } from 'src/v2/common';
+import { Symbols } from 'src/v2/symbols';
+import { RmrkNftRepository } from 'src/v2/repositories/implementations';
 
 export default defineComponent({
   components: { ModalWrapper, IconBond },
@@ -69,11 +84,17 @@ export default defineComponent({
       type: Function,
       required: true,
     },
+    approveParent: {
+      type: Function,
+      required: true,
+    },
   },
   setup(props) {
     const store = useStore();
+    const { currentAccount } = useAccount();
     const isClosingModal = ref<boolean>(false);
     const equippableTokens = ref<OwnedToken[]>([]);
+    const allowances = ref<boolean[]>([]);
     const { emptySlots } = useToken(props.parentContractAddress, props.parentTokenId.toString());
 
     const inventory = computed<ContractInventory[]>(() => store.getters['assets/getInventory']);
@@ -105,13 +126,35 @@ export default defineComponent({
       return tokens;
     };
 
+    const getAllowances = async (tokens: OwnedToken[]): Promise<boolean[]> => {
+      const rmrkRepository = container.get<RmrkNftRepository>(Symbols.RmrkNftRepository);
+      const promises = tokens.map((token) => {
+        return rmrkRepository.getAllowance(
+          token.contractAddress,
+          currentAccount.value,
+          props.parentContractAddress,
+          parseInt(token.id)
+        );
+      });
+      const allowances = await Promise.all(promises);
+
+      return allowances;
+    };
+
     const getCollectionMetadata = (contractAddress: string): Metadata | undefined =>
       store.getters['assets/getCollectionMetadata'](contractAddress);
 
+    const approve = async (childContractAddress: string, childTokenId: string): Promise<void> => {
+      await props.approveParent(childContractAddress, parseInt(childTokenId));
+      allowances.value = await getAllowances(equippableTokens.value);
+    };
+
     watch(
       emptySlots,
-      () => {
+      async () => {
         equippableTokens.value = findPossibleChildTokens();
+        allowances.value = await getAllowances(equippableTokens.value);
+        console.log(allowances.value);
       },
       { immediate: true }
     );
@@ -121,6 +164,8 @@ export default defineComponent({
       truncate,
       closeModal,
       getCollectionMetadata,
+      approve,
+      allowances,
       isClosingModal,
       equippableTokens,
     };
@@ -186,5 +231,9 @@ export default defineComponent({
 
 .right {
   margin-left: auto;
+}
+
+.wrapper--buttons {
+  display: flex;
 }
 </style>

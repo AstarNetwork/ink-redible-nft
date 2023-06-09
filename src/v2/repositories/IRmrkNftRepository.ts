@@ -79,4 +79,19 @@ export interface IRmrkNftRepository {
   ): Promise<ChildInfo[]>;
 
   getMintPrice(contractAddress: string, callerAddress: string): Promise<bigint>;
+
+  getAllowance(
+    contractAddress: string,
+    callerAddress: string,
+    operatorContractAddress: string,
+    tokenId: number
+  ): Promise<boolean>;
+
+  getApproveCall(
+    contractAddress: string,
+    callerAddress: string,
+    operatorContractAddress: string,
+    tokenId: number,
+    approved: boolean
+  ): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>>;
 }

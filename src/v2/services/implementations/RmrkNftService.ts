@@ -200,4 +200,36 @@ export class RmrkNftService implements IRmrkNftService {
       this.eventAggregator.publish(new ExtrinsicStatusMessage(false, e.toString()));
     }
   }
+
+  public async approve(
+    contractAddress: string,
+    callerAddress: string,
+    operatorContractAddress: string,
+    tokenId: number,
+    approved: boolean
+  ): Promise<void> {
+    Guard.ThrowIfUndefined('contractAddress', contractAddress);
+    Guard.ThrowIfUndefined('operatorContractAddress', operatorContractAddress);
+    Guard.ThrowIfUndefined('tokenId', tokenId);
+    Guard.ThrowIfUndefined('callerAddress', callerAddress);
+
+    try {
+      const transaction = await this.rmrkNftRepository.getApproveCall(
+        contractAddress,
+        callerAddress,
+        operatorContractAddress,
+        tokenId,
+        approved
+      );
+      await this.wallet.signAndSend(
+        transaction,
+        callerAddress,
+        'The parent contract is successfully approved as child token operator.'
+      );
+    } catch (error) {
+      const e = error as Error;
+      console.error(error);
+      this.eventAggregator.publish(new ExtrinsicStatusMessage(false, e.toString()));
+    }
+  }
 }

@@ -283,6 +283,41 @@ export class RmrkNftRepository extends SmartContractRepository implements IRmrkN
     return BigInt(mintPrice.value.unwrap().toHuman());
   }
 
+  public async getAllowance(
+    contractAddress: string,
+    callerAddress: string,
+    operatorContractAddress: string,
+    tokenId: number
+  ): Promise<boolean> {
+    const api = await this.api.getApi();
+    const contract = new Contract(contractAddress, callerAddress, api);
+
+    const id = { u64: tokenId };
+    const result = await contract.query.allowance(callerAddress, operatorContractAddress, id);
+
+    return result.value.ok ?? false;
+  }
+
+  public async getApproveCall(
+    contractAddress: string,
+    callerAddress: string,
+    operatorContractAddress: string,
+    tokenId: number,
+    approved: boolean
+  ): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> {
+    const api = await this.api.getApi();
+    const transaction = await this.getContractCall(
+      contractAddress,
+      'psp34::approve',
+      callerAddress,
+      operatorContractAddress,
+      { u64: tokenId },
+      approved
+    );
+
+    return transaction;
+  }
+
   private async getMetadata(
     contractAddress: string,
     callerAddress: string,
