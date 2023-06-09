@@ -22,12 +22,18 @@ const mutations: MutationTree<State> & AssetsMutations = {
     state.inventory = [...state.inventory, ...payload];
   },
   updateInventory(state: State, payload: ContractInventory) {
-    state.inventory = [
-      ...state.inventory.filter(
-        (x) => x.contractAddress !== payload.contractAddress || x.tokenId !== payload.tokenId
-      ),
-      payload,
-    ];
+    // state.inventory = [
+    //   ...state.inventory.filter(
+    //     (x) => x.contractAddress !== payload.contractAddress || x.tokenId !== payload.tokenId
+    //   ),
+    //   payload,
+    // ];
+    const toUpdate = state.inventory.find(
+      (x) => x.contractAddress === payload.contractAddress && x.tokenId === payload.tokenId
+    );
+    if (toUpdate) {
+      toUpdate.parent = payload.parent;
+    }
   },
   setCollection(state: State, payload: Contract) {
     state.collections = [

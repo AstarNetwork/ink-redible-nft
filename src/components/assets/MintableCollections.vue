@@ -27,8 +27,9 @@ export default defineComponent({
     };
 
     watch([result, error], () => {
-      console.log(result.value);
-      console.log(error.value);
+      if (error.value) {
+        console.log(error.value);
+      }
     });
 
     return { result, goToMint };

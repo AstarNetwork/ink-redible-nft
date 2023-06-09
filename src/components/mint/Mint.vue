@@ -95,23 +95,19 @@ export default defineComponent({
       }
     );
 
-    watch(
-      [result, error],
-      () => {
-        const post = result.value?.posts?.find(
-          (p: any) => p.title.toLowerCase() === collectionName.value.toLowerCase()
-        );
-        if (post) {
-          title.value = post.title;
-          description.value = post.body;
-          imageUrl.value = `https://ipfs.subsocial.network/ipfs/${post.image}`;
-          contractAddress.value = post.canonical.split('/').pop();
-        } else {
-          router.push({ name: '404' });
-        }
-      },
-      { immediate: true }
-    );
+    watch([result, error], () => {
+      const post = result.value?.posts?.find(
+        (p: any) => p.title.toLowerCase() === collectionName.value.toLowerCase()
+      );
+      if (post) {
+        title.value = post.title;
+        description.value = post.body;
+        imageUrl.value = `https://ipfs.subsocial.network/ipfs/${post.image}`;
+        contractAddress.value = post.canonical.split('/').pop();
+      } else {
+        router.push({ name: '404' });
+      }
+    });
 
     return {
       contractAddress,
