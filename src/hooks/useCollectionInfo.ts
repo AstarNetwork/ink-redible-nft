@@ -81,7 +81,6 @@ export const useCollectionInfo = () => {
   watch(
     currentNetworkName,
     () => {
-      console.log(currentNetworkName.value);
       if (currentNetworkName.value !== '') {
         const query = `
           query CommentsByContract {
