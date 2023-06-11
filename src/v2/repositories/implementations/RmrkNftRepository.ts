@@ -20,6 +20,7 @@ import { EquipCallParam } from './../IRmrkNftRepository';
 import { SmartContractRepository } from './SmartContractRepository';
 import { ASTAR_NETWORK_IDX } from 'src/config/chain';
 import { queryParentInventories } from 'src/modules/nft';
+import { EventRecord } from '@polkadot/types/interfaces';
 
 @injectable()
 export class RmrkNftRepository extends SmartContractRepository implements IRmrkNftRepository {
@@ -316,6 +317,14 @@ export class RmrkNftRepository extends SmartContractRepository implements IRmrkN
     );
 
     return transaction;
+  }
+
+  public async decodeEventData(eventData: EventRecord, contractAddress: string): Promise<string> {
+    const api = await this.api.getApi();
+    const contract = this.getProxyContract(api, contractAddress);
+    const event = contract.abi.decodeEvent(eventData.event.data.toU8a());
+    console.log(eventData.event.data.toHuman());
+    return JSON.stringify(event);
   }
 
   private async getMetadata(

@@ -5,13 +5,14 @@ import { InjectedExtension } from '@polkadot/extension-inject/types';
 import { web3Enable, web3Accounts } from '@polkadot/extension-dapp';
 import { inject, injectable } from 'inversify';
 import { ethers } from 'ethers';
-import { IWalletService, IGasPriceProvider } from 'src/v2/services';
+import { IWalletService, IGasPriceProvider, ExtrinsicResult } from 'src/v2/services';
 import { Account } from 'src/v2/models';
 import { IMetadataRepository } from 'src/v2/repositories';
 import { BusyMessage, ExtrinsicStatusMessage, IEventAggregator } from 'src/v2/messaging';
 import { WalletService } from './WalletService';
 import { Guard, wait } from 'src/v2/common';
 import { Symbols } from 'src/v2/symbols';
+import { EventRecord } from '@polkadot/types/interfaces';
 
 @injectable()
 export class PolkadotWalletService extends WalletService implements IWalletService {
@@ -39,13 +40,14 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
     successMessage?: string,
     transactionTip?: number,
     finalizedCallback?: (result?: ISubmittableResult) => void
-  ): Promise<string | null> {
+  ): Promise<string | ExtrinsicResult | null> {
     Guard.ThrowIfUndefined('extrinsic', extrinsic);
     Guard.ThrowIfUndefined('senderAddress', senderAddress);
 
     let result: string | null = null;
+    let events: EventRecord[] = [];
     try {
-      return new Promise<string>(async (resolve) => {
+      return new Promise<ExtrinsicResult>(async (resolve) => {
         !isMobileDevice && this.detectExtensionsAction(true);
         await this.checkExtension();
         let tip = transactionTip?.toString();
@@ -67,6 +69,7 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
             try {
               !isMobileDevice && this.detectExtensionsAction(false);
               if (result.isCompleted) {
+                events = result.events;
                 if (!this.isExtrinsicFailed(result.events)) {
                   this.eventAggregator.publish(
                     new ExtrinsicStatusMessage(
@@ -82,8 +85,9 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
                 if (finalizedCallback) {
                   finalizedCallback(result);
                 }
-                resolve(extrinsic.hash.toHex());
+
                 unsub();
+                resolve({ hash: extrinsic.hash.toHex().toString(), events: result.events });
               } else {
                 if (isMobileDevice && !result.isCompleted) {
                   this.eventAggregator.publish(new BusyMessage(true));

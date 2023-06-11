@@ -6,6 +6,7 @@ import { SubmittableExtrinsic } from '@polkadot/api/types';
 import { DispatchError, WeightV2 } from '@polkadot/types/interfaces';
 import { ISubmittableResult } from '@polkadot/types/types';
 import { rmrkAbi } from 'src/modules/nft/abi/rmrk'; // TODO this should be injected.
+import proxyAbi from 'src/modules/nft/contracts/rmrk_proxy.json';
 import { IApi } from 'src/v2/integration';
 
 /**
@@ -105,16 +106,19 @@ export class SmartContractRepository {
     return extrinsic;
   }
 
-  private getRmrkContract = (api: ApiPromise, contractAddress: string): ContractPromise => {
+  protected getRmrkContract = (api: ApiPromise, contractAddress: string): ContractPromise => {
     const abi = new Abi(rmrkAbi, api.registry.getChainProperties());
     const contract = new ContractPromise(api, abi, contractAddress);
     if (!contract || contract === null) new Error('There is no contract found');
 
-    // const initialGasLimit = contract.registry.createType(
-    //   'WeightV2',
-    //   api.consts.system.blockWeights['maxBlock']
-    // );
-    // return { contract, initialGasLimit };
+    return contract;
+  };
+
+  protected getProxyContract = (api: ApiPromise, contractAddress: string): ContractPromise => {
+    const abi = new Abi(proxyAbi, api.registry.getChainProperties());
+    const contract = new ContractPromise(api, abi, contractAddress);
+    if (!contract || contract === null) new Error('There is no contract found');
+
     return contract;
   };
 
