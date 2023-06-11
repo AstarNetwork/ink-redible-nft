@@ -50,6 +50,7 @@ import {
   IEventAggregator,
   NewBlockMessage,
   NewEraMessage,
+  TokenMintedMessage,
 } from 'src/v2/messaging';
 import { setCurrentWallet } from 'src/v2/app.container';
 import { container } from 'src/v2/common';
@@ -106,6 +107,28 @@ export default defineComponent({
       store.commit('dapps/setCurrentEra', message.era, { root: true });
     });
 
+    const getInventory = async (): Promise<void> => {
+      if (!currentAccount.value) return;
+      await store.dispatch('assets/getInventory', {
+        address: currentAccount.value,
+        networkIdx: currentNetworkIdx.value,
+      });
+    };
+
+    eventAggregator.subscribe(TokenMintedMessage.name, async (m) => {
+      // Give some time for indexer to update.
+      // TODO - get minted token Id and manually put it to inventory
+      const inventorySize = inventory.value.length;
+      const interval = setInterval(() => {
+        if (inventory.value.length > inventorySize) {
+          clearInterval(interval);
+          return;
+        }
+
+        getInventory();
+      }, 7000);
+    });
+
     // Handle wallet change so we can inject proper wallet
     watch([isEthWallet, currentWallet], () => {
       setCurrentWallet(isEthWallet.value, currentWallet.value);
@@ -114,11 +137,7 @@ export default defineComponent({
     watch(
       [currentAccount, currentNetworkIdx],
       async () => {
-        if (!currentAccount.value) return;
-        await store.dispatch('assets/getInventory', {
-          address: currentAccount.value,
-          networkIdx: currentNetworkIdx.value,
-        });
+        getInventory();
       },
       { immediate: true }
     );

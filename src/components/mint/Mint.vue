@@ -30,7 +30,7 @@ import { Symbols } from 'src/v2/symbols';
 import { DryRunResult } from 'src/v2/services';
 import { useAccount, useNetworkInfo } from 'src/hooks';
 import MintButton from './MintButton.vue';
-import { BusyMessage, IEventAggregator } from 'src/v2/messaging';
+import { BusyMessage, IEventAggregator, TokenMintedMessage } from 'src/v2/messaging';
 import { useCollectionInfo } from 'src/hooks/useCollectionInfo';
 import { IRmrkNftRepository } from 'src/v2/repositories';
 
@@ -57,7 +57,14 @@ export default defineComponent({
 
     const { result, error } = useCollectionInfo();
     const mint = async () => {
-      rmrkService.mint(contractAddress.value, account.currentAccount.value!, mintPrice.value);
+      await rmrkService.mint(contractAddress.value, account.currentAccount.value!, mintPrice.value);
+      const aggregator = container.get<IEventAggregator>(Symbols.EventAggregator);
+      aggregator.publish(new TokenMintedMessage());
+
+      // Redirect to assets page
+      setTimeout(() => {
+        router.push({ name: 'Assets' });
+      }, 2000);
     };
 
     const setNotBusy = () => {

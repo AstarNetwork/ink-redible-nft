@@ -19,7 +19,7 @@
           <div class="name">{{ item.metadata?.name }}</div>
           <div class="wrapper--buttons">
             <astar-button
-              v-if="!allowances[key]"
+              v-if="!allowances[key] && allowances.length > 0"
               :width="100"
               :height="48"
               class="button-action"

@@ -24,7 +24,7 @@
           :is-accepted="item.isAccepted"
           :set-children="setAcceptableEquipments"
         />
-        <div v-if="hasUnequippedSlots" class="box--nft-img">
+        <div class="box--nft-img">
           <div class="img--plus" @click="setShowModalAddChildren(true)">
             <span class="text--plus">+</span>
             <span class="text--add">{{ $t('add') }}</span>
