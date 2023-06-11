@@ -14,9 +14,9 @@
 
 </div>
 
-# Astar NFT
+# ink!redible NFT
 
-Astar NFT showcases the first RMRK NFT smart contracts using ink!.
+ink!redible NFT showcases the first RMRK NFT smart contracts using ink!.
 
 ## Usage
 
