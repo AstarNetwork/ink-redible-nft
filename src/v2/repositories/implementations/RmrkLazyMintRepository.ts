@@ -7,7 +7,7 @@ import { SubmittableExtrinsic } from '@polkadot/api/types';
 import { ISubmittableResult } from '@polkadot/types/types';
 import { ApiPromise } from '@polkadot/api';
 import { Abi, ContractPromise } from '@polkadot/api-contract';
-import rmrkProxyAbi from 'src/modules/nft/rmrk-lazy-mint-proxy/rmrk_proxy.json';
+import rmrkProxyAbi from 'src/modules/nft/contracts/rmrk_proxy.json';
 import { ContractCallOutcome } from '@polkadot/api-contract/types';
 
 @injectable()

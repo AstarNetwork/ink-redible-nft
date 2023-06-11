@@ -7,6 +7,8 @@ import { container } from 'src/v2/common';
 import { Symbols } from 'src/v2/symbols';
 import { ChildInfo } from 'src/v2/models';
 import { IRmrkNftService } from 'src/v2/services';
+import { PartType } from 'src/modules/nft/types/types-returns/catalog_contract';
+import { Part as LocalPart } from 'src/v2/models';
 
 export const useToken = (contractAddress: string, tokenId: string) => {
   const account = useAccount();
@@ -14,7 +16,20 @@ export const useToken = (contractAddress: string, tokenId: string) => {
   const token = computed<OwnedToken | undefined>(() =>
     store.getters['assets/getToken'](contractAddress, tokenId)
   );
+  const hasUnequippedSlots = computed<boolean>(() => {
+    // Not supporting multi asset tokens for now
+    const unequippedSlots = token.value?.assets[0].parts.filter(
+      (x) => x.partType === PartType.slot && !x.children
+    );
+    return (unequippedSlots && unequippedSlots.length > 0) ?? false;
+  });
   const isLoading = ref<boolean>(false);
+  const emptySlots = computed<LocalPart[]>(
+    () =>
+      token?.value?.assets[0].parts.filter(
+        (x) => x.partType === PartType.slot && x.partUri === ''
+      ) ?? []
+  );
 
   const fetchToken = async (forceFetch = false): Promise<void> => {
     isLoading.value = true;
@@ -123,6 +138,37 @@ export const useToken = (contractAddress: string, tokenId: string) => {
     );
   };
 
+  const addChild = async (
+    parentContractAddress: string,
+    parentTokenId: number,
+    childContractAddress: string,
+    childTokenId: number
+  ): Promise<void> => {
+    const rmrkNftService = container.get<IRmrkNftService>(Symbols.RmrkNftService);
+    await rmrkNftService.addChild(
+      parentContractAddress,
+      parentTokenId,
+      childContractAddress,
+      childTokenId,
+      account.currentAccount.value
+    );
+  };
+
+  const approveParent = async (
+    parentContractAddress: string,
+    childContractAddress: string,
+    childTokenId: number
+  ): Promise<void> => {
+    const rmrkNftService = container.get<IRmrkNftService>(Symbols.RmrkNftService);
+    await rmrkNftService.approve(
+      childContractAddress,
+      account.currentAccount.value,
+      parentContractAddress,
+      childTokenId,
+      true
+    );
+  };
+
   watch(
     [account.currentAccount],
     () => {
@@ -136,11 +182,15 @@ export const useToken = (contractAddress: string, tokenId: string) => {
   return {
     token,
     isLoading,
+    hasUnequippedSlots,
+    emptySlots,
     fetchToken,
     fetchChildren,
     getChildren,
     equip,
     unequip,
     acceptChild,
+    addChild,
+    approveParent,
   };
 };

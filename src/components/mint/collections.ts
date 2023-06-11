@@ -7,7 +7,7 @@ export interface NftCollection {
   mintPrice: bigint;
 }
 
-// List of collections supported by Astar NFT.
+// List of collections supported by ink!redible NFT.
 const collections: NftCollection[] = [
   {
     name: 'StrBods',
@@ -18,6 +18,24 @@ const collections: NftCollection[] = [
   {
     name: 'StrEyes',
     contractAddress: 'Z7wghe3ydHU6C5A2t4HBSq13Cph7h254e2Kuhb5s7LZ1jCy',
+    networkIdx: endpointKey.SHIBUYA,
+    mintPrice: BigInt(1000000000000000000),
+  },
+  {
+    name: 'StrMouths',
+    contractAddress: 'aL4gBi1W7HEDD1DUHTaGC418EbasXtsPNuhNnAoCvEAKRAs',
+    networkIdx: endpointKey.SHIBUYA,
+    mintPrice: BigInt(1000000000000000000),
+  },
+  {
+    name: 'StrCaps',
+    contractAddress: 'XnNHN2FijKJWA75cqMJy6brVoW8kBPqDDg47sVT5nbTZjN8',
+    networkIdx: endpointKey.SHIBUYA,
+    mintPrice: BigInt(1000000000000000000),
+  },
+  {
+    name: 'StrFarts',
+    contractAddress: 'Y6BsFuMW3TAnjhq1dcCziu6tGrN733yBLhyiGDWocyAnKvC',
     networkIdx: endpointKey.SHIBUYA,
     mintPrice: BigInt(1000000000000000000),
   },

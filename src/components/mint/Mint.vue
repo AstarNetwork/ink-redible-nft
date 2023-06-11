@@ -59,7 +59,7 @@ export default defineComponent({
       query CommentsByContract {
         posts(
           where: {
-            canonical_contains: "${contractAddress.value}"
+            title_containsInsensitive: "${collectionName.value}"
             rootPost: { space: { id_eq: "11453" } }
           }
         ) {
@@ -68,6 +68,7 @@ export default defineComponent({
           title
           canonical
           body
+          tagsOriginal
         }
       }
     `);

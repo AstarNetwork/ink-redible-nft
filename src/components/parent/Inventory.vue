@@ -24,6 +24,12 @@
           :is-accepted="item.isAccepted"
           :set-children="setAcceptableEquipments"
         />
+        <div v-if="hasUnequippedSlots" class="box--nft-img">
+          <div class="img--plus" @click="setShowModalAddChildren(true)">
+            <span class="text--plus">+</span>
+            <span class="text--add">{{ $t('add') }}</span>
+          </div>
+        </div>
       </div>
     </div>
     <div v-else class="wrapper--items">
@@ -37,17 +43,27 @@
         :set-children="setAcceptableEquipments"
       />
     </div>
+    <modal-add-children
+      v-if="showModalAddChildren"
+      :set-is-open="setShowModalAddChildren"
+      :show="showModalAddChildren"
+      :parent-contract-address="contractAddress"
+      :parent-token-id="tokenId"
+      :add-child="addChildToParent"
+      :approve-parent="approve"
+    />
   </div>
 </template>
 <script lang="ts">
 import { getShortenAddress } from '@astar-network/astar-sdk-core';
 import ModeTabs from 'src/components/common/ModeTabs.vue';
-import { useBreakpoints } from 'src/hooks';
+import { useBreakpoints, useToken } from 'src/hooks';
 import { networkParam, Path } from 'src/router/routes';
 import { ChildInfo, TokenAsset, Part } from 'src/v2/models';
 import { computed, defineComponent, PropType, ref, watchEffect } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import InventoryItem from './InventoryItem.vue';
+import ModalAddChildren from './ModalAddChildren.vue';
 
 enum InventoryTab {
   inventory = 'Inventory',
@@ -55,7 +71,7 @@ enum InventoryTab {
 }
 
 export default defineComponent({
-  components: { ModeTabs, InventoryItem },
+  components: { ModeTabs, InventoryItem, ModalAddChildren },
   props: {
     asset: {
       type: Object as PropType<TokenAsset>,
@@ -81,9 +97,18 @@ export default defineComponent({
     const route = useRoute();
     const parentId = route.query.parentId?.toString() ?? '';
     const isLoadingInventory = ref<boolean>(false);
+    const { hasUnequippedSlots, addChild, fetchToken, approveParent } = useToken(
+      props.contractAddress,
+      props.tokenId.toString()
+    );
 
     const { width, screenSize } = useBreakpoints();
     const gearHeight = computed<string>(() => (width.value > screenSize.md ? '100px' : '48px'));
+
+    const showModalAddChildren = ref<boolean>(false);
+    const setShowModalAddChildren = (isOpen: boolean): void => {
+      showModalAddChildren.value = isOpen;
+    };
 
     const setAcceptableEquipments = async (): Promise<void> => {
       isLoadingInventory.value = true;
@@ -118,6 +143,20 @@ export default defineComponent({
       );
     };
 
+    const addChildToParent = async (
+      childContractAddress: string,
+      childTokenId: number
+    ): Promise<void> => {
+      await addChild(props.contractAddress, props.tokenId, childContractAddress, childTokenId);
+      setShowModalAddChildren(false);
+      await fetchToken(true);
+      await setAcceptableEquipments();
+    };
+
+    const approve = async (childContractAddress: string, childTokenId: string): Promise<void> => {
+      await approveParent(props.contractAddress, childContractAddress, parseInt(childTokenId));
+    };
+
     watchEffect(setAcceptableEquipments);
 
     return {
@@ -127,6 +166,8 @@ export default defineComponent({
       acceptableEquipments,
       isLoadingInventory,
       gearHeight,
+      hasUnequippedSlots,
+      showModalAddChildren,
       setSelectedTab,
       getShortenAddress,
       isSlot,
@@ -134,6 +175,9 @@ export default defineComponent({
       navigateToChildPage,
       checkIsEquipped,
       setAcceptableEquipments,
+      setShowModalAddChildren,
+      addChildToParent,
+      approve,
     };
   },
 });

@@ -21,6 +21,8 @@ export default {
   equip: 'Equip',
   unequip: 'Unequip',
   bond: 'Bond',
+  addToInventory: 'Add to inventory',
+  approve: 'Approve',
   bondDescription:
     'This NFT has not yet been added to the parent NFT\'s inventory. By "Accepting" the NFT to the parent, it will be added to the parent inventory and you will be able to "equip" the child. Please note that it is still under development that the UI is not able to remove the NFT from the inventory at this moment.',
   remove: 'Remove',
@@ -110,6 +112,11 @@ export default {
   parentPage: {
     modals: {
       acceptChild: 'Bond Child NFT',
+      addChildren: 'Add to the inventory',
+      addChildrenDescription:
+        'This NFTs are equippable with this parents NFT once it is accepted to the inventory.',
+      noChildrenToAdd:
+        "You don't have any NFTs that can be added to the parent. Mint some tokens first, but please be sure that minted token can be added to this parent.",
     },
   },
   mint: {

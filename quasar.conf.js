@@ -154,9 +154,9 @@ module.exports = configure(function (ctx) {
       },
 
       manifest: {
-        name: 'Astar NFT',
-        short_name: 'Astar NFT',
-        description: 'Astar NFT showcases the first RMRK NFT smart contracts using ink!.',
+        name: 'ink!redible NFT',
+        short_name: 'ink!redible NFT',
+        description: 'ink!redible NFT showcases the first RMRK NFT smart contracts using ink!.',
         display: 'standalone',
         orientation: 'portrait',
         background_color: '#ffffff',

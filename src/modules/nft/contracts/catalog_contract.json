@@ -1,0 +1,1394 @@
+{
+  "source": {
+    "hash": "0x09f04febeac6714a82e427bec1003c4caa8348466d15d64b8c55483b64b62060",
+    "language": "ink! 4.1.0",
+    "compiler": "rustc 1.68.0-nightly",
+    "build_info": {
+      "build_mode": "Release",
+      "cargo_contract_version": "2.0.1",
+      "rust_toolchain": "nightly-aarch64-apple-darwin",
+      "wasm_opt_settings": {
+        "keep_debug_symbols": false,
+        "optimization_passes": "Z"
+      }
+    }
+  },
+  "contract": {
+    "name": "catalog_example",
+    "version": "0.6.0",
+    "authors": [
+      "Stake Technologies <devops@stake.co.jp>"
+    ]
+  },
+  "spec": {
+    "constructors": [
+      {
+        "args": [
+          {
+            "label": "catalog_metadata",
+            "type": {
+              "displayName": [
+                "String"
+              ],
+              "type": 7
+            }
+          }
+        ],
+        "docs": [
+          "Instantiate new CatalogContract contract"
+        ],
+        "label": "new",
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink_primitives",
+            "ConstructorResult"
+          ],
+          "type": 9
+        },
+        "selector": "0x9bae9d5e"
+      }
+    ],
+    "docs": [],
+    "events": [],
+    "lang_error": {
+      "displayName": [
+        "ink",
+        "LangError"
+      ],
+      "type": 10
+    },
+    "messages": [
+      {
+        "args": [
+          {
+            "label": "part_id",
+            "type": {
+              "displayName": [
+                "catalog_external",
+                "AddEquippableAddressesInput1"
+              ],
+              "type": 0
+            }
+          },
+          {
+            "label": "equippable_address",
+            "type": {
+              "displayName": [
+                "catalog_external",
+                "AddEquippableAddressesInput2"
+              ],
+              "type": 4
+            }
+          }
+        ],
+        "docs": [
+          " Add collection address(es) that can be used to equip given `PartId`."
+        ],
+        "label": "Catalog::add_equippable_addresses",
+        "mutates": true,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 11
+        },
+        "selector": "0xf380a403"
+      },
+      {
+        "args": [
+          {
+            "label": "part_id",
+            "type": {
+              "displayName": [
+                "catalog_external",
+                "GetPartInput1"
+              ],
+              "type": 0
+            }
+          }
+        ],
+        "docs": [
+          " Get the part details for the given PartId."
+        ],
+        "label": "Catalog::get_part",
+        "mutates": false,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 18
+        },
+        "selector": "0x7408e335"
+      },
+      {
+        "args": [
+          {
+            "label": "part_id",
+            "type": {
+              "displayName": [
+                "catalog_external",
+                "IsEquippableByAllInput1"
+              ],
+              "type": 0
+            }
+          }
+        ],
+        "docs": [
+          " Checks if the given `PartId` can be equipped by any collection"
+        ],
+        "label": "Catalog::is_equippable_by_all",
+        "mutates": false,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 22
+        },
+        "selector": "0x9beeaf35"
+      },
+      {
+        "args": [
+          {
+            "label": "part_id",
+            "type": {
+              "displayName": [
+                "catalog_external",
+                "ResetEquippableAddressesInput1"
+              ],
+              "type": 0
+            }
+          }
+        ],
+        "docs": [
+          " Remove list of equippable addresses for given Part"
+        ],
+        "label": "Catalog::reset_equippable_addresses",
+        "mutates": true,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 11
+        },
+        "selector": "0x62391c2e"
+      },
+      {
+        "args": [
+          {
+            "label": "parts",
+            "type": {
+              "displayName": [
+                "catalog_external",
+                "AddPartListInput1"
+              ],
+              "type": 23
+            }
+          }
+        ],
+        "docs": [
+          " Add one or more parts to the Catalog"
+        ],
+        "label": "Catalog::add_part_list",
+        "mutates": true,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 11
+        },
+        "selector": "0x6355605f"
+      },
+      {
+        "args": [],
+        "docs": [
+          " Get the list of all parts."
+        ],
+        "label": "Catalog::get_parts_count",
+        "mutates": false,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 24
+        },
+        "selector": "0xfe859af7"
+      },
+      {
+        "args": [
+          {
+            "label": "part_id",
+            "type": {
+              "displayName": [
+                "catalog_external",
+                "EnsureEquippableInput1"
+              ],
+              "type": 0
+            }
+          },
+          {
+            "label": "target_address",
+            "type": {
+              "displayName": [
+                "catalog_external",
+                "EnsureEquippableInput2"
+              ],
+              "type": 5
+            }
+          }
+        ],
+        "docs": [
+          " Check whether the given address is allowed to equip the desired `PartId`."
+        ],
+        "label": "Catalog::ensure_equippable",
+        "mutates": false,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 11
+        },
+        "selector": "0xf3e167a9"
+      },
+      {
+        "args": [
+          {
+            "label": "part_id",
+            "type": {
+              "displayName": [
+                "catalog_external",
+                "SetEquippableByAllInput1"
+              ],
+              "type": 0
+            }
+          }
+        ],
+        "docs": [
+          " Sets the is_equippable_by_all flag to true, meaning that any collection may be equipped into the `PartId`"
+        ],
+        "label": "Catalog::set_equippable_by_all",
+        "mutates": true,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 11
+        },
+        "selector": "0xc7aba183"
+      },
+      {
+        "args": [],
+        "docs": [],
+        "label": "Catalog::get_catalog_metadata",
+        "mutates": false,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 25
+        },
+        "selector": "0x2e164f05"
+      },
+      {
+        "args": [
+          {
+            "label": "catalog_metadata",
+            "type": {
+              "displayName": [
+                "catalog_external",
+                "SetupCatalogInput1"
+              ],
+              "type": 7
+            }
+          }
+        ],
+        "docs": [],
+        "label": "Catalog::setup_catalog",
+        "mutates": true,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 11
+        },
+        "selector": "0xbd6fdb6f"
+      }
+    ]
+  },
+  "storage": {
+    "root": {
+      "layout": {
+        "struct": {
+          "fields": [
+            {
+              "layout": {
+                "struct": {
+                  "fields": [
+                    {
+                      "layout": {
+                        "root": {
+                          "layout": {
+                            "leaf": {
+                              "key": "0x6a2cd2b4",
+                              "ty": 0
+                            }
+                          },
+                          "root_key": "0x6a2cd2b4"
+                        }
+                      },
+                      "name": "admin_roles"
+                    },
+                    {
+                      "layout": {
+                        "struct": {
+                          "fields": [
+                            {
+                              "layout": {
+                                "root": {
+                                  "layout": {
+                                    "leaf": {
+                                      "key": "0x5d5db175",
+                                      "ty": 1
+                                    }
+                                  },
+                                  "root_key": "0x5d5db175"
+                                }
+                              },
+                              "name": "members"
+                            },
+                            {
+                              "layout": {
+                                "enum": {
+                                  "dispatchKey": "0x00000000",
+                                  "name": "Option",
+                                  "variants": {
+                                    "0": {
+                                      "fields": [],
+                                      "name": "None"
+                                    },
+                                    "1": {
+                                      "fields": [
+                                        {
+                                          "layout": {
+                                            "leaf": {
+                                              "key": "0x00000000",
+                                              "ty": 1
+                                            }
+                                          },
+                                          "name": "0"
+                                        }
+                                      ],
+                                      "name": "Some"
+                                    }
+                                  }
+                                }
+                              },
+                              "name": "_reserved"
+                            }
+                          ],
+                          "name": "Members"
+                        }
+                      },
+                      "name": "members"
+                    },
+                    {
+                      "layout": {
+                        "enum": {
+                          "dispatchKey": "0x00000000",
+                          "name": "Option",
+                          "variants": {
+                            "0": {
+                              "fields": [],
+                              "name": "None"
+                            },
+                            "1": {
+                              "fields": [
+                                {
+                                  "layout": {
+                                    "leaf": {
+                                      "key": "0x00000000",
+                                      "ty": 1
+                                    }
+                                  },
+                                  "name": "0"
+                                }
+                              ],
+                              "name": "Some"
+                            }
+                          }
+                        }
+                      },
+                      "name": "_reserved"
+                    }
+                  ],
+                  "name": "Data"
+                }
+              },
+              "name": "access"
+            },
+            {
+              "layout": {
+                "struct": {
+                  "fields": [
+                    {
+                      "layout": {
+                        "leaf": {
+                          "key": "0x00000000",
+                          "ty": 2
+                        }
+                      },
+                      "name": "part_ids"
+                    },
+                    {
+                      "layout": {
+                        "root": {
+                          "layout": {
+                            "struct": {
+                              "fields": [
+                                {
+                                  "layout": {
+                                    "enum": {
+                                      "dispatchKey": "0xf5630b46",
+                                      "name": "PartType",
+                                      "variants": {
+                                        "0": {
+                                          "fields": [],
+                                          "name": "None"
+                                        },
+                                        "1": {
+                                          "fields": [],
+                                          "name": "Slot"
+                                        },
+                                        "2": {
+                                          "fields": [],
+                                          "name": "Fixed"
+                                        }
+                                      }
+                                    }
+                                  },
+                                  "name": "part_type"
+                                },
+                                {
+                                  "layout": {
+                                    "leaf": {
+                                      "key": "0xf5630b46",
+                                      "ty": 3
+                                    }
+                                  },
+                                  "name": "z"
+                                },
+                                {
+                                  "layout": {
+                                    "leaf": {
+                                      "key": "0xf5630b46",
+                                      "ty": 4
+                                    }
+                                  },
+                                  "name": "equippable"
+                                },
+                                {
+                                  "layout": {
+                                    "leaf": {
+                                      "key": "0xf5630b46",
+                                      "ty": 7
+                                    }
+                                  },
+                                  "name": "part_uri"
+                                },
+                                {
+                                  "layout": {
+                                    "leaf": {
+                                      "key": "0xf5630b46",
+                                      "ty": 8
+                                    }
+                                  },
+                                  "name": "is_equippable_by_all"
+                                }
+                              ],
+                              "name": "Part"
+                            }
+                          },
+                          "root_key": "0xf5630b46"
+                        }
+                      },
+                      "name": "parts"
+                    },
+                    {
+                      "layout": {
+                        "leaf": {
+                          "key": "0x00000000",
+                          "ty": 0
+                        }
+                      },
+                      "name": "next_part_id"
+                    },
+                    {
+                      "layout": {
+                        "leaf": {
+                          "key": "0x00000000",
+                          "ty": 7
+                        }
+                      },
+                      "name": "catalog_metadata"
+                    }
+                  ],
+                  "name": "CatalogData"
+                }
+              },
+              "name": "catalog"
+            }
+          ],
+          "name": "CatalogContract"
+        }
+      },
+      "root_key": "0x00000000"
+    }
+  },
+  "types": [
+    {
+      "id": 0,
+      "type": {
+        "def": {
+          "primitive": "u32"
+        }
+      }
+    },
+    {
+      "id": 1,
+      "type": {
+        "def": {
+          "tuple": []
+        }
+      }
+    },
+    {
+      "id": 2,
+      "type": {
+        "def": {
+          "sequence": {
+            "type": 0
+          }
+        }
+      }
+    },
+    {
+      "id": 3,
+      "type": {
+        "def": {
+          "primitive": "u8"
+        }
+      }
+    },
+    {
+      "id": 4,
+      "type": {
+        "def": {
+          "sequence": {
+            "type": 5
+          }
+        }
+      }
+    },
+    {
+      "id": 5,
+      "type": {
+        "def": {
+          "composite": {
+            "fields": [
+              {
+                "type": 6,
+                "typeName": "[u8; 32]"
+              }
+            ]
+          }
+        },
+        "path": [
+          "ink_primitives",
+          "types",
+          "AccountId"
+        ]
+      }
+    },
+    {
+      "id": 6,
+      "type": {
+        "def": {
+          "array": {
+            "len": 32,
+            "type": 3
+          }
+        }
+      }
+    },
+    {
+      "id": 7,
+      "type": {
+        "def": {
+          "sequence": {
+            "type": 3
+          }
+        }
+      }
+    },
+    {
+      "id": 8,
+      "type": {
+        "def": {
+          "primitive": "bool"
+        }
+      }
+    },
+    {
+      "id": 9,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
+                    "type": 1
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 10
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 1
+          },
+          {
+            "name": "E",
+            "type": 10
+          }
+        ],
+        "path": [
+          "Result"
+        ]
+      }
+    },
+    {
+      "id": 10,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "index": 1,
+                "name": "CouldNotReadInput"
+              }
+            ]
+          }
+        },
+        "path": [
+          "ink_primitives",
+          "LangError"
+        ]
+      }
+    },
+    {
+      "id": 11,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
+                    "type": 12
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 10
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 12
+          },
+          {
+            "name": "E",
+            "type": 10
+          }
+        ],
+        "path": [
+          "Result"
+        ]
+      }
+    },
+    {
+      "id": 12,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
+                    "type": 1
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 13
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 1
+          },
+          {
+            "name": "E",
+            "type": 13
+          }
+        ],
+        "path": [
+          "Result"
+        ]
+      }
+    },
+    {
+      "id": 13,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
+                    "type": 14,
+                    "typeName": "RmrkError"
+                  }
+                ],
+                "index": 0,
+                "name": "Rmrk"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 15,
+                    "typeName": "PSP34Error"
+                  }
+                ],
+                "index": 1,
+                "name": "PSP34"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 16,
+                    "typeName": "AccessControlError"
+                  }
+                ],
+                "index": 2,
+                "name": "AccessControl"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 17,
+                    "typeName": "ReentrancyGuardError"
+                  }
+                ],
+                "index": 3,
+                "name": "Reentrancy"
+              }
+            ]
+          }
+        },
+        "path": [
+          "rmrk_common",
+          "errors",
+          "Error"
+        ]
+      }
+    },
+    {
+      "id": 14,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "index": 0,
+                "name": "AcceptedAssetsMissing"
+              },
+              {
+                "index": 1,
+                "name": "AddingPendingAsset"
+              },
+              {
+                "index": 2,
+                "name": "AddingPendingChild"
+              },
+              {
+                "index": 3,
+                "name": "AddressNotEquippable"
+              },
+              {
+                "index": 4,
+                "name": "AlreadyAddedAsset"
+              },
+              {
+                "index": 5,
+                "name": "AlreadyAddedChild"
+              },
+              {
+                "index": 6,
+                "name": "AssetHasNoParts"
+              },
+              {
+                "index": 7,
+                "name": "AssetIdAlreadyExists"
+              },
+              {
+                "index": 8,
+                "name": "AssetIdNotFound"
+              },
+              {
+                "index": 9,
+                "name": "AssetIdNotEquippable"
+              },
+              {
+                "index": 10,
+                "name": "BadConfig"
+              },
+              {
+                "index": 11,
+                "name": "BadMintValue"
+              },
+              {
+                "index": 12,
+                "name": "BadPriorityLength"
+              },
+              {
+                "index": 13,
+                "name": "CannotMintZeroTokens"
+              },
+              {
+                "index": 14,
+                "name": "CatalogNotFoundForAsset"
+              },
+              {
+                "index": 15,
+                "name": "ChildNotFound"
+              },
+              {
+                "index": 16,
+                "name": "UriNotFound"
+              },
+              {
+                "index": 17,
+                "name": "CollectionIsFull"
+              },
+              {
+                "index": 18,
+                "name": "InvalidAssetId"
+              },
+              {
+                "index": 19,
+                "name": "InvalidParentId"
+              },
+              {
+                "index": 20,
+                "name": "InvalidTokenId"
+              },
+              {
+                "index": 21,
+                "name": "NotEquipped"
+              },
+              {
+                "index": 22,
+                "name": "NotTokenOwner"
+              },
+              {
+                "index": 23,
+                "name": "PartIsNotSlot"
+              },
+              {
+                "index": 24,
+                "name": "SlotAlreayUsed"
+              },
+              {
+                "index": 25,
+                "name": "TargetAssetCannotReceiveSlot"
+              },
+              {
+                "index": 26,
+                "name": "UnknownEquippableAsset"
+              },
+              {
+                "index": 27,
+                "name": "UnknownPart"
+              },
+              {
+                "index": 28,
+                "name": "UnknownPartId"
+              },
+              {
+                "index": 29,
+                "name": "WithdrawalFailed"
+              }
+            ]
+          }
+        },
+        "path": [
+          "rmrk_common",
+          "errors",
+          "RmrkError"
+        ]
+      }
+    },
+    {
+      "id": 15,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
+                    "type": 7,
+                    "typeName": "String"
+                  }
+                ],
+                "index": 0,
+                "name": "Custom"
+              },
+              {
+                "index": 1,
+                "name": "SelfApprove"
+              },
+              {
+                "index": 2,
+                "name": "NotApproved"
+              },
+              {
+                "index": 3,
+                "name": "TokenExists"
+              },
+              {
+                "index": 4,
+                "name": "TokenNotExists"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 7,
+                    "typeName": "String"
+                  }
+                ],
+                "index": 5,
+                "name": "SafeTransferCheckFailed"
+              }
+            ]
+          }
+        },
+        "path": [
+          "openbrush_contracts",
+          "traits",
+          "errors",
+          "psp34",
+          "PSP34Error"
+        ]
+      }
+    },
+    {
+      "id": 16,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "index": 0,
+                "name": "InvalidCaller"
+              },
+              {
+                "index": 1,
+                "name": "MissingRole"
+              },
+              {
+                "index": 2,
+                "name": "RoleRedundant"
+              }
+            ]
+          }
+        },
+        "path": [
+          "openbrush_contracts",
+          "traits",
+          "errors",
+          "access_control",
+          "AccessControlError"
+        ]
+      }
+    },
+    {
+      "id": 17,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "index": 0,
+                "name": "ReentrantCall"
+              }
+            ]
+          }
+        },
+        "path": [
+          "openbrush_contracts",
+          "traits",
+          "errors",
+          "reentrancy_guard",
+          "ReentrancyGuardError"
+        ]
+      }
+    },
+    {
+      "id": 18,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
+                    "type": 19
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 10
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 19
+          },
+          {
+            "name": "E",
+            "type": 10
+          }
+        ],
+        "path": [
+          "Result"
+        ]
+      }
+    },
+    {
+      "id": 19,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "index": 0,
+                "name": "None"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 20
+                  }
+                ],
+                "index": 1,
+                "name": "Some"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 20
+          }
+        ],
+        "path": [
+          "Option"
+        ]
+      }
+    },
+    {
+      "id": 20,
+      "type": {
+        "def": {
+          "composite": {
+            "fields": [
+              {
+                "name": "part_type",
+                "type": 21,
+                "typeName": "PartType"
+              },
+              {
+                "name": "z",
+                "type": 3,
+                "typeName": "u8"
+              },
+              {
+                "name": "equippable",
+                "type": 4,
+                "typeName": "Vec<AccountId>"
+              },
+              {
+                "name": "part_uri",
+                "type": 7,
+                "typeName": "String"
+              },
+              {
+                "name": "is_equippable_by_all",
+                "type": 8,
+                "typeName": "bool"
+              }
+            ]
+          }
+        },
+        "path": [
+          "rmrk_common",
+          "types",
+          "Part"
+        ]
+      }
+    },
+    {
+      "id": 21,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "index": 0,
+                "name": "None"
+              },
+              {
+                "index": 1,
+                "name": "Slot"
+              },
+              {
+                "index": 2,
+                "name": "Fixed"
+              }
+            ]
+          }
+        },
+        "path": [
+          "rmrk_common",
+          "types",
+          "PartType"
+        ]
+      }
+    },
+    {
+      "id": 22,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
+                    "type": 8
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 10
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 8
+          },
+          {
+            "name": "E",
+            "type": 10
+          }
+        ],
+        "path": [
+          "Result"
+        ]
+      }
+    },
+    {
+      "id": 23,
+      "type": {
+        "def": {
+          "sequence": {
+            "type": 20
+          }
+        }
+      }
+    },
+    {
+      "id": 24,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
+                    "type": 0
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 10
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 0
+          },
+          {
+            "name": "E",
+            "type": 10
+          }
+        ],
+        "path": [
+          "Result"
+        ]
+      }
+    },
+    {
+      "id": 25,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
+                    "type": 26
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 10
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 26
+          },
+          {
+            "name": "E",
+            "type": 10
+          }
+        ],
+        "path": [
+          "Result"
+        ]
+      }
+    },
+    {
+      "id": 26,
+      "type": {
+        "def": {
+          "primitive": "str"
+        }
+      }
+    }
+  ],
+  "version": "4"
+}

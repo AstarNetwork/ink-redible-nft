@@ -3,9 +3,10 @@ import { ISubmittableResult } from '@polkadot/types/types';
 import axios from 'axios';
 import { inject, injectable } from 'inversify';
 import { sanitizeIpfsUrl } from 'src/modules/nft/ipfs';
-import Contract from 'src/modules/nft/rmrk-contract/types/contracts/rmrk_contract';
-import { IdBuilder } from 'src/modules/nft/rmrk-contract/types/types-arguments/rmrk_contract';
-import { PartType } from 'src/modules/nft/rmrk-contract/types/types-returns/rmrk_contract';
+import Contract from 'src/modules/nft/types/contracts/rmrk_example_equippable_lazy';
+import Catalog from 'src/modules/nft/types/contracts/catalog_contract';
+import { IdBuilder } from 'src/modules/nft/types/types-arguments/rmrk_example_equippable_lazy';
+import { PartType } from 'src/modules/nft/types/types-returns/catalog_contract';
 import { IApi } from 'src/v2/integration';
 import { ChildInfo, Metadata, Part, TokenAsset } from 'src/v2/models';
 import {
@@ -87,6 +88,25 @@ export class RmrkNftRepository extends SmartContractRepository implements IRmrkN
     return transaction;
   }
 
+  public async getAddChildCallData(
+    contractAddress: string,
+    tokenId: number,
+    childContractAddress: string,
+    childTokenId: number,
+    senderAddress: string
+  ): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> {
+    const api = await this.api.getApi();
+    const transaction = await this.getContractCall(
+      contractAddress,
+      'nesting::addChild',
+      senderAddress,
+      { u64: tokenId },
+      [childContractAddress, { u64: childTokenId }]
+    );
+
+    return transaction;
+  }
+
   public async getInventory(
     ownerAddress: string,
     networkIdx: ASTAR_NETWORK_IDX
@@ -96,10 +116,27 @@ export class RmrkNftRepository extends SmartContractRepository implements IRmrkN
     // for local test only
     // return [
     //   {
-    //     contractAddress: 'XyfkCVRSRTChUft42e8c6FD7RhTeAuPcq8sNZ8vb1PbycDB',
+    //     contractAddress: 'W31sRs7oHgzYTLa2xoVR8yU6dXC3GnUBBMQo2HoCY4Fneyq',
     //     tokenId: 5,
     //   },
+    //   {
+    //     contractAddress: 'bLnHkdnmesecS8rJ9gW7tXcWGijcZtii5Vg1nj1rZytBsbb',
+    //     tokenId: 6,
+    //   },
+    //   {
+    //     contractAddress: 'bLnHkdnmesecS8rJ9gW7tXcWGijcZtii5Vg1nj1rZytBsbb',
+    //     tokenId: 7,
+    //   },
+    //   {
+    //     contractAddress: 'bLnHkdnmesecS8rJ9gW7tXcWGijcZtii5Vg1nj1rZytBsbb',
+    //     tokenId: 8,
+    //   },
+    //   {
+    //     contractAddress: 'bLnHkdnmesecS8rJ9gW7tXcWGijcZtii5Vg1nj1rZytBsbb',
+    //     tokenId: 9,
+    //   },
     // ];
+
     // return Array.from({ length: 100 }, (_, index) => index + 1).map((x) => {
     //   return {
     //     contractAddress: 'YvXaB6p4wDH3LviBWHnqycaErdfKZxMvrxSb8U42hC7ZfB8',
@@ -185,8 +222,15 @@ export class RmrkNftRepository extends SmartContractRepository implements IRmrkN
         } as TokenAsset;
 
         const partsToAdd: Part[] = [];
+        const catalogAddressQuery = await contract.query.getAssetCatalogAddress(assetId);
+        const catalogAddress = catalogAddressQuery.value.unwrap();
+        if (!catalogAddress) {
+          throw 'Catalog address is undefined';
+        }
+
+        const catalog = new Catalog(catalogAddress.toString(), callerAddress, api);
         for (const partId of assetValue.partIds) {
-          const part = await contract.query['base::getPart'](partId);
+          const part = await catalog.query['getPart'](partId);
           const partValue = part.value.unwrap();
           if (partValue) {
             const partToAdd = {
@@ -228,6 +272,41 @@ export class RmrkNftRepository extends SmartContractRepository implements IRmrkN
     }
 
     return result;
+  }
+
+  public async getAllowance(
+    contractAddress: string,
+    callerAddress: string,
+    operatorContractAddress: string,
+    tokenId: number
+  ): Promise<boolean> {
+    const api = await this.api.getApi();
+    const contract = new Contract(contractAddress, callerAddress, api);
+
+    const id = { u64: tokenId };
+    const result = await contract.query.allowance(callerAddress, operatorContractAddress, id);
+
+    return result.value.ok ?? false;
+  }
+
+  public async getApproveCall(
+    contractAddress: string,
+    callerAddress: string,
+    operatorContractAddress: string,
+    tokenId: number,
+    approved: boolean
+  ): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> {
+    const api = await this.api.getApi();
+    const transaction = await this.getContractCall(
+      contractAddress,
+      'psp34::approve',
+      callerAddress,
+      operatorContractAddress,
+      { u64: tokenId },
+      approved
+    );
+
+    return transaction;
   }
 
   private async getMetadata(
