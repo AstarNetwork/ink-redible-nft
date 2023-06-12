@@ -19,7 +19,7 @@
       </div>
     </div>
     <div v-else>
-      <span>Your wallet does't have any NFTs.</span>
+      <span>You don't have any NFTs yet. Please check items below and mint some.</span>
     </div>
   </div>
 </template>

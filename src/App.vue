@@ -56,7 +56,7 @@ import { setCurrentWallet } from 'src/v2/app.container';
 import { container } from 'src/v2/common';
 import { Symbols } from 'src/v2/symbols';
 import { useAppRouter, useAccount, useNetworkInfo } from 'src/hooks';
-import { ContractInventory } from './v2/repositories';
+import { ContractInventory, IRmrkNftRepository } from './v2/repositories';
 
 export default defineComponent({
   name: 'App',
@@ -119,13 +119,35 @@ export default defineComponent({
       // Give some time for indexer to update.
       // TODO - get minted token Id and manually put it to inventory
       const inventorySize = inventory.value.length;
-      const interval = setInterval(() => {
+      const interval = setInterval(async () => {
         if (inventory.value.length > inventorySize) {
           clearInterval(interval);
           return;
         }
 
-        getInventory();
+        try {
+          const rmrkRepository = container.get<IRmrkNftRepository>(Symbols.RmrkNftRepository);
+          const tokens = await rmrkRepository.getInventory(
+            currentAccount.value,
+            currentNetworkIdx.value
+          );
+
+          // find new tokens
+          const newTokens = tokens.filter(
+            (x) =>
+              inventory.value.findIndex(
+                (y) => y.contractAddress === x.contractAddress && y.tokenId === x.tokenId
+              ) === -1
+          );
+
+          // Add to store.
+          store.commit('assets/appendInventory', newTokens, { root: true });
+          for (const token of newTokens) {
+            store.getters['assets/getToken'](token.contractAddress, token.tokenId);
+          }
+        } catch (e) {
+          console.error(e);
+        }
       }, 7000);
     });
 
