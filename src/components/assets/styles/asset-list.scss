@@ -55,12 +55,11 @@
   column-gap: 8px;
   display: grid;
   grid-template-columns: repeat(auto-fill, 166px);
-  justify-content: space-evenly;
 
   @media (min-width: $md) {
     column-gap: 32px;
     grid-template-columns: repeat(auto-fill, 256px);
-    row-gap: 40px;
+    row-gap: 32px;
   }
 
   @media (min-width: $lg) {
@@ -78,10 +77,17 @@
   overflow: auto;
   -ms-overflow-style: none;
   scrollbar-width: none;
+  transition: transform 0.5s;
+  -webkit-transition: transform 0.5s;
 
   @media (min-width: $md) {
     width: 256px;
     height: 324px;
+  }
+
+  &:hover {
+    transform: scale(1.05);
+    -webkit-transform: scale(1.05);
   }
 }
 

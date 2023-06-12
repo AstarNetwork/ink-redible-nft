@@ -40,14 +40,15 @@ export default defineComponent({
 .wrapper--collections {
   display: flex;
   flex-wrap: wrap;
+  grid-template-columns: repeat(auto-fill, 400px);
+  column-gap: 32px;
+  row-gap: 32px;
 }
 
 .wrapper--collection {
-  margin-right: 24px;
-  margin-bottom: 48px;
-  margin-left: auto;
-  margin-right: auto;
   cursor: pointer;
+  transition: transform 0.5s;
+  -webkit-transition: transform 0.5s;
 
   img {
     border-radius: 16px;
@@ -58,7 +59,12 @@ export default defineComponent({
     font-weight: 600;
     font-size: 24px;
     line-height: 18px;
-    padding-top: 24px;
+    padding-top: 18px;
+  }
+
+  &:hover {
+    transform: scale(1.05);
+    -webkit-transform: scale(1.05);
   }
 }
 </style>
