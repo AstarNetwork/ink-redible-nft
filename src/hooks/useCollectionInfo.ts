@@ -63,7 +63,7 @@ export const useCollectionInfo = () => {
 
   const URL = 'https://squid.subsquid.io/subsocial/graphql';
 
-  const fetchInfo = async (query: string) => {
+  const fetchInfo = async (query: string): Promise<void> => {
     error.value = null;
     loading.value = true;
     try {

@@ -95,7 +95,7 @@ export default defineComponent({
     const isClosingModal = ref<boolean>(false);
     const equippableTokens = ref<OwnedToken[]>([]);
     const allowances = ref<boolean[]>([]);
-    const { emptySlots } = useToken(props.parentContractAddress, props.parentTokenId.toString());
+    const { allSlots } = useToken(props.parentContractAddress, props.parentTokenId.toString());
 
     const inventory = computed<ContractInventory[]>(() => store.getters['assets/getInventory']);
 
@@ -108,7 +108,7 @@ export default defineComponent({
 
     const findPossibleChildTokens = (): OwnedToken[] => {
       // 1. Find all addresses that can be equipped to the parent token
-      const equippableAddresses = emptySlots.value
+      const equippableAddresses = allSlots.value
         .map((slot) => slot.equippable)
         .reduce((a, b) => a.concat(b), []);
       // 2. Find addresses of all tokens owned by the user, but not equipped to another token.
@@ -150,7 +150,7 @@ export default defineComponent({
     };
 
     watch(
-      emptySlots,
+      allSlots,
       async () => {
         equippableTokens.value = findPossibleChildTokens();
         allowances.value = await getAllowances(equippableTokens.value);

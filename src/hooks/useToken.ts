@@ -25,11 +25,16 @@ export const useToken = (contractAddress: string, tokenId: string) => {
     return (unequippedSlots && unequippedSlots.length > 0) ?? false;
   });
   const isLoading = ref<boolean>(false);
+
   const emptySlots = computed<LocalPart[]>(
     () =>
       token?.value?.assets[0].parts.filter(
         (x) => x.partType === PartType.slot && x.partUri === ''
       ) ?? []
+  );
+
+  const allSlots = computed<LocalPart[]>(
+    () => token?.value?.assets[0].parts.filter((x) => x.partType === PartType.slot) ?? []
   );
 
   const fetchToken = async (forceFetch = false): Promise<void> => {
@@ -187,6 +192,7 @@ export const useToken = (contractAddress: string, tokenId: string) => {
     isLoading,
     hasUnequippedSlots,
     emptySlots,
+    allSlots,
     fetchToken,
     fetchChildren,
     getChildren,

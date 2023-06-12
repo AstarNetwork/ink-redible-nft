@@ -64,6 +64,8 @@ import { computed, defineComponent, PropType, ref, watchEffect } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import InventoryItem from './InventoryItem.vue';
 import ModalAddChildren from './ModalAddChildren.vue';
+import { useStore } from 'src/store';
+import { ContractInventory } from 'src/v2/repositories';
 
 enum InventoryTab {
   inventory = 'Inventory',
@@ -95,12 +97,14 @@ export default defineComponent({
     const acceptableEquipments = ref<ChildInfo[]>();
     const router = useRouter();
     const route = useRoute();
+    const store = useStore();
     const parentId = route.query.parentId?.toString() ?? '';
     const isLoadingInventory = ref<boolean>(false);
     const { hasUnequippedSlots, addChild, fetchToken, approveParent } = useToken(
       props.contractAddress,
       props.tokenId.toString()
     );
+    const inventory = computed<ContractInventory[]>(() => store.getters['assets/getInventory']);
 
     const { width, screenSize } = useBreakpoints();
     const gearHeight = computed<string>(() => (width.value > screenSize.md ? '100px' : '48px'));
@@ -151,6 +155,19 @@ export default defineComponent({
       setShowModalAddChildren(false);
       await fetchToken(true);
       await setAcceptableEquipments();
+
+      // Update child token data in inventory to assign a new parent
+      const child = inventory.value.find(
+        (x) => x.tokenId == childTokenId && x.contractAddress === childContractAddress
+      );
+
+      store.commit('assets/updateInventory', {
+        ...child,
+        parent: {
+          contractAddress: props.contractAddress,
+          tokenId: props.tokenId,
+        },
+      });
     };
 
     const approve = async (childContractAddress: string, childTokenId: string): Promise<void> => {

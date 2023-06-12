@@ -32,6 +32,7 @@ import { defineComponent, computed, watch } from 'vue';
 import { useToken } from 'src/hooks';
 import { Metadata } from 'src/v2/models';
 import { useStore } from 'src/store';
+import { ContractInventory } from 'src/v2/repositories';
 
 export default defineComponent({
   props: {
@@ -49,12 +50,16 @@ export default defineComponent({
     const collectionMetadata = computed<Metadata | undefined>(() =>
       store.getters['assets/getCollectionMetadata'](props.contractAddress)
     );
+    const inventory = computed<ContractInventory[]>(() =>
+      store.getters['assets/getCollectionMetadata'](props.contractAddress)
+    );
+
     const { token, isLoading, fetchChildren } = useToken(
       props.contractAddress,
       props.id.toString()
     );
 
-    watch([token], () => {
+    watch([token, inventory], () => {
       fetchChildren();
     });
 
