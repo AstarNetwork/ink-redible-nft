@@ -48,6 +48,7 @@ export class PolkadotWalletService extends WalletService implements IWalletServi
     let events: EventRecord[] = [];
     try {
       return new Promise<ExtrinsicResult>(async (resolve) => {
+        this.eventAggregator.publish(new BusyMessage(true));
         !isMobileDevice && this.detectExtensionsAction(true);
         await this.checkExtension();
         let tip = transactionTip?.toString();

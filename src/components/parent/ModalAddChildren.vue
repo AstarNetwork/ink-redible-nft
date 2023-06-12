@@ -31,7 +31,7 @@
               :disabled="!allowances[key]"
               :width="200"
               :height="48"
-              class="button-action right"
+              class="button-action"
               @click="addChild(item.contractAddress, item.id)"
             >
               <div class="icon--button">
@@ -199,6 +199,11 @@ export default defineComponent({
   padding-bottom: 24px;
 }
 
+.wrapper--nft:last-child {
+  border-bottom: none;
+  padding-bottom: 0px;
+}
+
 .img--nft {
   width: 120px;
   height: 120px;
@@ -235,5 +240,10 @@ export default defineComponent({
 
 .wrapper--buttons {
   display: flex;
+  column-gap: 16px;
+}
+
+.add--child {
+  margin-left: 16px;
 }
 </style>
