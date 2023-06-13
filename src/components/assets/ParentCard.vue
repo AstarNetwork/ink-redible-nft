@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!isLoading">
+  <div v-if="!isLoading" class="container--parent">
     <div v-if="token && token.assets.length > 0" class="image-container--parent">
       <img
         v-for="(part, index) in token.assets[0].parts"

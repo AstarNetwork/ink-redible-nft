@@ -6,16 +6,14 @@
         {{ address }}
       </span>
     </div>
-    <div v-if="inventory && inventory.length > 0">
-      <div class="container--item">
-        <div
-          v-for="(item, index) in inventory"
-          :key="index"
-          class="card--item"
-          @click="navigateToParent(item.contractAddress, item.tokenId.toString())"
-        >
-          <parent-card :id="Number(item.tokenId)" :contract-address="item.contractAddress" />
-        </div>
+    <div v-if="inventory && inventory.length > 0" class="container--inventory">
+      <div
+        v-for="(item, index) in inventory"
+        :key="index"
+        class="inventory--card"
+        @click="navigateToParent(item.contractAddress, item.tokenId.toString())"
+      >
+        <parent-card :id="Number(item.tokenId)" :contract-address="item.contractAddress" />
       </div>
     </div>
     <div v-else>

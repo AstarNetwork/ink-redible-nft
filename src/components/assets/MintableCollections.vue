@@ -44,7 +44,7 @@ export default defineComponent({
 .wrapper--collection {
   cursor: pointer;
   float: left;
-  width: 33%;
+  width: 100%;
   padding: 16px;
   transition: transform 0.5s;
   -webkit-transition: transform 0.5s;
@@ -74,11 +74,21 @@ export default defineComponent({
 }
 
 /* Responsive columns - one column layout (vertical) on small screens */
-@media screen and (max-width: $sm) {
+@media screen and (min-width: $sm) {
   .wrapper--collection {
-    width: 100%;
-    display: block;
-    margin-bottom: 20px;
+    width: 50%;
+  }
+}
+
+@media screen and (min-width: $md) {
+  .wrapper--collection {
+    width: 33.3%;
+  }
+}
+
+@media screen and (min-width: $xl) {
+  .wrapper--collection {
+    width: 25%;
   }
 }
 </style>

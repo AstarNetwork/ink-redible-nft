@@ -6,6 +6,7 @@
     <div v-else>
       <div class="wrapper--inventory">
         <asset-list />
+        <div style="clear: both"></div>
         <mintable-collections class="collections" />
       </div>
     </div>
