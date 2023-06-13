@@ -38,21 +38,20 @@ export default defineComponent({
 </script>
 <style lang="scss" scoped>
 .wrapper--collections {
-  display: flex;
-  flex-wrap: wrap;
-  grid-template-columns: repeat(auto-fill, 400px);
-  column-gap: 32px;
-  row-gap: 32px;
+  margin: 0 -8px;
 }
 
 .wrapper--collection {
   cursor: pointer;
+  float: left;
+  width: 33%;
+  padding: 16px;
   transition: transform 0.5s;
   -webkit-transition: transform 0.5s;
 
   img {
     border-radius: 16px;
-    width: 400px;
+    width: 100%;
   }
 
   div {
@@ -65,6 +64,21 @@ export default defineComponent({
   &:hover {
     transform: scale(1.05);
     -webkit-transform: scale(1.05);
+  }
+}
+
+.wrapper--collection::after {
+  content: '';
+  display: table;
+  clear: both;
+}
+
+/* Responsive columns - one column layout (vertical) on small screens */
+@media screen and (max-width: $sm) {
+  .wrapper--collection {
+    width: 100%;
+    display: block;
+    margin-bottom: 20px;
   }
 }
 </style>
