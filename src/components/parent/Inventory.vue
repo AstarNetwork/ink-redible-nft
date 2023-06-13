@@ -40,6 +40,7 @@
         :token-id="item.children[0].tokenId"
         :navigate-to-child-page="navigateToChildPage"
         :is-equipped="true"
+        :is-accepted="true"
         :set-children="setAcceptableEquipments"
       />
     </div>
