@@ -91,6 +91,7 @@ export default {
     updateExtension: 'Update {value} extension',
   },
   assets: {
+    transferableBalance: 'Transferable balance',
     hero: {
       rmkable: 'Ink!redible',
       experience: 'NFT technology',
@@ -125,5 +126,6 @@ export default {
     storageDepositInfo:
       '* Storage deposit is charged for each call and depends on call length. This is to prevent bloating a chain with unnecessary calls and database entries.',
     gasFee: 'Gas fee',
+    dryRunFailed: 'Mint dry run failed, most likely your account balance is insufficient.',
   },
 };

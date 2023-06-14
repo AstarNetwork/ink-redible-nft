@@ -31,7 +31,7 @@ export default defineComponent({
       required: true,
     },
     priceInfo: {
-      type: Object as PropType<DryRunResult>,
+      type: Object as PropType<DryRunResult | undefined>,
       required: false,
       default: undefined,
     },

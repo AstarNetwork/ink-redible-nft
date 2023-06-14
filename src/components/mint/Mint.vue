@@ -28,20 +28,28 @@ import { container } from 'src/v2/common';
 import { IRmrkNftService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 import { DryRunResult } from 'src/v2/services';
-import { useAccount, useNetworkInfo } from 'src/hooks';
+import { useAccount, useBalance, useNetworkInfo } from 'src/hooks';
 import MintButton from './MintButton.vue';
-import { BusyMessage, IEventAggregator, TokenMintedMessage } from 'src/v2/messaging';
+import {
+  BusyMessage,
+  ExtrinsicStatusMessage,
+  IEventAggregator,
+  TokenMintedMessage,
+} from 'src/v2/messaging';
 import { useCollectionInfo } from 'src/hooks/useCollectionInfo';
 import { IRmrkNftRepository } from 'src/v2/repositories';
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   components: {
     MintButton,
   },
   setup() {
+    const { t } = useI18n();
     const route = useRoute();
     const router = useRouter();
     const account = useAccount();
+    const { useableBalance } = useBalance(account.currentAccount);
     const { currentNetworkIdx } = useNetworkInfo();
     const collectionName = ref<string>(String(route.params.collectionName));
     const contractAddress = ref<string>(String(''));
@@ -97,7 +105,8 @@ export default defineComponent({
             );
           }
         } catch (e) {
-          console.error(e);
+          const aggregator = container.get<IEventAggregator>(Symbols.EventAggregator);
+          aggregator.publish(new ExtrinsicStatusMessage(false, t('mint.dryRunFailed')));
         }
       }
     );

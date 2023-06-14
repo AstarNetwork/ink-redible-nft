@@ -2,9 +2,13 @@
   <div v-if="currentAccount" class="wrapper--inventory">
     <div class="box--address">
       <span class="text--account">{{ currentAccountName }}</span>
-      <span class="text--address">
-        {{ address }}
-      </span>
+      <span class="text--address"> {{ address }}</span>
+      <div>
+        {{ $t('assets.transferableBalance') }}:
+        <b
+          ><token-balance :balance="transferableBalance" :symbol="nativeTokenSymbol" :decimals="4"
+        /></b>
+      </div>
     </div>
     <div v-if="inventory && inventory.length > 0" class="container--inventory">
       <div
@@ -22,7 +26,7 @@
   </div>
 </template>
 <script lang="ts">
-import { useAccount, useBreakpoints } from 'src/hooks';
+import { useAccount, useBreakpoints, useBalance, useNetworkInfo } from 'src/hooks';
 import { defineComponent, computed } from 'vue';
 import { getShortenAddress } from '@astar-network/astar-sdk-core';
 import ParentCard from 'src/components/assets/ParentCard.vue';
@@ -31,9 +35,11 @@ import { networkParam, Path } from 'src/router/routes';
 import { useRouter } from 'vue-router';
 import { ContractInventory } from 'src/v2/repositories/IRmrkNftRepository';
 import { Part } from 'src/v2/models';
+import TokenBalance from '../common/TokenBalance.vue';
+import { ethers } from 'ethers';
 
 export default defineComponent({
-  components: { ParentCard },
+  components: { ParentCard, TokenBalance },
   setup() {
     const { width, screenSize } = useBreakpoints();
     const { currentAccount, currentAccountName } = useAccount();
@@ -43,7 +49,14 @@ export default defineComponent({
     });
     const router = useRouter();
     const store = useStore();
+    const { useableBalance } = useBalance(currentAccount);
+    const { nativeTokenSymbol } = useNetworkInfo();
     const inventory = computed<ContractInventory[]>(() => store.getters['assets/getInventory']);
+    const transferableBalance = computed<string>(() => {
+      return useableBalance?.value
+        ? ethers.utils.formatEther(useableBalance.value.toString())
+        : '0';
+    });
 
     const isSlot = (part: Part): boolean => part.partType === 'Slot';
     const navigate = (contractAddress: string, id: string): void => {
@@ -68,8 +81,10 @@ export default defineComponent({
     return {
       currentAccount,
       currentAccountName,
+      transferableBalance,
       address,
       inventory,
+      nativeTokenSymbol,
       isSlot,
       navigateToParent: navigate,
     };

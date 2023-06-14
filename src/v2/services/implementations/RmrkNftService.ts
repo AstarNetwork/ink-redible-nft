@@ -132,16 +132,18 @@ export class RmrkNftService implements IRmrkNftService {
         price === BigInt(0)
           ? 'Free'
           : api.registry.createType('Balance', price).toHuman()?.toString() ?? '';
+      const total =
+        price + paymentInfo.partialFee.toBigInt() + result.storageDeposit.asCharge.toBigInt();
 
       return {
         result,
         storageFeeFormatted: result.storageDeposit.asCharge.toHuman()?.toString() ?? '',
         gasFormatted: paymentInfo.partialFee.toHuman()?.toString() ?? '',
         priceFormatted,
+        total,
       };
     } catch (error) {
-      const e = error as Error;
-      this.eventAggregator.publish(new ExtrinsicStatusMessage(false, e.toString()));
+      throw error;
     }
 
     return undefined;
