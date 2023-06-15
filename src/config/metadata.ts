@@ -3,8 +3,6 @@ import { capitalize } from '@astar-network/astar-sdk-core';
 import { LOCAL_STORAGE } from './localStorage';
 import { Path } from 'src/router';
 
-// Todo: update metadata
-
 interface MetaData {
   title: string;
   meta: {
