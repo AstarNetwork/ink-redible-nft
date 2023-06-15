@@ -19,7 +19,7 @@
           <div class="name">{{ item.metadata?.name }}</div>
           <div class="wrapper--buttons">
             <astar-button
-              v-if="!allowances[key]"
+              v-if="!allowances[key] && allowances.length > 0"
               :width="100"
               :height="48"
               class="button-action"
@@ -31,7 +31,7 @@
               :disabled="!allowances[key]"
               :width="200"
               :height="48"
-              class="button-action right"
+              class="button-action"
               @click="addChild(item.contractAddress, item.id)"
             >
               <div class="icon--button">
@@ -95,7 +95,7 @@ export default defineComponent({
     const isClosingModal = ref<boolean>(false);
     const equippableTokens = ref<OwnedToken[]>([]);
     const allowances = ref<boolean[]>([]);
-    const { emptySlots } = useToken(props.parentContractAddress, props.parentTokenId.toString());
+    const { allSlots } = useToken(props.parentContractAddress, props.parentTokenId.toString());
 
     const inventory = computed<ContractInventory[]>(() => store.getters['assets/getInventory']);
 
@@ -108,7 +108,7 @@ export default defineComponent({
 
     const findPossibleChildTokens = (): OwnedToken[] => {
       // 1. Find all addresses that can be equipped to the parent token
-      const equippableAddresses = emptySlots.value
+      const equippableAddresses = allSlots.value
         .map((slot) => slot.equippable)
         .reduce((a, b) => a.concat(b), []);
       // 2. Find addresses of all tokens owned by the user, but not equipped to another token.
@@ -150,7 +150,7 @@ export default defineComponent({
     };
 
     watch(
-      emptySlots,
+      allSlots,
       async () => {
         equippableTokens.value = findPossibleChildTokens();
         allowances.value = await getAllowances(equippableTokens.value);
@@ -199,6 +199,11 @@ export default defineComponent({
   padding-bottom: 24px;
 }
 
+.wrapper--nft:last-child {
+  border-bottom: none;
+  padding-bottom: 0px;
+}
+
 .img--nft {
   width: 120px;
   height: 120px;
@@ -235,5 +240,10 @@ export default defineComponent({
 
 .wrapper--buttons {
   display: flex;
+  column-gap: 16px;
+}
+
+.add--child {
+  margin-left: 16px;
 }
 </style>

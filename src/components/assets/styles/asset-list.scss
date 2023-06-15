@@ -55,17 +55,57 @@
   column-gap: 8px;
   display: grid;
   grid-template-columns: repeat(auto-fill, 166px);
-  justify-content: space-evenly;
 
   @media (min-width: $md) {
     column-gap: 32px;
     grid-template-columns: repeat(auto-fill, 256px);
-    row-gap: 40px;
+    row-gap: 32px;
   }
 
   @media (min-width: $lg) {
     justify-content: flex-start;
   }
+}
+
+.container--inventory {
+  margin-left: -8px;
+  margin-right: -8px;
+}
+
+.inventory--card {
+  float: left;
+  width: 50%;
+  padding: 16px;
+}
+
+@media screen and (min-width: $sm) {
+  .inventory--card {
+    width: 33.3%;
+  }
+}
+
+@media screen and (min-width: $md) {
+  .inventory--card {
+    width: 25%;
+  }
+}
+
+@media screen and (min-width: $xl) {
+  .inventory--card {
+    width: 20%;
+  }
+}
+
+@media screen and (min-width: $xxl) {
+  .inventory--card {
+    width: 16.66%;
+  }
+}
+
+.inventory--card::after {
+  content: '';
+  display: table;
+  clear: both;
 }
 
 .card--item {
@@ -78,10 +118,17 @@
   overflow: auto;
   -ms-overflow-style: none;
   scrollbar-width: none;
+  transition: transform 0.5s;
+  -webkit-transition: transform 0.5s;
 
   @media (min-width: $md) {
     width: 256px;
     height: 324px;
+  }
+
+  &:hover {
+    transform: scale(1.05);
+    -webkit-transform: scale(1.05);
   }
 }
 

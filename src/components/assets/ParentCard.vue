@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!isLoading">
+  <div v-if="!isLoading" class="container--parent">
     <div v-if="token && token.assets.length > 0" class="image-container--parent">
       <img
         v-for="(part, index) in token.assets[0].parts"
@@ -32,6 +32,7 @@ import { defineComponent, computed, watch } from 'vue';
 import { useToken } from 'src/hooks';
 import { Metadata } from 'src/v2/models';
 import { useStore } from 'src/store';
+import { ContractInventory } from 'src/v2/repositories';
 
 export default defineComponent({
   props: {
@@ -49,12 +50,16 @@ export default defineComponent({
     const collectionMetadata = computed<Metadata | undefined>(() =>
       store.getters['assets/getCollectionMetadata'](props.contractAddress)
     );
+    const inventory = computed<ContractInventory[]>(() =>
+      store.getters['assets/getCollectionMetadata'](props.contractAddress)
+    );
+
     const { token, isLoading, fetchChildren } = useToken(
       props.contractAddress,
       props.id.toString()
     );
 
-    watch([token], () => {
+    watch([token, inventory], () => {
       fetchChildren();
     });
 

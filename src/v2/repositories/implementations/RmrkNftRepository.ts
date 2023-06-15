@@ -5,6 +5,7 @@ import { inject, injectable } from 'inversify';
 import { sanitizeIpfsUrl } from 'src/modules/nft/ipfs';
 import Contract from 'src/modules/nft/types/contracts/rmrk_example_equippable_lazy';
 import Catalog from 'src/modules/nft/types/contracts/catalog_contract';
+import Proxy from 'src/modules/nft/types/contracts/rmrk_proxy';
 import { IdBuilder } from 'src/modules/nft/types/types-arguments/rmrk_example_equippable_lazy';
 import { PartType } from 'src/modules/nft/types/types-returns/catalog_contract';
 import { IApi } from 'src/v2/integration';
@@ -19,6 +20,7 @@ import { EquipCallParam } from './../IRmrkNftRepository';
 import { SmartContractRepository } from './SmartContractRepository';
 import { ASTAR_NETWORK_IDX } from 'src/config/chain';
 import { queryParentInventories } from 'src/modules/nft';
+import { EventRecord } from '@polkadot/types/interfaces';
 
 @injectable()
 export class RmrkNftRepository extends SmartContractRepository implements IRmrkNftRepository {
@@ -274,6 +276,14 @@ export class RmrkNftRepository extends SmartContractRepository implements IRmrkN
     return result;
   }
 
+  public async getMintPrice(contractAddress: string, callerAddress: string): Promise<bigint> {
+    const api = await this.api.getApi();
+    const contract = new Proxy(contractAddress, callerAddress, api);
+    const mintPrice = await contract.query.mintPrice();
+
+    return BigInt(mintPrice.value.unwrap().toHuman());
+  }
+
   public async getAllowance(
     contractAddress: string,
     callerAddress: string,
@@ -307,6 +317,14 @@ export class RmrkNftRepository extends SmartContractRepository implements IRmrkN
     );
 
     return transaction;
+  }
+
+  public async decodeEventData(eventData: EventRecord, contractAddress: string): Promise<string> {
+    const api = await this.api.getApi();
+    const contract = this.getProxyContract(api, contractAddress);
+    const event = contract.abi.decodeEvent(eventData.event.data.toU8a());
+    console.log(eventData.event.data.toHuman());
+    return JSON.stringify(event);
   }
 
   private async getMetadata(

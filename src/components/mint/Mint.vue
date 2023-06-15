@@ -23,62 +23,56 @@
 <script lang="ts">
 import { defineComponent, ref, watch, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { useQuery } from '@vue/apollo-composable';
-import gql from 'graphql-tag';
 import { isValidAddressPolkadotAddress } from '@astar-network/astar-sdk-core';
 import { container } from 'src/v2/common';
 import { IRmrkNftService } from 'src/v2/services';
 import { Symbols } from 'src/v2/symbols';
 import { DryRunResult } from 'src/v2/services';
-import { useAccount, useNetworkInfo } from 'src/hooks';
+import { useAccount, useBalance, useNetworkInfo } from 'src/hooks';
 import MintButton from './MintButton.vue';
-import { NftCollection, getCollection } from './collections';
-import { BusyMessage, IEventAggregator } from 'src/v2/messaging';
+import {
+  BusyMessage,
+  ExtrinsicStatusMessage,
+  IEventAggregator,
+  TokenMintedMessage,
+} from 'src/v2/messaging';
+import { useCollectionInfo } from 'src/hooks/useCollectionInfo';
+import { IRmrkNftRepository } from 'src/v2/repositories';
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   components: {
     MintButton,
   },
   setup() {
+    const { t } = useI18n();
     const route = useRoute();
     const router = useRouter();
     const account = useAccount();
+    const { useableBalance } = useBalance(account.currentAccount);
     const { currentNetworkIdx } = useNetworkInfo();
     const collectionName = ref<string>(String(route.params.collectionName));
     const contractAddress = ref<string>(String(''));
     const dryRunOutcome = ref<DryRunResult | undefined>(undefined);
+    const mintPrice = ref<bigint>(BigInt(0));
     const rmrkService = container.get<IRmrkNftService>(Symbols.RmrkNftService);
     const canMint = computed<boolean>(() => dryRunOutcome.value !== undefined);
-    const collectionInfo = ref<NftCollection | undefined>(undefined);
+    const rmrkRepo = container.get<IRmrkNftRepository>(Symbols.RmrkNftRepository);
 
     const title = ref<string>('');
     const description = ref<string>('');
     const imageUrl = ref<string>('');
 
-    const { result, loading, error } = useQuery(gql`
-      query CommentsByContract {
-        posts(
-          where: {
-            title_containsInsensitive: "${collectionName.value}"
-            rootPost: { space: { id_eq: "11453" } }
-          }
-        ) {
-          id
-          image
-          title
-          canonical
-          body
-          tagsOriginal
-        }
-      }
-    `);
-
+    const { result, error } = useCollectionInfo();
     const mint = async () => {
-      rmrkService.mint(
-        contractAddress.value,
-        account.currentAccount.value!,
-        collectionInfo.value?.mintPrice ?? BigInt(0)
-      );
+      await rmrkService.mint(contractAddress.value, account.currentAccount.value!, mintPrice.value);
+      const aggregator = container.get<IEventAggregator>(Symbols.EventAggregator);
+      aggregator.publish(new TokenMintedMessage());
+
+      // Redirect to assets page
+      setTimeout(() => {
+        router.push({ name: 'Assets' });
+      }, 2000);
     };
 
     const setNotBusy = () => {
@@ -87,51 +81,49 @@ export default defineComponent({
     };
 
     watch(
-      [collectionName, account.currentAccount, currentNetworkIdx],
+      [collectionName, account.currentAccount, currentNetworkIdx, contractAddress],
       async () => {
         try {
           const aggregator = container.get<IEventAggregator>(Symbols.EventAggregator);
           aggregator.publish(new BusyMessage(true));
-          collectionInfo.value = getCollection(collectionName.value, currentNetworkIdx.value);
-          if (!collectionInfo.value) {
-            router.push({ name: '404' });
-          }
 
-          contractAddress.value = collectionInfo.value?.contractAddress ?? '';
           if (!isValidAddressPolkadotAddress(contractAddress.value)) {
             router.push({ name: '404' });
           } else {
-            if (!contractAddress.value || !account.currentAccount.value) {
+            if (!account.currentAccount.value) {
               return;
             }
+            mintPrice.value = await rmrkRepo.getMintPrice(
+              contractAddress.value,
+              account.currentAccount.value
+            );
 
             dryRunOutcome.value = await rmrkService.mintDryRun(
               contractAddress.value,
               account.currentAccount.value,
-              collectionInfo.value?.mintPrice ?? BigInt(0)
+              mintPrice.value
             );
           }
         } catch (e) {
-          console.error(e);
+          const aggregator = container.get<IEventAggregator>(Symbols.EventAggregator);
+          aggregator.publish(new ExtrinsicStatusMessage(false, t('mint.dryRunFailed')));
         }
-      },
-      { immediate: true }
+      }
     );
 
-    watch(
-      [result, error],
-      () => {
-        const post = result.value?.posts?.find((p: any) =>
-          p.canonical.includes(contractAddress.value)
-        );
-        if (post) {
-          title.value = post.title;
-          description.value = post.body;
-          imageUrl.value = `https://ipfs.subsocial.network/ipfs/${post.image}`;
-        }
-      },
-      { immediate: true }
-    );
+    watch([result, error], () => {
+      const post = result.value?.posts?.find(
+        (p: any) => p.title.toLowerCase() === collectionName.value.toLowerCase()
+      );
+      if (post) {
+        title.value = post.title;
+        description.value = post.body;
+        imageUrl.value = `https://ipfs.subsocial.network/ipfs/${post.image}`;
+        contractAddress.value = post.canonical.split('/').pop();
+      } else {
+        router.push({ name: '404' });
+      }
+    });
 
     return {
       contractAddress,

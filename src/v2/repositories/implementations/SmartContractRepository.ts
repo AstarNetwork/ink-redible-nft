@@ -6,6 +6,7 @@ import { SubmittableExtrinsic } from '@polkadot/api/types';
 import { DispatchError, WeightV2 } from '@polkadot/types/interfaces';
 import { ISubmittableResult } from '@polkadot/types/types';
 import { rmrkAbi } from 'src/modules/nft/abi/rmrk'; // TODO this should be injected.
+import proxyAbi from 'src/modules/nft/contracts/rmrk_proxy.json';
 import { IApi } from 'src/v2/integration';
 
 /**
@@ -44,7 +45,9 @@ export class SmartContractRepository {
     const extrinsic = contract.tx[call](
       {
         gasLimit: this.increaseGasLimit(contract.api, txResult.gasRequired),
-        storageDepositLimit: txResult.storageDeposit.asCharge,
+        storageDepositLimit: txResult.storageDeposit.isCharge
+          ? txResult.storageDeposit.asCharge
+          : 0,
       },
       ...params
     );
@@ -70,7 +73,7 @@ export class SmartContractRepository {
       ...params
     );
 
-    if (txResult.result.isErr || txResult.result.toString().includes('Revert')) {
+    if (txResult.result.isErr) {
       throw this.getErrorMessage(txResult.result.value as DispatchError);
     } else if (txResult.result.toString().includes('Revert')) {
       throw txResult.result.value;
@@ -79,6 +82,7 @@ export class SmartContractRepository {
     return txResult;
   }
 
+  // TODO refactor, very similar to getContractCall
   protected async getContractCall2(
     contract: ContractPromise,
     senderAddress: string,
@@ -91,7 +95,9 @@ export class SmartContractRepository {
     const extrinsic = contract.tx[call](
       {
         gasLimit: txResult.gasRequired, // this.increaseGasLimit(contract.api, txResult.gasRequired), // TODO increasing might be not needed
-        storageDepositLimit: txResult.storageDeposit.asCharge,
+        storageDepositLimit: txResult.storageDeposit.isCharge
+          ? txResult.storageDeposit.asCharge
+          : 0,
         value,
       },
       ...params
@@ -100,16 +106,19 @@ export class SmartContractRepository {
     return extrinsic;
   }
 
-  private getRmrkContract = (api: ApiPromise, contractAddress: string): ContractPromise => {
+  protected getRmrkContract = (api: ApiPromise, contractAddress: string): ContractPromise => {
     const abi = new Abi(rmrkAbi, api.registry.getChainProperties());
     const contract = new ContractPromise(api, abi, contractAddress);
     if (!contract || contract === null) new Error('There is no contract found');
 
-    // const initialGasLimit = contract.registry.createType(
-    //   'WeightV2',
-    //   api.consts.system.blockWeights['maxBlock']
-    // );
-    // return { contract, initialGasLimit };
+    return contract;
+  };
+
+  protected getProxyContract = (api: ApiPromise, contractAddress: string): ContractPromise => {
+    const abi = new Abi(proxyAbi, api.registry.getChainProperties());
+    const contract = new ContractPromise(api, abi, contractAddress);
+    if (!contract || contract === null) new Error('There is no contract found');
+
     return contract;
   };
 

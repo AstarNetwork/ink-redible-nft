@@ -2,11 +2,34 @@
 
 .image-container--parent {
   position: relative;
-  height: 160px;
+  height: 190px;
   border: 1px solid #081029;
   border-radius: 6px;
-  @media (min-width: $md) {
-    height: 210px;
+  transition: all 0.5s;
+  -webkit-transition: all 0.5s;
+}
+
+@media screen and (min-width: $sm) {
+  .image-container--parent {
+    height: 180px;
+  }
+}
+
+@media screen and (min-width: $md) {
+  .image-container--parent {
+    height: 180px;
+  }
+}
+
+@media screen and (min-width: $xl) {
+  .image-container--parent {
+    height: 180px;
+  }
+}
+
+@media screen and (min-width: $xxl) {
+  .image-container--parent {
+    height: 240px;
   }
 }
 
@@ -14,10 +37,8 @@
   position: absolute;
   left: 0px;
   top: 0px;
-  height: 160px;
-  @media (min-width: $md) {
-    height: 210px;
-  }
+  width: 100%;
+  height: auto;
 }
 
 .row--name {
@@ -45,4 +66,18 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.container--parent {
+  cursor: pointer;
+  background: #141c34;
+  border-radius: 16px;
+  padding: 16px;
+  transition: transform 0.5s;
+  -webkit-transition: transform 0.5s;
+
+  &:hover {
+    transform: scale(1.05);
+    -webkit-transform: scale(1.05);
+  }
 }

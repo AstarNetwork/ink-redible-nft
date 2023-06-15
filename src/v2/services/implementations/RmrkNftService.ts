@@ -1,5 +1,6 @@
-import { ContractCallOutcome } from '@polkadot/api-contract/types';
+import { EventRecord } from '@polkadot/types/interfaces';
 import { inject, injectable } from 'inversify';
+import { type } from 'os';
 import { ASTAR_NETWORK_IDX } from 'src/config/chain';
 import { Guard } from 'src/v2/common';
 import { IApi } from 'src/v2/integration';
@@ -11,7 +12,7 @@ import {
   IRmrkNftRepository,
   UnequipCallParam,
 } from 'src/v2/repositories/IRmrkNftRepository';
-import { IWalletService } from 'src/v2/services';
+import { IWalletService, ExtrinsicResult } from 'src/v2/services';
 import { DryRunResult, IRmrkNftService } from 'src/v2/services/IRmrkNftService';
 import { Symbols } from 'src/v2/symbols';
 
@@ -131,16 +132,18 @@ export class RmrkNftService implements IRmrkNftService {
         price === BigInt(0)
           ? 'Free'
           : api.registry.createType('Balance', price).toHuman()?.toString() ?? '';
+      const total =
+        price + paymentInfo.partialFee.toBigInt() + result.storageDeposit.asCharge.toBigInt();
 
       return {
         result,
         storageFeeFormatted: result.storageDeposit.asCharge.toHuman()?.toString() ?? '',
         gasFormatted: paymentInfo.partialFee.toHuman()?.toString() ?? '',
         priceFormatted,
+        total,
       };
     } catch (error) {
-      const e = error as Error;
-      this.eventAggregator.publish(new ExtrinsicStatusMessage(false, e.toString()));
+      throw error;
     }
 
     return undefined;
@@ -156,11 +159,25 @@ export class RmrkNftService implements IRmrkNftService {
         senderAddress,
         price
       );
-      await this.wallet.signAndSend(
+      const result = await this.wallet.signAndSend(
         transaction,
         senderAddress,
         'The NFT has been successfully minted. It will be visible on the homepage in a few seconds.'
       );
+
+      // Parse events
+      // const exResult = result as ExtrinsicResult;
+      // if (exResult) {
+      //   for (let event of exResult.events) {
+      //     try {
+      //       if (event.event.section === 'contracts' && event.event.method === 'ContractEmitted') {
+      //         console.log(await this.rmrkNftRepository.decodeEventData(event, contractAddress));
+      //       }
+      //     } catch (e) {
+      //       console.error(e);
+      //     }
+      //   }
+      // }
     } catch (error) {
       const e = error as Error;
       console.error(error);

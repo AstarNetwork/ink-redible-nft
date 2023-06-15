@@ -3,6 +3,7 @@ import { ISubmittableResult } from '@polkadot/types/types';
 import { Id } from 'src/modules/nft';
 import { ChildInfo, Metadata, TokenAsset } from '../models';
 import { ASTAR_NETWORK_IDX } from 'src/config/chain';
+import { EventRecord } from '@polkadot/types/interfaces';
 
 export interface EquipCallParam {
   parentContractAddress: string;
@@ -78,6 +79,8 @@ export interface IRmrkNftRepository {
     tokenId: number
   ): Promise<ChildInfo[]>;
 
+  getMintPrice(contractAddress: string, callerAddress: string): Promise<bigint>;
+
   getAllowance(
     contractAddress: string,
     callerAddress: string,
@@ -92,4 +95,6 @@ export interface IRmrkNftRepository {
     tokenId: number,
     approved: boolean
   ): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>>;
+
+  decodeEventData(eventData: EventRecord, contractAddress: string): Promise<string>;
 }

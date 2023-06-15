@@ -50,12 +50,13 @@ import {
   IEventAggregator,
   NewBlockMessage,
   NewEraMessage,
+  TokenMintedMessage,
 } from 'src/v2/messaging';
 import { setCurrentWallet } from 'src/v2/app.container';
 import { container } from 'src/v2/common';
 import { Symbols } from 'src/v2/symbols';
 import { useAppRouter, useAccount, useNetworkInfo } from 'src/hooks';
-import { ContractInventory } from './v2/repositories';
+import { ContractInventory, IRmrkNftRepository } from './v2/repositories';
 
 export default defineComponent({
   name: 'App',
@@ -106,6 +107,50 @@ export default defineComponent({
       store.commit('dapps/setCurrentEra', message.era, { root: true });
     });
 
+    const getInventory = async (): Promise<void> => {
+      if (!currentAccount.value) return;
+      await store.dispatch('assets/getInventory', {
+        address: currentAccount.value,
+        networkIdx: currentNetworkIdx.value,
+      });
+    };
+
+    eventAggregator.subscribe(TokenMintedMessage.name, async (m) => {
+      // Give some time for indexer to update.
+      // TODO - get minted token Id and manually put it to inventory
+      const inventorySize = inventory.value.length;
+      const interval = setInterval(async () => {
+        if (inventory.value.length > inventorySize) {
+          clearInterval(interval);
+          return;
+        }
+
+        try {
+          const rmrkRepository = container.get<IRmrkNftRepository>(Symbols.RmrkNftRepository);
+          const tokens = await rmrkRepository.getInventory(
+            currentAccount.value,
+            currentNetworkIdx.value
+          );
+
+          // find new tokens
+          const newTokens = tokens.filter(
+            (x) =>
+              inventory.value.findIndex(
+                (y) => y.contractAddress === x.contractAddress && y.tokenId === x.tokenId
+              ) === -1
+          );
+
+          // Add to store.
+          store.commit('assets/appendInventory', newTokens, { root: true });
+          for (const token of newTokens) {
+            store.getters['assets/getToken'](token.contractAddress, token.tokenId);
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      }, 7000);
+    });
+
     // Handle wallet change so we can inject proper wallet
     watch([isEthWallet, currentWallet], () => {
       setCurrentWallet(isEthWallet.value, currentWallet.value);
@@ -114,11 +159,7 @@ export default defineComponent({
     watch(
       [currentAccount, currentNetworkIdx],
       async () => {
-        if (!currentAccount.value) return;
-        await store.dispatch('assets/getInventory', {
-          address: currentAccount.value,
-          networkIdx: currentNetworkIdx.value,
-        });
+        getInventory();
       },
       { immediate: true }
     );

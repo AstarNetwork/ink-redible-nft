@@ -11,6 +11,7 @@ export interface DryRunResult {
   storageFeeFormatted: string;
   gasFormatted: string;
   priceFormatted: string;
+  total: bigint;
 }
 
 export interface IRmrkNftService {

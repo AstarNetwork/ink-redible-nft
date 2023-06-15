@@ -1,8 +1,14 @@
 import { SubmittableExtrinsic } from '@polkadot/api/types';
+import { EventRecord } from '@polkadot/types/interfaces';
 import { ISubmittableResult } from '@polkadot/types/types';
 
 export enum WalletType {
   Polkadot = 'Polkadot',
+}
+
+export interface ExtrinsicResult {
+  hash: string;
+  events: EventRecord[];
 }
 
 export interface IWalletService {
@@ -19,5 +25,5 @@ export interface IWalletService {
     successMessage?: string,
     transactionTip?: number,
     finalizedCallback?: (result?: ISubmittableResult) => void
-  ): Promise<string | null>;
+  ): Promise<string | ExtrinsicResult | null>;
 }

@@ -6,6 +6,8 @@
     <div v-else>
       <div class="wrapper--inventory">
         <asset-list />
+        <div style="clear: both"></div>
+        <mintable-collections class="collections" />
       </div>
     </div>
   </div>
@@ -17,9 +19,10 @@ import HeroConnectWallet from 'src/components/assets/HeroConnectWallet.vue';
 import { useAccount } from 'src/hooks';
 import { LOCAL_STORAGE } from 'src/config/localStorage';
 import AssetList from 'src/components/assets/AssetList.vue';
+import MintableCollections from './MintableCollections.vue';
 
 export default defineComponent({
-  components: { HeroConnectWallet, AssetList },
+  components: { HeroConnectWallet, AssetList, MintableCollections },
   setup() {
     const selectedAddress = String(localStorage.getItem(LOCAL_STORAGE.SELECTED_ADDRESS));
     const { currentAccount } = useAccount();
@@ -37,4 +40,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @use 'src/components/assets/styles/assets.scss';
+.collections {
+  margin-top: 96px;
+}
 </style>

@@ -16,6 +16,7 @@ export const useToken = (contractAddress: string, tokenId: string) => {
   const token = computed<OwnedToken | undefined>(() =>
     store.getters['assets/getToken'](contractAddress, tokenId)
   );
+  const inventory = computed<ContractInventory[]>(() => store.getters['assets/getInventory']);
   const hasUnequippedSlots = computed<boolean>(() => {
     // Not supporting multi asset tokens for now
     const unequippedSlots = token.value?.assets[0].parts.filter(
@@ -24,11 +25,16 @@ export const useToken = (contractAddress: string, tokenId: string) => {
     return (unequippedSlots && unequippedSlots.length > 0) ?? false;
   });
   const isLoading = ref<boolean>(false);
+
   const emptySlots = computed<LocalPart[]>(
     () =>
       token?.value?.assets[0].parts.filter(
         (x) => x.partType === PartType.slot && x.partUri === ''
       ) ?? []
+  );
+
+  const allSlots = computed<LocalPart[]>(
+    () => token?.value?.assets[0].parts.filter((x) => x.partType === PartType.slot) ?? []
   );
 
   const fetchToken = async (forceFetch = false): Promise<void> => {
@@ -64,9 +70,11 @@ export const useToken = (contractAddress: string, tokenId: string) => {
         );
       }
 
-      if (childInventory.length > 0) {
-        store.commit('assets/appendInventory', childInventory);
-      }
+      // Update inventory since childInventory items holds a parent information. Items loaded from indexer doesn't have this information.
+      childInventory.forEach((child) => {
+        store.commit('assets/updateInventory', child);
+      });
+
       isLoading.value = false;
     }
   };
@@ -184,6 +192,7 @@ export const useToken = (contractAddress: string, tokenId: string) => {
     isLoading,
     hasUnequippedSlots,
     emptySlots,
+    allSlots,
     fetchToken,
     fetchChildren,
     getChildren,

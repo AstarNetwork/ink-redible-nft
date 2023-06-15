@@ -38,14 +38,6 @@
       </div>
       <span class="text--button">{{ $t('bond') }}</span>
     </astar-button>
-    <a href="https://astar.subscan.io/" target="_blank" rel="noopener noreferrer">
-      <astar-button :width="buttonWidth" :height="buttonHeight" class="button-action">
-        <div class="icon--button">
-          <astar-icon-external-link />
-        </div>
-        <span class="text--button"> {{ $t('detail') }} </span>
-      </astar-button>
-    </a>
   </div>
   <div v-else class="container--spinner">
     <q-spinner-gears color="primary" size="56px" />
