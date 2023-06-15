@@ -1,2 +1,1 @@
-export const ALICE_URI = '//Alice';
-export const BOB_URI = '//Bob';
+export const ALICE_URI = process.env.ALICE_KEY || '//Alice';

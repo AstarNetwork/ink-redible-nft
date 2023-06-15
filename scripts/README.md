@@ -19,19 +19,18 @@ Before script execution do the following
   ```cd scripts```
 - Install dependencies with `yarn` or `npm i`
 - Update `WSS_ENDPOINT` in [common_api.ts](./common_api.ts) to match endpoint of a chain where you want to deploy your collection (e.g. `wss://rpc.astar.network`)
-- Create `secret.ts` file under scripts folder and add the following line
+- Set environment variable with deployer mnemonics inside. This account will be used for collection deployment
   ```
-  export const ALICE_URI = 'put your account mnemonics here';
+  export ALICE_URI = 'put your account mnemonics here';
   ```
-  **`secret.ts` file is added to `.gitignore` and it won't be committed to GitHub. Make sure not to change `.gitignore` in a way to whitelist the file for committing.**  
-  <br/>If you plan to deploy collection to a local node for testing purposes than add
+    <br/>If you plan to deploy collection to a local node for testing purposes than add
   ```
-  export const ALICE_URI = '//Alice';
+  export ALICE_URI = '//Alice';
   ```
 
 ## A collection setup and deployment
 1. Create a subfolder under `collections` folder. This folder will contain your collection configurations and assets.
-2. Create `assets` and `metadata` subfolders
+2. Create `assets` and `metadata` sub folders
 3. Copy folder with your NFT images to `assets` folder. The folder name must be prefixed with z-order for specific asset. RMRK supports equipping tokens to each other and z order must be specified to know in which order to render multiple NFTs. In the `Starduster` collection sample there is assets folder named `1_body` which means that Stardusters body will be at layer 1, leaving us space to put some other collection behind at layer 0. 
 *IMPORTANT. Due to a limitation of the lazy minting contract max number of assets is at this moment limited to 255.*  
 4. Upload `assets` folder to IPFS and store IPFS URI somewhere.
