@@ -56,7 +56,7 @@ export default defineComponent({
 
   div {
     font-weight: 600;
-    font-size: 24px;
+    font-size: 20px;
     line-height: 18px;
     padding-top: 18px;
   }

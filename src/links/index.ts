@@ -16,7 +16,7 @@ export const socialUrl = {
 };
 
 export const headerLinks = {
-  docs: 'https://docs.astar.network',
+  docs: 'https://docs.astar.network/docs/user-guides/inkredible-nft',
   ink: 'https://docs.astar.network/docs/build/wasm/ink-dev',
   astar: 'https://astar.network',
 };
