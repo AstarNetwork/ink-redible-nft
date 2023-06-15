@@ -21,3 +21,5 @@ yarn-error.log*
 
 # Firebase cache
 .firebase/
+
+secret.ts

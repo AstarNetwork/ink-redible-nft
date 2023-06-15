@@ -1,0 +1,14 @@
+{
+  "authorUrl": "https://astar.network",
+  "name": "Starduster Headwear",
+  "description": "Collection of headwear that could be equipped to Starduster.",
+  "symbol": "STDH",
+  "baseUri": "ipfs://bafybeihuyotgysntwwayqyjdsvej2svxvkcdv3ujgfczvxdteitchatw64",
+  "collectionMetadataUri": "ipfs://bafkreiagq5lg25avv6tbdnmattervlkknqovtakqndn2n7eynxfypdvbva",
+  "collectionImagesUri": "ipfs://bafybeicri4adhao4ppoyv5bezecpirpy7xfgszlhnmked3sgene2sc7aca",
+  "maxSupply": 100, 
+  "pricePerMint": "1000000000000000000",
+  "royaltyReceiverAddress": "XLoLJBQoMPHMLXYhdFobSpH5GujRoUH8d1sUtaEtoBG7zaS",
+  "royalty": 1,
+  "numberOfEquippableSlots": 0
+}

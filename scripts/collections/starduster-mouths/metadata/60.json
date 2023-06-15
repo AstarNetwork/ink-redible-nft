@@ -1,0 +1,11 @@
+{
+    "name": "Starduster Mouth #60",
+    "description": "A great one",
+    "image": "ipfs://bafybeieofckupsgw4rh4ijp2s6mdboavmqefav5shrl2nbythwpk7wc7nq/1_mouth/MOUTH-27.png",
+    "properties": {
+        "type": {
+            "type": "string",
+            "value": "MOUTH-27"
+        }
+    }
+}

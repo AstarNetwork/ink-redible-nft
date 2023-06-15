@@ -1,0 +1,11 @@
+{
+    "name": "Starduster #69",
+    "description": "A great one",
+    "image": "ipfs://bafybeihspohvpehtgc2mkpk3jmagoff24kkabsqi4iwamfnaf7rz7r6s3e/1_body/PINKIES_UP_BOD-06.png",
+    "properties": {
+        "type": {
+            "type": "string",
+            "value": "PINKIES_UP_BOD-06"
+        }
+    }
+}

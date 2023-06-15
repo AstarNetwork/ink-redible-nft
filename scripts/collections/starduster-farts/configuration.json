@@ -1,0 +1,14 @@
+{
+  "authorUrl": "https://astar.network",
+  "name": "Starduster Farts",
+  "description": "Collection of darts that can be equipped to Starduster.",
+  "symbol": "STDF",
+  "baseUri": "ipfs://bafybeiejbpeqn6m7lruavqdml4mtxt6l54wukiqs73le2mcfkwk3a2ezrq",
+  "collectionMetadataUri": "ipfs://bafkreig7le3hw5kiattwpvt3yznqa4pbgldbrclxmuye4dkr2uwpdm57i4",
+  "collectionImagesUri": "ipfs://bafybeidu735znw5etw7hphsa5223tcu2cnv6qmeiwmyerblc4bc3bfuade",
+  "maxSupply": 100, 
+  "pricePerMint": "1000000000000000000",
+  "royaltyReceiverAddress": "XLoLJBQoMPHMLXYhdFobSpH5GujRoUH8d1sUtaEtoBG7zaS",
+  "royalty": 1,
+  "numberOfEquippableSlots": 0
+}
