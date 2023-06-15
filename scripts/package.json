@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "deploy-collection": "ts-node build_collection.ts",
+    "deploy-collection": "ts-node deploy_collection.ts",
     "generate-types": "npx @727-ventures/typechain-polkadot --in ./contracts --out typed_contracts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

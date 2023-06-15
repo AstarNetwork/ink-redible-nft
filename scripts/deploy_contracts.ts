@@ -23,7 +23,7 @@ export const deployRmrkContract = async (
   console.log(`Deploying RMRK smart contract for ${name}`);
   const api = await getApi();
   const contract = JSON.parse(
-    Files.readFileSync('../contract/rmrk_example_equippable_lazy.contract').toString()
+    Files.readFileSync('./contracts/rmrk_example_equippable_lazy.contract').toString()
   );
   const code = new CodePromise(api, contract, contract.source.wasm);
   
@@ -55,7 +55,7 @@ export const deployCatalogContract = async (
   console.log(`Deploying RMRK catalog smart contract`);
   const api = await getApi();
   const contract = JSON.parse(
-    Files.readFileSync('../contract/catalog_contract.contract').toString()
+    Files.readFileSync('./contracts/catalog_contract.contract').toString()
   );
   const code = new CodePromise(api, contract, contract.source.wasm);
   const tx = code.tx['new']!(
@@ -81,7 +81,7 @@ export const deployProxyContract = async (
   console.log(`Deploying RMRK proxy smart contract`);
   const api = await getApi();
   const contract = JSON.parse(
-    Files.readFileSync('../contract/rmrk_proxy.contract').toString()
+    Files.readFileSync('./contracts/rmrk_proxy.contract').toString()
   );
   const code = new CodePromise(api, contract, contract.source.wasm);
   const tx = code.tx['new']!(

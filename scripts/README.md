@@ -62,11 +62,11 @@ Update `mediaUri` to match collection preview URI from step 5. Upload the file t
 }
 ```
 `baseUri` should be empty at this point, `collectionMetadataUri` should match URI from step 6, `collectionImagesUri` should match URI from step 4.
-8. Run `build_collection` script to generate NFTs metadata by running 
+8. Run `deploy_collection.ts` script to generate NFTs metadata 
 ````
 yarn deploy-collection <collection_path>
-e.g. yarn deploy-collection ../collections/starduster/
+e.g. yarn deploy-collection ./collections/starduster/
 ````
 9. Upload `metadata` folder to IPFS and update `baseUri` in `configuration.json`.
-10. Run `build_collection` again to deploy your collection.
+10. Run `deploy_collection.ts` again to deploy your collection.
 11. Repeat steps above for each additional collection you want to deploy
