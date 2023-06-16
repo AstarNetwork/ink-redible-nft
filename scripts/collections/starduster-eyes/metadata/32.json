@@ -1,0 +1,11 @@
+{
+    "name": "Starduster Eyes #32",
+    "description": "A great one",
+    "image": "ipfs://bafybeih673xgp4alfl7s5xgcba2dbfum55byygvpz2uk6sg2gz4omicswq/1_eyes/PATCH_EYES.png",
+    "properties": {
+        "type": {
+            "type": "string",
+            "value": "PATCH_EYES"
+        }
+    }
+}

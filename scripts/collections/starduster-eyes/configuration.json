@@ -1,0 +1,14 @@
+{
+  "authorUrl": "https://astar.network",
+  "name": "Starduster Eyes",
+  "description": "Collection of eyes that could be equipped to Starduster.",
+  "symbol": "STDE",
+  "baseUri": "ipfs://bafybeiew7ezxd4bqbte4qc5gsdbzvye4xwwhbewyro3gabaspf3cmgplrm",
+  "collectionMetadataUri": "ipfs://bafkreihmrhhnb2o5vrl7o5vqzrrgbpgafswd5typibay7odmk6zz75vd5a",
+  "collectionImagesUri": "ipfs://bafybeih673xgp4alfl7s5xgcba2dbfum55byygvpz2uk6sg2gz4omicswq",
+  "maxSupply": 100, 
+  "pricePerMint": "1000000000000000000",
+  "royaltyReceiverAddress": "XLoLJBQoMPHMLXYhdFobSpH5GujRoUH8d1sUtaEtoBG7zaS",
+  "royalty": 1,
+  "numberOfEquippableSlots": 0
+}

@@ -131,7 +131,6 @@ export async function connectApi(
       const relayProvider = new ScProvider(Sc, getWellKnownChain(networkIdx));
       provider = new ScProvider(Sc, parachainSpec, relayProvider);
 
-      // TODO see how to handle errors and disconnections.
       provider.on('error', (error: Error) => fallbackConnection({ networkIdx, endpoint }));
       provider.on('disconnected', (error: Error) => console.error('handle disconnect'));
       await provider.connect();

@@ -1,0 +1,11 @@
+{
+    "name": "Starduster Headwear #56",
+    "description": "A great one",
+    "image": "ipfs://bafybeicri4adhao4ppoyv5bezecpirpy7xfgszlhnmked3sgene2sc7aca/1_headwear/HAT-04.png",
+    "properties": {
+        "type": {
+            "type": "string",
+            "value": "HAT-04"
+        }
+    }
+}

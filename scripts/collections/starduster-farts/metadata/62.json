@@ -1,0 +1,11 @@
+{
+    "name": "Starduster Farts #62",
+    "description": "A great one",
+    "image": "ipfs://bafybeidu735znw5etw7hphsa5223tcu2cnv6qmeiwmyerblc4bc3bfuade/1_farts/PINKIES_UP_FART-08.png",
+    "properties": {
+        "type": {
+            "type": "string",
+            "value": "PINKIES_UP_FART-08"
+        }
+    }
+}

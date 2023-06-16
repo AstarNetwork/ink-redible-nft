@@ -1,0 +1,15 @@
+{
+  "contractAddress": "",
+  "authorUrl": "https://nft.astar.network",
+  "name": "Starduster",
+  "description": "As old as the universe itself, these Strdusters have transversed the entirety of the galaxy by expelling gas at a freighting force unbeknownst to mankind. What they leave behind is a cloud of strdust, which over time gathers, bonds and transforms into a new Struster. Over the course of their lives and bountiful travels, they are known to not only pick up souvenirs, but also mimic the expressions of the species they encounter.",
+  "symbol": "STD",
+  "baseUri": "ipfs://bafybeia64gnjsasugg6infdtc3obown3tu2ojkh7hbp44w37lp5gafoscq",
+  "collectionMetadataUri": "ipfs://bafkreidwidybo4cx5iwayl2btjh73h4uclanl7pbfufgc6kb7iptsljseu",
+  "collectionImagesUri": "ipfs://bafybeihspohvpehtgc2mkpk3jmagoff24kkabsqi4iwamfnaf7rz7r6s3e",
+  "maxSupply": 100, 
+  "pricePerMint": "1000000000000000000",
+  "royaltyReceiverAddress": "XLoLJBQoMPHMLXYhdFobSpH5GujRoUH8d1sUtaEtoBG7zaS",
+  "royalty": 1,
+  "numberOfEquippableSlots": 4
+}
