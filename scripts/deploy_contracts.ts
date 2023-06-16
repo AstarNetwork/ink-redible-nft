@@ -3,8 +3,7 @@ import { CodePromise } from '@polkadot/api-contract';
 import { KeyringPair } from '@polkadot/keyring/types';
 import { cryptoWaitReady } from '@polkadot/util-crypto';
 import { WeightV2 } from '@polkadot/types/interfaces';
-import { getApi, getErrorMessage, getSigner } from './common_api';
-import { ALICE_URI } from './secret'; // Send as deploy contract call parameter
+import { getApi, getErrorMessage, getSigner, ALICE_URI } from './common_api';
 import Files, { rm } from 'fs';
 import { SubmittableExtrinsic } from '@polkadot/api/types';
 import { ISubmittableResult } from '@polkadot/types/types';

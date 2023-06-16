@@ -33,33 +33,29 @@ import path from 'path';
 import { CollectionConfiguration, Metadata } from 'base';
 import { deployProxyContract, deployRmrkContract } from './deploy_contracts';
 import {
-  executeCall,
   executeCalls,
   getCall,
   getContract,
   getSigner,
+  ALICE_URI,
 } from './common_api';
-import { ALICE_URI } from './secret';
 import { loadConfiguration } from './build_common';
 import { buildCatalog, IBasePart } from './build_catalog';
 
 /**
  * Builds a RMRK NFT collection.
  * @param basePath Path to the folder with deployment configuration, assets and metadata.
- * @param parentContractAddress Parent contract address.
- * Provide this parameter if you want to automatically add tokens from the collection to parent NFT.
- * Assumption: Random child token will be added to random parent. Numbers of parent and child tokens are the same.
  * @returns collection contract address
  */
 export const buildCollection = async (
   basePath: string,
-  parentContractAddress: string = undefined
 ): Promise<string> => {
   const MAX_CALL_SIZE = 50; // Max length of array passed to a contract call.
   let calls: SubmittableExtrinsic<'promise', ISubmittableResult>[] = [];
 
   await cryptoWaitReady();
   const signer = getSigner(ALICE_URI);
+  console.log(ALICE_URI);
 
   // Load collection configuration.
   const configuration = loadConfiguration(basePath);
@@ -178,18 +174,7 @@ const writeTokenMetadata = (
 
 const run = async (): Promise<void> => {
   if (process.argv.length < 3) {
-    // Deploy base contracts
-    const baseAddress = await buildCollection('../collections/starduster/');
-
-    // Deploy child contracts. I you aleady deployed base contracts, comment the line above, uncomment the line below and set
-    // collection contract address.
-    // const baseAddress = 'W31sRs7oHgzYTLa2xoVR8yU6dXC3GnUBBMQo2HoCY4Fneyq';
-    await buildCollection('../collections/starduster-eyes/', baseAddress);
-    await buildCollection('../collections/starduster-mouths/', baseAddress);
-    await buildCollection('../collections/starduster-headwear/', baseAddress);
-    await buildCollection('../collections/starduster-farts/', baseAddress);
-
-    console.log('\nBase contract address ', baseAddress);
+    console.log('Missing collection path argument. Usage: npm run build-collection <path>');
   } else {
     // Build collection
     await buildCollection(process.argv[2]);

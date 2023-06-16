@@ -1,1 +1,0 @@
-export const ALICE_URI = process.env.ALICE_KEY || '//Alice';

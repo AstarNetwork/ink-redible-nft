@@ -1,6 +1,5 @@
 import { cryptoWaitReady } from '@polkadot/util-crypto';
-import { ALICE_URI } from './secret';
-import { executeCall, getCatalogContract, getSigner } from './common_api';
+import { executeCall, getCatalogContract, getSigner, ALICE_URI } from './common_api';
 import { loadConfiguration } from './build_common';
 import { deployCatalogContract } from './deploy_contracts';
 import fs from 'fs';
@@ -27,11 +26,13 @@ interface Id extends Codec {
   asBytes: Codec;
 }
 
-export const buildCatalog = async (basePath: string): Promise<Catalog> => {
-  await cryptoWaitReady();
-  const signer = getSigner(ALICE_URI);
+export const buildCatalog = async (basePath: string, deployContract = true): Promise<Catalog> => {
+
   const configuration = loadConfiguration(basePath);
 
+  if(deployContract) {
+  await cryptoWaitReady();
+  const signer = getSigner(ALICE_URI);
   const contractAddress = await deployCatalogContract(
     configuration.catalogMetadataUri,
     signer
@@ -51,6 +52,15 @@ export const buildCatalog = async (basePath: string): Promise<Catalog> => {
   await executeCall(contract, 'catalog::addPartList', signer, catalog);
 
   return { contractAddress, catalog };
+  } else {
+    const catalog = await createCatalog(
+      configuration.numberOfEquippableSlots,
+      basePath,
+      configuration.collectionImagesUri
+    );
+
+    return { contractAddress: '', catalog };
+  }
 };
 
 /**

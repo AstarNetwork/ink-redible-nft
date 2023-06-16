@@ -19,14 +19,11 @@ Before script execution do the following
   ```cd scripts```
 - Install dependencies with `yarn` or `npm i`
 - Update `WSS_ENDPOINT` in [common_api.ts](./common_api.ts) to match endpoint of a chain where you want to deploy your collection (e.g. `wss://rpc.astar.network`)
-- Set environment variable with deployer mnemonics inside. This account will be used for collection deployment
+- Set environment variable with deployer mnemonics. This account will be used for collection deployment
   ```
-  export ALICE_URI = 'put your account mnemonics here';
+  export ALICE_KEY='put your account mnemonics here';
   ```
-    <br/>If you plan to deploy collection to a local node for testing purposes than add
-  ```
-  export ALICE_URI = '//Alice';
-  ```
+  If you plan to deploy collection to a local node for testing purposes you don't need to set the environment variable since `//Alice` account will be used.
 
 ## A collection setup and deployment
 1. Create a subfolder under `collections` folder. This folder will contain your collection configurations and assets.
@@ -65,11 +62,13 @@ Before script execution do the following
     }
     ```
     `baseUri` should be empty at this point, `collectionMetadataUri` should match URI from step 6, `collectionImagesUri` should match URI from step 4.
-8. Run `deploy_collection.ts` script to generate NFTs metadata 
+8. Run `yarn create-metadata <path_to_collection>` script to generate NFTs metadata 
     ```
-    yarn deploy-collection <collection_path>
-    e.g. yarn deploy-collection ./collections/starduster/
+    e.g. yarn create-metadata ./collections/starduster/
     ```
 9. Upload `metadata` folder to IPFS and update `baseUri` in `configuration.json`.
-10. Run `deploy_collection.ts` again to deploy your collection.
+10. Run `yarn deploy-collection <path_to_metadata>` to deploy your collection to a blockchain.
+    ```
+    e.g. yarn deploy-collection  ./collections/starduster/
+    ```
 11. Repeat steps above for each additional collection you want to deploy

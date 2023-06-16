@@ -17,6 +17,8 @@ export interface WeightInfo {
 // const WSS_ENDPOINT = 'ws://127.0.0.1:9944';
 const WSS_ENDPOINT = 'wss://rpc.shibuya.astar.network';
 
+export const ALICE_URI = process.env.ALICE_KEY || '//Alice';
+
 let api: ApiPromise;
 
 export const getApi = async (): Promise<ApiPromise> => {
