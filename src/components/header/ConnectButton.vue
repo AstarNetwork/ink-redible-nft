@@ -54,8 +54,8 @@ export default defineComponent({
   border-radius: 16px;
   margin-left: 16px;
   transition: all 0.3s ease 0s;
-  background: $gray-6;
-  color: $gray-3;
+  background: #141c34;
+  color: #fff;
 }
 .m-btn--connect:hover {
   background: $astar-blue;

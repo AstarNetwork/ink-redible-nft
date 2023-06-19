@@ -156,8 +156,8 @@ export default defineComponent({
   box-shadow: none;
   padding: 8px;
   padding-left: 0px;
-  background: $gray-6;
-  color: $gray-3;
+  background: #141c34;
+  color: #fff;
   display: flex;
   column-gap: 6px;
   align-items: center;

@@ -44,7 +44,7 @@ export default {
     copied: 'Copied',
   },
   links: {
-    docs: 'Docs',
+    docs: 'Tutorial',
     aboutInk: 'About ink!',
     aboutAstar: 'About Astar Network',
   },
