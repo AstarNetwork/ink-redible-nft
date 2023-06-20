@@ -91,7 +91,7 @@ export const useCollectionInfo = () => {
                   hidden_not_eq: true
                   tagsOriginal_containsInsensitive: "${currentNetworkName.value}"
                 }
-              }
+              }, orderBy: id_ASC
             ) {
               id
               image
