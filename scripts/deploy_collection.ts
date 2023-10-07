@@ -30,7 +30,6 @@ import { ISubmittableResult } from '@polkadot/types/types';
 import { cryptoWaitReady } from '@polkadot/util-crypto';
 import fs from 'fs';
 import path from 'path';
-import { CollectionConfiguration, Metadata } from 'base';
 import { deployProxyContract, deployRmrkContract } from './deploy_contracts';
 import {
   executeCalls,
@@ -39,7 +38,7 @@ import {
   getSigner,
   ALICE_URI,
 } from './common_api';
-import { loadConfiguration } from './build_common';
+import { loadConfiguration, CollectionConfiguration, Metadata } from './build_common';
 import { buildCatalog, IBasePart } from './build_catalog';
 
 /**
