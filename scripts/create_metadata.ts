@@ -2,8 +2,7 @@ import { SubmittableExtrinsic } from '@polkadot/api/types';
 import { ISubmittableResult } from '@polkadot/types/types';
 import fs from 'fs';
 import path from 'path';
-import { CollectionConfiguration, Metadata } from 'base';
-import { loadConfiguration } from './build_common';
+import { loadConfiguration, CollectionConfiguration, Metadata } from './build_common';
 import { buildCatalog, IBasePart } from './build_catalog';
 
 export const createMetadata = async (basePath: string): Promise<void> => {
